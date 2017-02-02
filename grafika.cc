@@ -113,9 +113,9 @@ public:
 			SDL_GetError());
 			exit(1);
 		}		
-		if((czcionka = SDL_LoadBMP("C:\\Documents and Settings\\jarek\\Moje Dokumenty\\prg\\font.bmp")) == NULL) {
-			fprintf(stderr, "Couldn't load font font.bmp: %s\n",
-			SDL_GetError());
+		//		if((czcionka = SDL_LoadBMP("C:\\Documents and Settings\\jarek\\Moje Dokumenty\\prg\\font.bmp")) == NULL) {
+		//	fprintf(stderr, "Couldn't load font font.bmp: %s\n",
+		//	SDL_GetError());
 			//exit(1);
         }
     
