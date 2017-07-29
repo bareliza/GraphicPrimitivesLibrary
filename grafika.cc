@@ -12,7 +12,7 @@
 
 //#define M_PI 3.1415927
 //#include <iostream.h>
-// const static funkcja - co to mog³oby znaczyæ... 
+// const static funkcja - co to mogÂ³oby znaczyÃ¦... 
 // patrz error, gdy struct rysunek poprzedzimy const static
 struct rysunek{
 	int	 x;
@@ -44,7 +44,7 @@ public:
 	A zdejmij(){if(!poziom){printf("Pusty stos!\n");exit(-1);}
 		return tresc[poziom--];}
 	void wloz(A p){if(poziom<rozmiarMinus1){tresc[++poziom]=p;}
-		else{printf("Pe³ny stos!\n");exit(-1);}}
+		else{printf("PeÂ³ny stos!\n");exit(-1);}}
 	int pusty(){return !poziom;}
 };
 struct Klawiatura{
@@ -93,10 +93,10 @@ Stos<punkt> stos_punktow(512000);
 class Projektor{
 public:
 	void initialize(int wymiar_x, int wymiar_y){
-		printf("Program aktualnie obs³uguje tylko 32 bity\n");
+		printf("Program aktualnie obsÂ³uguje tylko 32 bity\n");
 		pioro=1;
 		wymiar.x=wymiar_x;
-		wymiar.y=wymiar_y; // dalszy kod konstruktora zapo¿yczony z dokumentacji SDL
+		wymiar.y=wymiar_y; // dalszy kod konstruktora zapoÂ¿yczony z dokumentacji SDL
 		/* Initialize the SDL library */
 		if( SDL_Init(SDL_INIT_VIDEO) < 0 ) {
 			fprintf(stderr,
@@ -118,12 +118,12 @@ public:
 		//	SDL_GetError());
 			//exit(1);
         }
-    
+//    
 // Microsoft only:
 //        HWND uchwytOkna=GetActiveWindow();
 //        SetWindowPos(uchwytOkna,0,16,-6,0,0,1);
-
-	}
+//
+//	}
 // public:
 	SDL_Surface *screen, *czcionka;
 	wektor2w wymiar; // wymiar malowanej powierzchni;
@@ -217,8 +217,8 @@ public:
 				tmp=x0;x0=x1;x1=tmp;
 				tmp=y0;y0=y1;y1=tmp;
 			}
-			dx=x1-x0; // Na razie nie wiem, jak to optymalniej liczyæ, (pomijaj¹c powtórne liczenie dx,dy)
-			dy=y1-y0; // to zreszt¹ tylko 2 odejmowania i przypisania wiêcej na jedn¹ liniê
+			dx=x1-x0; // Na razie nie wiem, jak to optymalniej liczyÃ¦, (pomijajÂ¹c powtÃ³rne liczenie dx,dy)
+			dy=y1-y0; // to zresztÂ¹ tylko 2 odejmowania i przypisania wiÃªcej na jednÂ¹ liniÃª
 			if(dx)fract=(dy<<16)/dx;
 			else fract=0;
 			//if(y1>y0)fract=-fract;
@@ -232,7 +232,7 @@ public:
 				tmp=x0;x0=x1;x1=tmp;
 				tmp=y0;y0=y1;y1=tmp;
 			}
-			dx=x1-x0; // Komentarz jak wy¿ej przy liczeniu dx,dy
+			dx=x1-x0; // Komentarz jak wyÂ¿ej przy liczeniu dx,dy
 			dy=y1-y0;
 			if(dy)fract=(dx<<16)/dy;
 			else fract=0;
@@ -248,9 +248,9 @@ public:
 		int x,y;
 		for(y=-r;y<r;y++)
 			for(x=-r;x<r;x++) 
-			// Mo¿na szybciej, ale potrzebna trygonometria
+			// MoÂ¿na szybciej, ale potrzebna trygonometria
 				if(y*y+x*x<r*r)rysujPunkt(ox+x,oy+y,kolor);
-	} // A tak poza tym, to chyba jest ko³o a nie okr¹g?
+	} // A tak poza tym, to chyba jest koÂ³o a nie okrÂ¹g?
 	void okrag(int ox, int oy, int r, int jedne_osme, unsigned int kolor){
          int px, py;
          
@@ -277,8 +277,8 @@ public:
 		int x,y;
 		for(x=ox;x<ox+wx;x++)
 			for(y=oy;y<oy+wy;y++)
-				rysujPunkt(x,y,kolor,1); // Mo¿na szybciej,  przez (adres, kolor) 
-// Przed ka¿d¹ optymalizacj¹ trzeba siê jednak upewniæ, ¿e dany fragment kodu dzia³a poprawnie...
+				rysujPunkt(x,y,kolor,1); // MoÂ¿na szybciej,  przez (adres, kolor) 
+// Przed kaÂ¿dÂ¹ optymalizacjÂ¹ trzeba siÃª jednak upewniÃ¦, Â¿e dany fragment kodu dziaÂ³a poprawnie...
 	}
 	void elipsa(int ox, int oy, int rx, int ry, 
 	int alfa0, int alfa1,int alfa3, unsigned int kolor){
@@ -298,17 +298,17 @@ public:
 	}
 	void elipsa(int ox, int oy, int rx, int ry, unsigned int kolor){
 		elipsa(ox,oy,rx,ry,0,360,0,kolor);}	
-// S¹ nie mniej ni¿ dwa sposoby obrotu: albo przez funkcjê obrotu punktu wokó³ punktu o k¹t alfa3,
-// albo przez przejœcie do wsp. biegunowych (w³aœciwie wyjœcie od nich), dodanie alfa3 i przejœcie do
+// SÂ¹ nie mniej niÂ¿ dwa sposoby obrotu: albo przez funkcjÃª obrotu punktu wokÃ³Â³ punktu o kÂ¹t alfa3,
+// albo przez przejÂœcie do wsp. biegunowych (wÂ³aÂœciwie wyjÂœcie od nich), dodanie alfa3 i przejÂœcie do
 // wsp. ortogonalnych.
 
-// 1. Wzór na promieñ elipsy r dla danego k¹ta alfa: 
+// 1. WzÃ³r na promieÃ± elipsy r dla danego kÂ¹ta alfa: 
 // 		r=sqrt(1/(cos(alfa)*cos(alfa)/rx/rx+sin(alfa)*sin(alfa)/ry/ry))
-// 2. obrót:
+// 2. obrÃ³t:
 //		alfa_prim=alfa+alfa3;
-// 3. przejœcie do wsp. ortogonalnych:
+// 3. przejÂœcie do wsp. ortogonalnych:
 //		 x1=cos(alfa_prim)*r; y1=sin(alfa_prim*r);
-// To chyba tyle, teraz jeszcze trzeba to zaprogramowaæ...
+// To chyba tyle, teraz jeszcze trzeba to zaprogramowaÃ¦...
 	void elipsa3(int ox, int oy, int rx, int ry, 
 	int alfa0, int alfa1,int alfa3, unsigned int kolor){
 		double r, a, aPrim;
@@ -340,7 +340,7 @@ public:
 				px=x-ox;
 				py=y-oy;
 				functprim=((px*px)<<12)/(rx*rx)+((py*py)<<12)/(ry*ry)-(1<<12);
-				// 350 x 350 x 200 x 200 = 4 900 000 000 dwa bity za du¿o
+				// 350 x 350 x 200 x 200 = 4 900 000 000 dwa bity za duÂ¿o
 				/*
 				if((funct<0 && functprim>=0)||
 				   (funct<0 && functprim>=0))
@@ -350,11 +350,11 @@ public:
 	if(-3*pow(ry,.95)<=functprim && functprim<=3*pow(ry,.95))	
 						rysujPunkt(x,y,flaga?kolor:functprim); 
 			}		
-		// Mo¿na szybciej,  przez (adres, kolor) . Czy mo¿na zawrzeæ to w inline void rysujPunkt?
-		// O tyle nie, ¿e za ka¿dym razem trzeba w rysujPunkt przeliczyæ adres...
-		// Mo¿na zrobiæ funkcjê rysujPunkt(adres,kolor), tylko po co? zamiast ekran[segment+adres]=kolor?
-		// O tyle siê op³aca, ¿e nie trzeba ci¹gle tego rzutowania adresu ekranu na tablicê typu unsigned int
-		// Ano tak wiem bez sensu to pisanie, skoro to i tak nie ma (nie musi) byæ jakiœ super efektywny kod...
+		// MoÂ¿na szybciej,  przez (adres, kolor) . Czy moÂ¿na zawrzeÃ¦ to w inline void rysujPunkt?
+		// O tyle nie, Â¿e za kaÂ¿dym razem trzeba w rysujPunkt przeliczyÃ¦ adres...
+		// MoÂ¿na zrobiÃ¦ funkcjÃª rysujPunkt(adres,kolor), tylko po co? zamiast ekran[segment+adres]=kolor?
+		// O tyle siÃª opÂ³aca, Â¿e nie trzeba ciÂ¹gle tego rzutowania adresu ekranu na tablicÃª typu unsigned int
+		// Ano tak wiem bez sensu to pisanie, skoro to i tak nie ma (nie musi) byÃ¦ jakiÂœ super efektywny kod...
 	}
 	unsigned int* E(int x, int y){
 		return ((unsigned int*)screen->pixels)+x+y*wymiar.x;}
@@ -379,11 +379,11 @@ public:
 			odswiez(p.x,p.y,p.x,p.y);
 			//K->sprawdzIWyjdzGdyKlawisz();
 		}while(!stos_punktow.pusty()); // UWAGA! 
-		// Czy nie mo¿e byæ tak, ¿e stos pusty, a dooko³a podniesionego
-		// punktu jeszcze punkty do zape³nienia? 1.10.2008
+		// Czy nie moÂ¿e byÃ¦ tak, Â¿e stos pusty, a dookoÂ³a podniesionego
+		// punktu jeszcze punkty do zapeÂ³nienia? 1.10.2008
 	}
 	void wklej(rysunek r, int ox, int oy){
-	//  WYJ¥TKI !!! (throws punkt_poza_obszarem_okna)
+	//  WYJÂ¥TKI !!! (throws punkt_poza_obszarem_okna)
 //		if ox<0 or oy<0 or ox>this->x-1 or oy>this->y-1 throw punkt_poza_obszarem_okna;
 		int x,y;
 		
