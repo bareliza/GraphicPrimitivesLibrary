@@ -213,8 +213,8 @@ public:
 		linia(p1.x,p1.y,p2.x,p2.y,kolor);
 	}
 
-#define CLIP0_X (0+130)
-#define CLIP1_X (wymiar.x-150)
+#define CLIP0_X (0+220)
+#define CLIP1_X (wymiar.x-270)
 #define CLIP0_Y (0+170)
 #define CLIP1_Y (wymiar.y-190)
   
@@ -241,7 +241,7 @@ public:
 		int tmp;
       		if (x0 > x1) { tmp = x0;x0 = x1;x1 = tmp; }
       		if (x0 < CLIP0_X) x0 = CLIP0_X;
-      		if (x1 >= CLIP1_X) x1 = CLIP1_X;
+      		if (x1 >= CLIP1_X) x1 = CLIP1_X - 1;
 
       		int start, stop;
 
@@ -332,7 +332,7 @@ public:
 		  tmp=y0;y0=y1;y1=tmp;
 		}
 		if(y1 >= CLIP1_Y) {
-		  dOut = y1 - CLIP1_Y; // [] <-
+		  dOut = y1 - CLIP1_Y;
 		  xOut = dOut * dx / dy;
 		  y1 = CLIP1_Y - 1;
 		  x1 = x1 + ( (x1 < x0) ?  xOut : -xOut );
