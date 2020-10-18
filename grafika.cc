@@ -98,7 +98,7 @@ public:
 		wymiar.x=wymiar_x;
 		wymiar.y=wymiar_y; // dalszy kod konstruktora zapo¿yczony z dokumentacji SDL
 		/* Initialize the SDL library */
-		if( SDL_Init(SDL_INIT_VIDEO) < 0 ) {
+ 		if( SDL_Init(SDL_INIT_VIDEO) < 0 ) {
 			fprintf(stderr,
 			"Couldn't initialize SDL: %s\n", SDL_GetError());
 			exit(1);
@@ -165,7 +165,7 @@ public:
                          ((char *)czcionka->pixels)
                              [szerokosc_czcionki*t[i]+k+j*czcionka->w]);
          }
-    }
+        }
 	void tekst(int x, int y, char* t){
          int i,j,k;
          char c;
@@ -184,7 +184,8 @@ public:
                          czcionka_czytajPunkt(szerokosc_czcionki*(c+7)+k,j)
                      );
          }
-    }
+        }
+
 	void pisak(int i){pioro=i;}
 	void czysc(){prostokat(0,0,wymiar.x-1,wymiar.y-1,0);}
 	void czysc(int c){prostokat(0,0,wymiar.x-1,wymiar.y-1,c);}
@@ -193,8 +194,12 @@ public:
 	void wyswietl(void){SDL_UpdateRect(screen,0,0,wymiar.x,wymiar.y);}
 	inline void rysujPunkt(int adres, unsigned int wartosc){
 		((unsigned int*)screen->pixels)[adres]=wartosc;}
-	void rysujPunkt(int x, int y, unsigned int wartosc){
-		rysujPunkt(x,y,wartosc,pioro);}
+	inline void rysujPunkt(int x, int y, unsigned int wartosc){
+        	rysujPunkt(x,y,wartosc,pioro);}
+        //          if(x>=0 && y>=0 && x<wymiar.x && y<wymiar.y)
+        //	            ((unsigned int*)screen->pixels)[x+y*wymiar.x]=wartosc;}
+	inline void rysujNieKlipowanyPunkt(int x, int y, unsigned int wartosc){
+	    ((unsigned int*)screen->pixels)[x+y*wymiar.x]=wartosc;}
 	void rysujPunkt(int x, int y, unsigned int wartosc, int pioro){
 		if(pioro>1)prostokat(x-(pioro+1)/2+1,y-(pioro+1)/2+1,pioro,pioro,wartosc);
 		else if(x>=0 && y>=0 && x<wymiar.x && y<wymiar.y)
@@ -207,23 +212,177 @@ public:
 	void linia(punkt p1,punkt p2,unsigned int kolor){
 		linia(p1.x,p1.y,p2.x,p2.y,kolor);
 	}
+
+#define CLIP0_X (0+130)
+#define CLIP1_X (wymiar.x-150)
+#define CLIP0_Y (0+170)
+#define CLIP1_Y (wymiar.y-190)
+  
+	void liniaPionowa(int x, int y0, int y1, unsigned int kolor)
+    	{
+
+		int tmp;
+      		if (y0 > y1) { tmp = y0;y0 = y1;y1 = tmp; }
+      		if (y0 < CLIP0_Y) y0 = CLIP0_Y;
+      		if (y1 >= CLIP1_Y) y1 = CLIP1_Y - 1; // height - 1;
+
+      		int start, stop;
+
+      		start = y0; // rawStride * y0 + x;
+      		stop  = y1; // rawStride * y1 + x;
+
+      		do
+			rysujPunkt(x, start++, kolor);
+		while (start <= stop);
+      	}
+
+	void liniaPozioma(int y, int x0, int x1, unsigned int kolor)
+    	{
+		int tmp;
+      		if (x0 > x1) { tmp = x0;x0 = x1;x1 = tmp; }
+      		if (x0 < CLIP0_X) x0 = CLIP0_X;
+      		if (x1 >= CLIP1_X) x1 = CLIP1_X;
+
+      		int start, stop;
+
+      		start = x0; // rawStride * y + x0;
+      		stop  = x1; // rawStride * y + x1;
+
+           	do    // rawImage[start] = kolor;
+		      	rysujPunkt(start++, y, kolor); // start++; // += rawStride;
+      		while (start <= stop);
+        }
+
+    /* Klipowanie: gorna krawedz. zalozenie: y0 < y1.
+
+                    x0,y0
+                    |\
+                /   | \
+              dOut  |  \
+                \ / |   \
+                  __|____\xIn_____ y_clip0
+                 dy |xOut \ | dIn
+                  \ |__dx__\|
+                             x1,y1
+
+       xOut / dOut = dx / dy
+       xOut = dOut * dx / dy
+
+       x0=0 (x_clip0)
+       x0=x0+yOut
+
+       uwaga na dOut, dx > 16 bitow, 32767
+   */
+  
 	void linia(int x0, int y0, int x1, int y1, unsigned int kolor){
-		int dx,dy,tmp,fract;
+	      	// Proste klipowanie
+	      	if ((x0 <  CLIP0_X && x1 <  CLIP0_X) ||
+		    (x0 >= CLIP1_X && x1 >= CLIP1_X) ||
+	   	    (y0 <  CLIP0_Y && y1 <  CLIP0_Y) ||
+		    (y0 >= CLIP1_Y && y1 >= CLIP1_Y)) kolor = 0xb0ffb0;
+		  // return;
 		
+	        if (x0 == x1) {
+	                liniaPionowa(x0, y0, y1, kolor);
+			return;
+		}
+		if (y0 == y1) {
+		       liniaPozioma(y0, x0, x1, kolor);
+		       return;
+      		}
+
+		int dx,dy,tmp,fract,xOut,yOut,dOut;
+
 		dx=abs(x1-x0);
 		dy=abs(y1-y0);
+
+		/* */
+	      	if (! ((x0 <  CLIP0_X && x1 <  CLIP0_X) ||
+		       (x0 >= CLIP1_X && x1 >= CLIP1_X) ||
+	   	       (y0 <  CLIP0_Y && y1 <  CLIP0_Y) ||
+		       (y0 >= CLIP1_Y && y1 >= CLIP1_Y)) )
+		  { 
+		    /* */
+		// klipowanie kod1
+		if(y0 > y1){
+		  tmp=x0;x0=x1;x1=tmp;
+		  tmp=y0;y0=y1;y1=tmp;
+		}
+		if(y0 < CLIP0_Y) {
+		  dOut = CLIP0_Y - y0;
+		  xOut = dOut * dx / dy;
+		  y0 = CLIP0_Y;
+		  x0 = x0 + ( (x1 > x0) ?  xOut : -xOut );
+		}
+		/* */
+		// klipowanie kod2
+		if(x0 > x1){
+		  tmp=x0;x0=x1;x1=tmp;
+		  tmp=y0;y0=y1;y1=tmp;
+		}
+		if(x0 < CLIP0_X) {
+		  dOut = CLIP0_X - x0;
+		  yOut = dOut * dy / dx;
+		  x0 = CLIP0_X;
+		  y0 = y0 + ( (y1 > y0) ?  yOut : -yOut );
+		}
+		// klipowanie kod3
+		if(y0 > y1){
+		  tmp=x0;x0=x1;x1=tmp;
+		  tmp=y0;y0=y1;y1=tmp;
+		}
+		if(y1 >= CLIP1_Y) {
+		  dOut = y1 - CLIP1_Y; // [] <-
+		  xOut = dOut * dx / dy;
+		  y1 = CLIP1_Y - 1;
+		  x1 = x1 + ( (x1 < x0) ?  xOut : -xOut );
+		}
+		// klipowanie kod4
+		if(x0 > x1){
+		  tmp=x0;x0=x1;x1=tmp;
+		  tmp=y0;y0=y1;y1=tmp;
+		}
+		if(x1 >= CLIP1_X) {
+		  dOut = x1 - CLIP1_X;
+		  yOut = dOut * dy / dx;
+		  x1 = CLIP1_X - 1;
+		  y1 = y1 + ( (y1 < y0) ?  yOut : -yOut );
+		}
+		/* */
+		  } 
+		/* */
+		if ((x0 < CLIP0_X && y1 < CLIP0_Y) ||
+		    (x1 < CLIP0_X && y0 < CLIP0_Y) ||
+
+		    (x0 >= CLIP1_X && y1 >= CLIP1_Y) ||
+		    (x1 >= CLIP1_X && y0 >= CLIP1_Y) ||
+
+		    (x0 < CLIP0_X && y1 >= CLIP1_Y) ||
+		    (x1 < CLIP0_X && y0 >= CLIP1_Y) ||
+
+		    (x0 >= CLIP1_X && y1 < CLIP0_Y) ||
+		    (x1 >= CLIP1_X && y0 < CLIP0_Y)) kolor = 0x8080ff;
+
+		if ((x0 <  CLIP0_X && x1 <  CLIP0_X) ||
+		    (x0 >= CLIP1_X && x1 >= CLIP1_X) ||
+	   	    (y0 <  CLIP0_Y && y1 <  CLIP0_Y) ||
+		    (y0 >= CLIP1_Y && y1 >= CLIP1_Y)) kolor = 0xffd0ff;
+		// return;
+
+
 		if(dx>dy){
 			if(x0>x1){
 				tmp=x0;x0=x1;x1=tmp;
 				tmp=y0;y0=y1;y1=tmp;
 			}
-			dx=x1-x0; // Na razie nie wiem, jak to optymalniej liczyæ, (pomijaj¹c powtórne liczenie dx,dy)
-			dy=y1-y0; // to zreszt¹ tylko 2 odejmowania i przypisania wiêcej na jedn¹ liniê
+			dx=x1-x0; // Na razie nie wiem, jak to optymalniej liczyc, (pomijajac powtórne liczenie dx,dy)
+			dy=y1-y0; // to zreszta tylko 2 odejmowania i przypisania wiecej na jedna linie
 			if(dx)fract=(dy<<16)/dx;
 			else fract=0;
 			//if(y1>y0)fract=-fract;
 			y0<<=16;
-			for(x0=x0;x0<=x1;x0++){
+			y0 += (1 << 15);
+			for(; x0 <= x1 ; x0++) {
 				rysujPunkt(x0,y0>>16,kolor);
 				y0+=fract;
 			}	
@@ -238,7 +397,8 @@ public:
 			else fract=0;
 			//if(x1>x0)fract=-fract;
 			x0<<=16;
-			for(y0=y0;y0<=y1;y0++){
+			x0 += (1 << 15);
+			for(; y0<=y1 ; y0++){
 				rysujPunkt(x0>>16,y0,kolor);
 				x0+=fract;
 			}
