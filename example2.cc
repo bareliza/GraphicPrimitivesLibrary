@@ -17,7 +17,7 @@ int main(int argc, char** argv) {
   int REFRESH_STEP=0;
   
   if(argc>1) STEP=atoi(argv[1]);
-  if(STEP==0) STEP=20;
+  if(STEP==0) STEP=10;
   if(argc>2) REFRESH_STEP=atoi(argv[2]);
   if(REFRESH_STEP==0) REFRESH_STEP=16;
 
@@ -29,12 +29,17 @@ int main(int argc, char** argv) {
   for(int j = 10; j <= RY-10; j = j + 4) {
     P.linia(10,j, RX-10,j, j+(j<<8)+(j<<16) );
   }
-  for(int i = 14; i <= RX-14; i = i + STEP) {
-    for(int j = 14; j <= RY-14; j = j + STEP) {
+  for(int i = 14; i <= RX-14; i = i + 2*STEP) {
+    for(int j = 14; j <= RY-14; j = j + 2*STEP) {
       P.linia(RX >> 1, 12,i,j,i+(j<<8)+((i+i)<<16) );
       P.linia(12, RY >> 1,i,j,i+(j<<8)+((i+i)<<16) );
       P.linia(RX >> 1, RY - 12,i,j,i+(j<<8)+((i+i)<<16) );
       P.linia(RX - 12, RY >> 1,i,j,i+(j<<8)+((i+i)<<16) );
+
+      P.linia(i+STEP,j+STEP,RX >> 1, 12,i+(j<<8)+((i+i)<<16) );
+      P.linia(i+STEP,j+STEP,12, RY >> 1,i+(j<<8)+((i+i)<<16) );
+      P.linia(i+STEP,j+STEP,RX >> 1, RY - 12,i+(j<<8)+((i+i)<<16) );
+      P.linia(i+STEP,j+STEP,RX - 12, RY >> 1,i+(j<<8)+((i+i)<<16) );
     }
     if( (i-10) % ( REFRESH_STEP * STEP ) == 0 ) P.odswiez();
   }

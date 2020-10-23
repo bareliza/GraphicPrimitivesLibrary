@@ -314,6 +314,17 @@ public:
 		  y0 = CLIP0_Y;
 		  x0 = x0 + ( (x1 > x0) ?  xOut : -xOut );
 		}
+		// klipowanie kod3
+		/*if(y0 > y1){
+		  tmp=x0;x0=x1;x1=tmp;
+		  tmp=y0;y0=y1;y1=tmp;
+		  }*/
+		if(y1 >= CLIP1_Y) {
+		  dOut = y1 - CLIP1_Y;
+		  xOut = dOut * dx / dy;
+		  y1 = CLIP1_Y - 1;
+		  x1 = x1 + ( (x1 < x0) ?  xOut : -xOut );
+		}
 		/* */
 		// klipowanie kod2
 		if(x0 > x1){
@@ -326,22 +337,11 @@ public:
 		  x0 = CLIP0_X;
 		  y0 = y0 + ( (y1 > y0) ?  yOut : -yOut );
 		}
-		// klipowanie kod3
-		if(y0 > y1){
-		  tmp=x0;x0=x1;x1=tmp;
-		  tmp=y0;y0=y1;y1=tmp;
-		}
-		if(y1 >= CLIP1_Y) {
-		  dOut = y1 - CLIP1_Y;
-		  xOut = dOut * dx / dy;
-		  y1 = CLIP1_Y - 1;
-		  x1 = x1 + ( (x1 < x0) ?  xOut : -xOut );
-		}
 		// klipowanie kod4
-		if(x0 > x1){
+		/*if(x0 > x1){
 		  tmp=x0;x0=x1;x1=tmp;
 		  tmp=y0;y0=y1;y1=tmp;
-		}
+		  }*/
 		if(x1 >= CLIP1_X) {
 		  dOut = x1 - CLIP1_X;
 		  yOut = dOut * dy / dx;
