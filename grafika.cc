@@ -200,6 +200,8 @@ public:
         //	            ((unsigned int*)screen->pixels)[x+y*wymiar.x]=wartosc;}
 	inline void rysujNieKlipowanyPunkt(int x, int y, unsigned int wartosc){
 	    ((unsigned int*)screen->pixels)[x+y*wymiar.x]=wartosc;}
+	inline unsigned int KolorPunktu(int x, int y){
+	  return ( ((unsigned int*)screen->pixels)[x+y*wymiar.x] );}
 	void rysujPunkt(int x, int y, unsigned int wartosc, int pioro){
 		if(pioro>1)prostokat(x-(pioro+1)/2+1,y-(pioro+1)/2+1,pioro,pioro,wartosc);
 		else if(x>=0 && y>=0 && x<wymiar.x && y<wymiar.y)
@@ -404,6 +406,256 @@ public:
 			}
 		}
 	}
+
+
+  
+	// g    _g   _h
+	// 1 :   2    1
+	// 2 :   2    0
+	// 3 :   3    1
+	// 4 :   3    0
+	// 5 :   4    1
+        // 6 :   4    0
+    void Linia2(int x0, int y0, int x1, int y1, unsigned int kolor, int grubosc) {
+	_Line(x0, y0, x1, y1, kolor, (grubosc + 2) >> 1, (grubosc + 1) & 1);
+    }
+    /// <summary>
+    /// Ogólna linia, NIE optymalizowana dla poziomych i pionowych linii.7
+    /// </summary>
+    /// <param name="x0">Współrzędna pozioma początku</param>
+    /// <param name="y0">Współrzędna pionowa początku</param>
+    /// <param name="x1">Współrzędna pozioma końca</param>
+    /// <param name="y1">Współrzędna pionowa końca</param>
+    /// <param name="kolor">kolor punktu - najstarszy bajt to przeźroczystość, dla pełnego koloru 0xff</param>
+    /// <param name="grubosc">określa grubość linii, 
+    /// rzeczywista grubość wynosi 2*wartość+1-half
+    /// (0 -> 1, 2 -> 3, 3 -> 5 itd.)</param>
+    /// <param name="half">Modyfikator grubosci, zmniejsza o jeden lub nie, patrz parametr "grubosc".</param>
+    // grubosc = 0 -> 1 piksel, 1 -> 3 piksele, 2 -> 5 pikseli, ...
+    void _Line(int x0, int y0, int x1, int y1, unsigned int kolor, int grubosc, int half)
+    {
+      // Console.WriteLine($"DEBUG: _Line( {x0}, {y0}, {x1}, {y1}, {kolor}, {grubosc}, {half});");
+      if ((x0 < CLIP0_X && x1 < CLIP0_X) || (x0 >= CLIP1_X && x1 >= CLIP1_X) || 
+	  (y0 < CLIP0_Y && y1 < CLIP0_Y) || (y0 >= CLIP1_Y && y1 >= CLIP1_Y))
+	kolor = 0xb0ffb0;
+      // return; // Proste klipowanie
+
+	        if (x0 == x1) {
+	                liniaPionowa(x0, y0, y1, kolor);
+			return;
+		}
+		if (y0 == y1) {
+		       liniaPozioma(y0, x0, x1, kolor);
+		       return;
+      		}
+
+		int dx,dy,tmp,fract,wi,xOut,yOut,dOut;
+
+		dx=abs(x1-x0);
+		dy=abs(y1-y0);
+
+		/* */
+	      	if (! ((x0 <  CLIP0_X && x1 <  CLIP0_X) ||
+		       (x0 >= CLIP1_X && x1 >= CLIP1_X) ||
+	   	       (y0 <  CLIP0_Y && y1 <  CLIP0_Y) ||
+		       (y0 >= CLIP1_Y && y1 >= CLIP1_Y)) )
+		  { 
+		    /* */
+		// klipowanie kod1
+		if(y0 > y1){
+		  tmp=x0;x0=x1;x1=tmp;
+		  tmp=y0;y0=y1;y1=tmp;
+		}
+		if(y0 < CLIP0_Y) {
+		  dOut = CLIP0_Y - y0;
+		  xOut = dOut * dx / dy;
+		  y0 = CLIP0_Y;
+		  x0 = x0 + ( (x1 > x0) ?  xOut : -xOut );
+		}
+		// klipowanie kod3
+		/*if(y0 > y1){
+		  tmp=x0;x0=x1;x1=tmp;
+		  tmp=y0;y0=y1;y1=tmp;
+		  }*/
+		if(y1 >= CLIP1_Y) {
+		  dOut = y1 - CLIP1_Y;
+		  xOut = dOut * dx / dy;
+		  y1 = CLIP1_Y - 1;
+		  x1 = x1 + ( (x1 < x0) ?  xOut : -xOut );
+		}
+		/* */
+		// klipowanie kod2
+		if(x0 > x1){
+		  tmp=x0;x0=x1;x1=tmp;
+		  tmp=y0;y0=y1;y1=tmp;
+		}
+		if(x0 < CLIP0_X) {
+		  dOut = CLIP0_X - x0;
+		  yOut = dOut * dy / dx;
+		  x0 = CLIP0_X;
+		  y0 = y0 + ( (y1 > y0) ?  yOut : -yOut );
+		}
+		// klipowanie kod4
+		/*if(x0 > x1){
+		  tmp=x0;x0=x1;x1=tmp;
+		  tmp=y0;y0=y1;y1=tmp;
+		  }*/
+		if(x1 >= CLIP1_X) {
+		  dOut = x1 - CLIP1_X;
+		  yOut = dOut * dy / dx;
+		  x1 = CLIP1_X - 1;
+		  y1 = y1 + ( (y1 < y0) ?  yOut : -yOut );
+		}
+		/* */
+		  } 
+		/* */
+		if ((x0 < CLIP0_X && y1 < CLIP0_Y) ||
+		    (x1 < CLIP0_X && y0 < CLIP0_Y) ||
+
+		    (x0 >= CLIP1_X && y1 >= CLIP1_Y) ||
+		    (x1 >= CLIP1_X && y0 >= CLIP1_Y) ||
+
+		    (x0 < CLIP0_X && y1 >= CLIP1_Y) ||
+		    (x1 < CLIP0_X && y0 >= CLIP1_Y) ||
+
+		    (x0 >= CLIP1_X && y1 < CLIP0_Y) ||
+		    (x1 >= CLIP1_X && y0 < CLIP0_Y)) kolor = 0x8080ff;
+
+		if ((x0 <  CLIP0_X && x1 <  CLIP0_X) ||
+		    (x0 >= CLIP1_X && x1 >= CLIP1_X) ||
+	   	    (y0 <  CLIP0_Y && y1 <  CLIP0_Y) ||
+		    (y0 >= CLIP1_Y && y1 >= CLIP1_Y)) kolor = 0xffd0ff;
+		// return;
+
+		///////////// BAD CODING - redundancja kodu klipujacego
+////////////      int dx, dy, tmp, fract, wi;
+      dx = abs(x1 - x0);
+      dy = abs(y1 - y0);
+
+      // Lock();
+      if (dx > dy) {
+	if (x0 > x1) {
+	  tmp = x0;x0 = x1;x1 = tmp; // XCHG x0, x1
+	  tmp = y0;y0 = y1;y1 = tmp; // XCHG y0, y1
+	}
+	dx = x1 - x0;
+	dy = y1 - y0;
+	if (dx != 0) fract = (dy << 16) / dx;
+	else fract = 0; 
+
+	y0 <<= 16;
+	y0 += (1 << 15);
+	for (; x0 <= x1; x0++) {
+	    if( true && ( grubosc != 0 ) )  //   W Y G L A D Z A N I E
+	    {
+	      // Console.WriteLine(KolorPunktu( x0,  grubosc - half + ( y0 >> 16 ) ) );
+		rysujPunkt( x0,  grubosc - half + (y0 >> 16),
+			kolorDopelniajacy( kolor,
+				( 0xffff - ( y0 & 0xffff ) )
+				, KolorPunktu( x0,  grubosc - half + ( y0 >> 16 ) )
+			)
+		); // TODO: DONE. NullPointerException:: zamienic ( <-> ) _b.GetPixel <-> WezPunkt(...) - klipowany
+		rysujPunkt( x0, -grubosc + (y0 >> 16),
+			kolorDopelniajacy( kolor,
+				( y0 & 0xffff )
+				, KolorPunktu( x0, -grubosc + ( y0 >> 16 ) ) 
+			)
+		);
+		for (wi = -grubosc + 1; wi <= grubosc - 1 - half; wi++)
+		rysujPunkt(x0, wi + (y0 >> 16), kolor);
+	    }
+	    y0 += fract;
+	}
+      }
+      else {
+	if (y0 > y1) {
+	  tmp = x0;x0 = x1;x1 = tmp; // XCHG x0, x1
+	  tmp = y0;y0 = y1;y1 = tmp; // XCHG y0, y1
+	}
+	dx = x1 - x0;
+	dy = y1 - y0;
+	if (dy != 0) fract = (dx << 16) / dy;
+	else fract = 0;
+
+	x0 <<= 16;
+	x0 += (1 << 15);
+	for (; y0 <= y1; y0++) {
+	    if( true && ( grubosc != 0 ) )  //   W Y G L A D Z A N I E
+	    {
+	      // Console.WriteLine(KolorPunktu( x0,  grubosc - half + ( y0 >> 16 ) ) );
+		rysujPunkt( grubosc - half + (x0 >> 16), y0,
+			kolorDopelniajacy( kolor,
+				( 0xffff - ( x0 & 0xffff ) )
+				, KolorPunktu( grubosc - half + (x0 >> 16),  y0 )
+			)
+		); // TODO: DONE: NullPointerException:: zamienic ( <-> ) _b.GetPixel <-> WezPunkt(...) - klipowany
+		rysujPunkt( -grubosc + (x0 >> 16), y0,
+			kolorDopelniajacy( kolor,
+				( x0 & 0xffff )
+				, KolorPunktu( -grubosc + (x0 >> 16), y0 )
+			) 
+		);
+
+		for (wi = -grubosc + 1; wi <= grubosc - 1 - half; wi++)
+		    rysujPunkt(wi + (x0 >> 16), y0, kolor);
+	    }
+	    x0 += fract;
+	}
+      }
+      // Unlock();
+    }
+
+    /// <summary>
+    /// Zakladany rozklad skladowych:
+    ///   ABGR: 0xAaBbGgRr - alfa. blue. green. red.
+    /// </summary>
+  
+#define COLOR_R(k) (         (k & 0xff) )
+#define COLOR_G(k) ( ((k >>  8) & 0xff) )
+#define COLOR_B(k) ( ((k >> 16) & 0xff) )
+  int kolor2r(unsigned int k) { return COLOR_R(k); } 
+  int kolor2g(unsigned int k) { return COLOR_G(k); } // ( ((k >>  8) & 0xff) );}
+  int kolor2b(unsigned int k) { return COLOR_B(k); } // ( ((k >> 16) & 0xff) );}
+  
+    // inline?
+    /* */
+      inline unsigned int r2kolor(unsigned int r) { return ( r ); }
+      inline unsigned int g2kolor(unsigned int g) { return ( g << 8 ); }
+      inline unsigned int b2kolor(unsigned int b) { return ( b << 16 ); }
+    /* */
+
+    // point /in ( 0x0000 .. 0xffff ), 0x0000 -> s0; 0xffff -> s1
+    int skladowaDopelniajaca(int s0, int s1, int point)	{
+      return ( ((s0 * (0xffff - point) + s1 * point) / 0xffff) )  ;
+    }
+
+#define COLOR_White (0xffffff)
+#define COLOR_Black (0)
+  
+    unsigned int kolorDopelniajacy(unsigned int kolor, int level) {
+      return kolorDopelniajacy(kolor, level, COLOR_White);
+//      return kolorDopelniajacy(kolor, level, COLOR_White);
+//      return kolorDopelniajacy(kolor, level, COLOR_Black);
+    }
+    unsigned int kolorDopelniajacy(unsigned int kolor, int level, unsigned int kolorTla)
+    {
+      int r,g,b, rt,gt,bt, ro,go,bo;
+      r = kolor2r(kolor);
+      g = kolor2g(kolor);
+      b = kolor2b(kolor);
+
+      rt = kolor2r(kolorTla);
+      gt = kolor2g(kolorTla);
+      bt = kolor2b(kolorTla);
+
+      ro = skladowaDopelniajaca(r, rt, level);
+      go = skladowaDopelniajaca(g, gt, level);
+      bo = skladowaDopelniajaca(b, bt, level);
+
+      // return Color_FromArgb(0xff, ro, go, bo);
+      return ( r2kolor(ro) | g2kolor(go) | b2kolor(bo) );
+    }
+
 	void okrag(int ox, int oy, int r, unsigned int kolor){
 		int x,y;
 		for(y=-r;y<r;y++)
