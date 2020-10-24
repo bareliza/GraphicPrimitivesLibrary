@@ -215,10 +215,15 @@ public:
 		linia(p1.x,p1.y,p2.x,p2.y,kolor);
 	}
 
-#define CLIP0_X (0+220)
-#define CLIP1_X (wymiar.x-270)
-#define CLIP0_Y (0+170)
-#define CLIP1_Y (wymiar.y-190)
+        int xc0 = 220;
+        int xc1 = 270;
+        int yc0 = 170;
+        int yc1 = 190;
+  
+#define CLIP0_X (0+xc0)
+#define CLIP1_X (wymiar.x-xc1)
+#define CLIP0_Y (0+yc0)
+#define CLIP1_Y (wymiar.y-yc1)
   
 	void liniaPionowa(int x, int y0, int y1, unsigned int kolor)
     	{
