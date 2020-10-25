@@ -4,8 +4,7 @@
 
 #include <iostream>
 
-#define RX (1000)
-#define RY (700)
+#include "example-cfg.hh"
 
 Projektor P(RX, RY);
 Klawiatura K;
