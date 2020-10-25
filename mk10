@@ -1,1 +1,2 @@
 g++ -o example10 example10.cc -lSDL -lSDLmain
+g++ -o example11 example11.cc -lSDL -lSDLmain
