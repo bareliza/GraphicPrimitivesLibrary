@@ -739,7 +739,7 @@ public:
 //		 x1=cos(alfa_prim)*r; y1=sin(alfa_prim*r);
 // To chyba tyle, teraz jeszcze trzeba to zaprogramowaæ...
 	void elipsa3(int ox, int oy, int rx, int ry, 
-	int alfa0, int alfa1,int alfa3, unsigned int kolor){
+		     int alfa0, int alfa1,int alfa3, unsigned int kolor, int dotted=0){
 		double r, a, aPrim;
 		int x0,y0,x1,y1,x2,y2,x3,y3;
 		
@@ -758,14 +758,23 @@ public:
 		aPrim=a+alfa3*2*M_PI/360;
 		x2=ox+(int)(r*cos(aPrim));
 		y2=oy+(int)(r*sin(aPrim));
+		int parity=0;
 		for(a=alfa0*2*M_PI/180+3*EL3_STEP;
 		    a<alfa1*2*M_PI/360+2*EL3_STEP;a+=EL3_STEP){
+		        parity++;
 			r=sqrt(1/(cos(a)*cos(a)/rx/rx+sin(a)*sin(a)/ry/ry));
 			aPrim=a+alfa3*2*M_PI/360;
 			x3=ox+(int)(cos(aPrim)*r);
 			y3=oy+(int)(sin(aPrim)*r);
-			linia(x0,y0,x2,y2,kolor);
-			linia(x1,y1,x3,y3,kolor);
+			if(dotted) {
+			  if((parity & 7) == 7) {
+			    linia(x0,y0,x2,y2,kolor);
+			    linia(x1,y1,x3,y3,kolor);
+			  }
+			} else {
+			  linia(x0,y0,x2,y2,kolor);
+			  linia(x1,y1,x3,y3,kolor);
+			}
 			x0=x1;y0=y1;
 			x1=x2;y1=y2;
 			x2=x3;y2=y3;
