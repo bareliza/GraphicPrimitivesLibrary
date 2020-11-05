@@ -1,0 +1,1 @@
+g++ -o example14 example14.cc -lSDL -lSDLmain
