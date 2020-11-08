@@ -45,56 +45,16 @@ int main(int argc, char** argv) {
 #define PEN  (22.0)
 #define PEN2 (PEN / 2.0)
   
-#define O1_R0 (100)
+#define O1_R0 (150)
 #define O1_R (RY/2-50)
 #define O1_R1 (RY/2-50)
 #define O1_X (RX/2)
 #define O1_Y (RY/2)
   
   P.pisak(PEN);
-  double a3rad, a4, a4rad, D_R, D_RX, D_RY;
-  unsigned int COLOR;
-  //                                  .__
-  /*    _ _ _              .__        | /    \
-       /--__/_ _ . ...  _. |  --__    |/alfa3 )
-      /    /--__/  ...  _| |______--__/________.
-     /    /    /                     /|--_alfa4|\_ _\ sin(alfa4) / PEN2*cos
-    /    /    / r = r - /  ........./<|....--__|/   /
-   /    /    /         /  ........./__|........
-       /    /            ........./...|.......
-           /            ........./....|......
-                       ........./alfa5|.....
-
- /      "<"^2 + sin(a4)^2 = dr^2
- \      dr / "<" = PEN2 / sin(a4)
-
-       "<" = PEN2 * dr / sin(a4)
-
-
-        ( PEN2^2 * dr^2 / sin(a4)^2 ) + sin(a4)^2 = dr^2
-         
-         dr^2 = c1 * dr^2 + sin(a4)^2
-         dr^2 * (1-c1) = sin^2(a4)
-         dr = sin(a4) / sqrt(1-c1) = sin(a4) / sqrt( 1-PEN2^2/sin^2(a4) )
-
----------------------------------
-
- /      "<"^2 + PEN2*cos(a4)^2 = dr^2
- \      dr / "<" = PEN2 / PEN2*cos(a4)
-
-       "<" = dr / cos(a4)
-
-
-        ( dr^2 / cos(a4)^2 ) + cos(a4)^2 = dr^2
-         
-         dr^2 = c1 * dr^2 + cos(a4)^2
-         dr^2 * (1-c1) = cos^2(a4)
-         dr = cos(a4) / sqrt(1-c1) = cos(a4) / sqrt( 1-1/cos^2(a4) )
-
-	 Jakis blad... (dr = PEN2 * ... ? czy dr = ... ?)
- 
-   */
-  for(double a3=60;a3<360;a3+=360/13) {
+  double a3rad, a4, a4rad, a5, a5rad, D_R, D_RX, D_RY, d, x;
+  unsigned int COLOR, COLOR1;
+  for(double a3=00;a3<360;a3+=360/30) {
     a3rad = M_PI*a3/180.0;
     /*
       D_RX = PEN2 * cos(a4rad);
@@ -102,22 +62,36 @@ int main(int argc, char** argv) {
     */
     a4 = a3 - 90;
     a4rad = M_PI*a4/180.0;
-
-    if(cos(a4rad)<1) D_R = PEN2 * cos(a4rad) / sqrt( 1 - 1/(cos(a4rad)*cos(a4rad)) );
-    else D_R = 0;
-    //D_R = 0;
+    a5 = 90 - a3;
+    a5rad = M_PI*a5/180.0;
+    
+    // if( 1 ) { // a3 >= 0 && a3 <= 45 ) {
+    if((a3 > 45 && a3 <=135) || (a3 > 45+180 && a3 <= 135+180)) {
+      x = abs(PEN / cos(a5rad));
+      d = 0;
+      COLOR1 = 0xff8080;
+    } else {
+      x = abs(PEN / cos(a3rad)); // f(0) = 1/2; f(45) = sqrt(2)/2 
+      d = 0; // x / (2 * cos(a3rad));
+      COLOR1 = 0x8080ff;
+    }
+    
+    //if(cos(a4rad)<1) D_R = PEN2 * cos(a4rad) / sqrt( 1 - 1/(cos(a4rad)*cos(a4rad)) );
+    //else D_R = 0;
+    D_R = 0;
     printf("%F\n",D_R);
-    P.pisak(PEN);
+    P.pisak(x); // PEN);
+    /*
     P.linia(O1_X + O1_R0 * sin(a3rad),
 	    O1_Y + O1_R0 * cos(a3rad),
 	    O1_X + O1_R * sin(a3rad),
 	    O1_Y + O1_R * cos(a3rad),
-	    0x0);
+	    0x0); */
     P.linia(O1_X + O1_R0 * sin(a3rad),
 	    O1_Y + O1_R0 * cos(a3rad),
-	    O1_X + (O1_R - D_R) * sin(a3rad),
-	    O1_Y + (O1_R - D_R) * cos(a3rad),
-	    0x8000);
+	    O1_X + (O1_R - d /* - D_R */) * sin(a3rad),
+	    O1_Y + (O1_R - d /* - D_R */) * cos(a3rad),
+	    COLOR1);
     P.pisak(1);
     P.linia(O1_X + O1_R0 * sin(a3rad),
 	    O1_Y + O1_R0 * cos(a3rad),
