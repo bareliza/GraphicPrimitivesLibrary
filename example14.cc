@@ -42,12 +42,12 @@ int main(int argc, char** argv) {
   P.yc1 = LESS_CLIPPING;
 
 #define STEP (7)
-#define PEN  (22.0)
+#define PEN  (42.0)
 #define PEN2 (PEN / 2.0)
   
-#define O1_R0 (150)
-#define O1_R (RY/2-50)
-#define O1_R1 (RY/2-50)
+#define O1_R0 (250)
+#define O1_R (RY/2-20)
+#define O1_R1 (RY/2-20)
 #define O1_X (RX/2)
 #define O1_Y (RY/2)
   
@@ -68,14 +68,19 @@ int main(int argc, char** argv) {
     // if( 1 ) { // a3 >= 0 && a3 <= 45 ) {
     if((a3 > 45 && a3 <=135) || (a3 > 45+180 && a3 <= 135+180)) {
       x = abs(PEN / cos(a5rad));
-      d = 0;
+      // d = 0;
       COLOR1 = 0xff8080;
     } else {
       x = abs(PEN / cos(a3rad)); // f(0) = 1/2; f(45) = sqrt(2)/2 
-      d = 0; // x / (2 * cos(a3rad));
+      // d = 0; // x / (2 * cos(a3rad));
       COLOR1 = 0x8080ff;
     }
-    
+    if(a3 > 45 && a3 <= 90) {
+      d = x * cos(a3rad) / 2;
+      COLOR1 = 0x80ff80;
+    } else {
+      d = 0;
+    }
     //if(cos(a4rad)<1) D_R = PEN2 * cos(a4rad) / sqrt( 1 - 1/(cos(a4rad)*cos(a4rad)) );
     //else D_R = 0;
     D_R = 0;
@@ -87,10 +92,10 @@ int main(int argc, char** argv) {
 	    O1_X + O1_R * sin(a3rad),
 	    O1_Y + O1_R * cos(a3rad),
 	    0x0); */
-    P.linia(O1_X + O1_R0 * sin(a3rad),
-	    O1_Y + O1_R0 * cos(a3rad),
-	    O1_X + (O1_R - d /* - D_R */) * sin(a3rad),
-	    O1_Y + (O1_R - d /* - D_R */) * cos(a3rad),
+    P.linia(O1_X + ( O1_R0 - d ) * sin(a3rad),
+	    O1_Y + ( O1_R0 - d ) * cos(a3rad),
+	    O1_X + ( O1_R + d /* - D_R */) * sin(a3rad),
+	    O1_Y + ( O1_R + d /* - D_R */) * cos(a3rad),
 	    COLOR1);
     P.pisak(1);
     P.linia(O1_X + O1_R0 * sin(a3rad),
