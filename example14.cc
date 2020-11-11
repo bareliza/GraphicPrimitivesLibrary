@@ -53,7 +53,7 @@ int main(int argc, char** argv) {
   
   P.pisak(PEN);
   double a3rad, a4, a4rad, a5, a5rad, D_R, D_RX, D_RY, d, x;
-  unsigned int COLOR, COLOR1;
+  unsigned int COLOR, COLOR1, COLOR2;
   for(double a3=00;a3<360;a3+=360/30) {
     a3rad = M_PI*a3/180.0;
     /*
@@ -70,14 +70,17 @@ int main(int argc, char** argv) {
       x = abs(PEN / cos(a5rad));
       // d = 0;
       COLOR1 = 0xff8080;
+      COLOR2 = COLOR1;
     } else {
       x = abs(PEN / cos(a3rad)); // f(0) = 1/2; f(45) = sqrt(2)/2 
       // d = 0; // x / (2 * cos(a3rad));
       COLOR1 = 0x8080ff;
+      COLOR2 = COLOR1;
     }
     if(a3 > 45 && a3 <= 90) {
       d = x * cos(a3rad) / 2;
       COLOR1 = 0x80ff80;
+      COLOR2 = 0xffc080;
     } else {
       d = 0;
     }
@@ -97,6 +100,11 @@ int main(int argc, char** argv) {
 	    O1_X + ( O1_R + d /* - D_R */) * sin(a3rad),
 	    O1_Y + ( O1_R + d /* - D_R */) * cos(a3rad),
 	    COLOR1);
+    P.linia(O1_X + ( O1_R0 + d ) * sin(a3rad),
+	    O1_Y + ( O1_R0 + d ) * cos(a3rad),
+	    O1_X + ( O1_R - d /* - D_R */) * sin(a3rad),
+	    O1_Y + ( O1_R - d /* - D_R */) * cos(a3rad),
+	    COLOR2);
     P.pisak(1);
     P.linia(O1_X + O1_R0 * sin(a3rad),
 	    O1_Y + O1_R0 * cos(a3rad),

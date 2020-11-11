@@ -194,6 +194,17 @@ public:
 	void wyswietl(void){SDL_UpdateRect(screen,0,0,wymiar.x,wymiar.y);}
 	inline void rysujPunkt(int adres, unsigned int wartosc){
 		((unsigned int*)screen->pixels)[adres]=wartosc;}
+// grafika1.cc to plik do eksperymentow, rzeklbys 'wersja niestabilna' 
+//      pioro o ksztalcie kola:
+        inline void rysujPunkt2(int x, int y, unsigned int wartosc){
+	        okrag(x,y,pioro,wartosc);}
+  inline void rysujPunkt4(int x, int y, unsigned int wartosc, int grubosc){
+	        okrag(x,y,grubosc,wartosc);}
+//      pioro o ksztalcie kwadratu:  
+        inline void rysujPunkt3(int x, int y, unsigned int wartosc){
+	  	rysujPunkt(x,y,wartosc,pioro);}
+           //        if(x>=0 && y>=0 && x<wymiar.x && y<wymiar.y)
+           //          ((unsigned int*)screen->pixels)[x+y*wymiar.x]=wartosc;}
 	inline void rysujPunkt(int x, int y, unsigned int wartosc){
 	  //	rysujPunkt(x,y,wartosc,pioro);}
                   if(x>=0 && y>=0 && x<wymiar.x && y<wymiar.y)
@@ -224,6 +235,8 @@ public:
 #define CLIP1_X (wymiar.x-xc1)
 #define CLIP0_Y (0+yc0)
 #define CLIP1_Y (wymiar.y-yc1)
+
+#define DOLNA_GRANICA_PIORA (8)
   
 	void liniaPionowa(int x, int y0, int y1, unsigned int kolor)
     	{
@@ -237,7 +250,7 @@ public:
 
       		start = y0; // rawStride * y0 + x;
       		stop  = y1; // rawStride * y1 + x;
-
+//  rysujPunkt2 to eksperyment
       		do
 			rysujPunkt(x, start++, kolor);
 		while (start <= stop);
@@ -254,20 +267,54 @@ public:
 
       		start = x0; // rawStride * y + x0;
       		stop  = x1; // rawStride * y + x1;
-
+//  rysujPunkt2 to eksperyment
            	do    // rawImage[start] = kolor;
 		      	rysujPunkt(start++, y, kolor); // start++; // += rawStride;
       		while (start <= stop);
         }
 
 	void liniaPionowa(int x,int y0,int y1,unsigned int kolor,int grubosc) {
-	  for(int i=0;i<grubosc;i++)liniaPionowa(x+i-(grubosc>>1),y0,y1,kolor);
+	  if(grubosc >= DOLNA_GRANICA_PIORA) {
+	    liniaPionowa2(x,y0,y1,kolor,grubosc);
+	  } else {
+	   for(int i=0;i<grubosc;i++)liniaPionowa(x+i-(grubosc>>1),y0,y1,kolor);
+	  }
 	}
 
         void liniaPozioma(int y,int x0,int x1,unsigned int kolor,int grubosc) {
-	  for(int i=0;i<grubosc;i++)liniaPozioma(y+i-(grubosc>>1),x0,x1,kolor);
+	  if(grubosc >= DOLNA_GRANICA_PIORA) {
+	    liniaPozioma2(y,x0,x1,kolor,grubosc);
+	  } else {
+	   for(int i=0;i<grubosc;i++)liniaPozioma(y+i-(grubosc>>1),x0,x1,kolor);
+	  }
 	}
 
+  void liniaPionowa2(int x, int y0, int y1, unsigned int kolor, int grubosc) {
+		int tmp;
+      		if (y0 > y1) { tmp = y0;y0 = y1;y1 = tmp; }
+      		if (y0 < CLIP0_Y) y0 = CLIP0_Y;
+      		if (y1 >= CLIP1_Y) y1 = CLIP1_Y - 1; // height - 1;
+      		int start, stop;
+      		start = y0;
+      		stop  = y1;
+//  rysujPunkt2 to eksperyment
+      		do
+		  rysujPunkt4(x, start++, kolor, grubosc >> 1);
+		while (start <= stop);
+      	}
+  void liniaPozioma2(int y, int x0, int x1, unsigned int kolor, int grubosc) {
+		int tmp;
+      		if (x0 > x1) { tmp = x0;x0 = x1;x1 = tmp; }
+      		if (x0 < CLIP0_X) x0 = CLIP0_X;
+      		if (x1 >= CLIP1_X) x1 = CLIP1_X - 1;
+      		int start, stop;
+      		start = x0; 
+      		stop  = x1; 
+//  rysujPunkt2 to eksperyment
+           	do    
+		  rysujPunkt4(start++, y, kolor, grubosc >> 1); 
+      		while (start <= stop);
+        }
 
     /* Klipowanie: gorna krawedz. zalozenie: y0 < y1.
 
@@ -289,8 +336,19 @@ public:
 
        uwaga na dOut, dx > 16 bitow, 32767
    */
-
-	void linia_wersja_schodki(int x0, int y0, int x1, int y1, unsigned int kolor){
+  int tmpPioro;
+// grafika1.cc to plik do eksperymentow, rzeklbys 'wersja niestabilna' 
+  void linia1(int x0, int y0, int x1, int y1, unsigned int kolor) {
+    linia_wersja_schodki(x0,y0,x1,y1,kolor);
+    if ( pioro >= DOLNA_GRANICA_PIORA ) {
+      tmpPioro = pioro;
+      pioro = (tmpPioro << 1);
+      linia(x0,y0,x1,y1,kolor/2);
+      pioro = tmpPioro;
+    }
+  };
+// grafika1.cc to plik do eksperymentow, rzeklbys 'wersja niestabilna' 
+  void linia_wersja_schodki(int x0, int y0, int x1, int y1, unsigned int kolor){
 	      	// Proste klipowanie
 	      	if ((x0 <  CLIP0_X && x1 <  CLIP0_X) ||
 		    (x0 >= CLIP1_X && x1 >= CLIP1_X) ||
@@ -399,7 +457,8 @@ public:
 			y0<<=16;
 			y0 += (1 << 15);
 			for(; x0 <= x1 ; x0++) {
-				rysujPunkt(x0,y0>>16,kolor);
+// grafika1.cc to plik do eksperymentow, rzeklbys 'wersja niestabilna' 
+				rysujPunkt2(x0,y0>>16,kolor);
 				y0+=fract;
 			}	
 		}else{
@@ -415,7 +474,8 @@ public:
 			x0<<=16;
 			x0 += (1 << 15);
 			for(; y0<=y1 ; y0++){
-				rysujPunkt(x0>>16,y0,kolor);
+// grafika1.cc to plik do eksperymentow, rzeklbys 'wersja niestabilna' 
+				rysujPunkt2(x0>>16,y0,kolor);
 				x0+=fract;
 			}
 		}
