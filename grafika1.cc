@@ -194,7 +194,7 @@ public:
 	void wyswietl(void){SDL_UpdateRect(screen,0,0,wymiar.x,wymiar.y);}
 	inline void rysujPunkt(int adres, unsigned int wartosc){
 		((unsigned int*)screen->pixels)[adres]=wartosc;}
-// grafika1.cc to plik do eksperymentow, rzeklbys 'wersja niestabilna' 
+// grafika1.cc to plik do eksperymentow, 'wersja niestabilna' 
 //      pioro o ksztalcie kola:
         inline void rysujPunkt2(int x, int y, unsigned int wartosc){
 	        okrag(x,y,pioro,wartosc);}
@@ -337,8 +337,8 @@ public:
        uwaga na dOut, dx > 16 bitow, 32767
    */
   int tmpPioro;
-// grafika1.cc to plik do eksperymentow, rzeklbys 'wersja niestabilna' 
-  void linia1(int x0, int y0, int x1, int y1, unsigned int kolor) {
+// grafika1.cc to plik do eksperymentow, 'wersja niestabilna' 
+  void linia4(int x0, int y0, int x1, int y1, unsigned int kolor) {
     linia_wersja_schodki(x0,y0,x1,y1,kolor);
     if ( pioro >= DOLNA_GRANICA_PIORA ) {
       tmpPioro = pioro;
@@ -347,7 +347,16 @@ public:
       pioro = tmpPioro;
     }
   };
-// grafika1.cc to plik do eksperymentow, rzeklbys 'wersja niestabilna' 
+  void linia1(int x0, int y0, int x1, int y1, unsigned int kolor) {
+    if ( pioro >= DOLNA_GRANICA_PIORA && ((x0 == x1) || (y0 == y1)) ) {
+      tmpPioro = pioro;
+      pioro = (tmpPioro << 1);
+      linia(x0,y0,x1,y1,kolor);
+      pioro = tmpPioro;
+    }
+    linia_wersja_schodki(x0,y0,x1,y1,kolor);
+  };
+// grafika1.cc to plik do eksperymentow, 'wersja niestabilna' 
   void linia_wersja_schodki(int x0, int y0, int x1, int y1, unsigned int kolor){
 	      	// Proste klipowanie
 	      	if ((x0 <  CLIP0_X && x1 <  CLIP0_X) ||
@@ -457,7 +466,7 @@ public:
 			y0<<=16;
 			y0 += (1 << 15);
 			for(; x0 <= x1 ; x0++) {
-// grafika1.cc to plik do eksperymentow, rzeklbys 'wersja niestabilna' 
+// grafika1.cc to plik do eksperymentow, 'wersja niestabilna' 
 				rysujPunkt2(x0,y0>>16,kolor);
 				y0+=fract;
 			}	
@@ -474,7 +483,7 @@ public:
 			x0<<=16;
 			x0 += (1 << 15);
 			for(; y0<=y1 ; y0++){
-// grafika1.cc to plik do eksperymentow, rzeklbys 'wersja niestabilna' 
+// grafika1.cc to plik do eksperymentow, 'wersja niestabilna' 
 				rysujPunkt2(x0>>16,y0,kolor);
 				x0+=fract;
 			}
