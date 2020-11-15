@@ -274,20 +274,30 @@ public:
         }
 
 	void liniaPionowa(int x,int y0,int y1,unsigned int kolor,int grubosc) {
+#ifndef ROUND_ENDS
+	  if(0) {
+#else
 	  if(grubosc >= DOLNA_GRANICA_PIORA) {
+#endif	    
 	    liniaPionowa2(x,y0,y1,kolor,grubosc);
 	  } else {
-	   for(int i=0;i<grubosc;i++)liniaPionowa(x+i-(grubosc>>1),y0,y1,kolor);
+	   for(int i=0;i<grubosc-1;i++)liniaPionowa(x+i-(grubosc>>1),y0,y1,kolor);
+		// grubosc-1: no17 post17
 	  }
 	}
 
         void liniaPozioma(int y,int x0,int x1,unsigned int kolor,int grubosc) {
+#ifndef ROUND_ENDS
+	  if(0) {
+#else
 	  if(grubosc >= DOLNA_GRANICA_PIORA) {
+#endif	    
 	    liniaPozioma2(y,x0,x1,kolor,grubosc);
 	  } else {
-	   for(int i=0;i<grubosc;i++)liniaPozioma(y+i-(grubosc>>1),x0,x1,kolor);
+	   for(int i=0;i<grubosc-1;i++)liniaPozioma(y+i-(grubosc>>1),x0,x1,kolor);
+		// grubosc-1: no17 post17
 	  }
-	}
+	} 
 
   void liniaPionowa2(int x, int y0, int y1, unsigned int kolor, int grubosc) {
 		int tmp;
@@ -535,7 +545,8 @@ public:
 		       return;
       		}
 
-		int dx,dy,tmp,fract,wi,xOut,yOut,dOut;
+		int dx,dy,tmp,fract,wi,xOut,yOut,dOut,
+		    x00,y00,modyfikator0, mod1;
 
 		dx=abs(x1-x0);
 		dy=abs(y1-y0);
@@ -629,25 +640,35 @@ public:
 	if (dx != 0) fract = (dy << 16) / dx;
 	else fract = 0; 
 
+	x00 = x0;
 	y0 <<= 16;
 	y0 += (1 << 15);
 	for (; x0 <= x1; x0++) {
 	    if( true && ( grubosc != 0 ) )  //   W Y G L A D Z A N I E
 	    {
+#define max11(a,b) ( (a) < (b) ? (b) : (a) )
+		modyfikator0 = max11( 0, (grubosc - 1) - (x0-x00+1) ); 
+		mod1 = max11( 0, (x0 - x1 - 1) + (grubosc - 1 ) );
+		// modyfikator = grubosc - 1 dla x0 == x00
+                // modyfikator = 0; // dla x0 == x00 + int(sqrt(grubosc));		
 	      // Console.WriteLine(KolorPunktu( x0,  grubosc - half + ( y0 >> 16 ) ) );
+		if(!mod1) {
 		rysujPunkt( x0,  grubosc - half + (y0 >> 16),
 			kolorDopelniajacy( kolor,
 				( 0xffff - ( y0 & 0xffff ) )
 				, KolorPunktu( x0,  grubosc - half + ( y0 >> 16 ) )
 			)
 		); // TODO: DONE. NullPointerException:: zamienic ( <-> ) _b.GetPixel <-> WezPunkt(...) - klipowany
+		}
+		if(!modyfikator0) {
 		rysujPunkt( x0, -grubosc + (y0 >> 16),
 			kolorDopelniajacy( kolor,
 				( y0 & 0xffff )
 				, KolorPunktu( x0, -grubosc + ( y0 >> 16 ) ) 
 			)
 		);
-		for (wi = -grubosc + 1; wi <= grubosc - 1 - half; wi++)
+		}
+		for (wi = -grubosc + 1 + 2 * modyfikator0; wi <= grubosc - 1 - half - 2*mod1; wi++)
 		rysujPunkt(x0, wi + (y0 >> 16), kolor);
 	    }
 	    y0 += fract;
@@ -663,6 +684,7 @@ public:
 	if (dy != 0) fract = (dx << 16) / dy;
 	else fract = 0;
 
+	y00 = y0;
 	x0 <<= 16;
 	x0 += (1 << 15);
 	for (; y0 <= y1; y0++) {
