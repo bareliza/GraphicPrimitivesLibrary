@@ -54,7 +54,7 @@ int main(int argc, char** argv) {
   P.pisak(PEN);
   double a3rad, a4, a4rad, a5, a5rad, D_R, D_RX, D_RY, d, x;
   unsigned int COLOR, COLOR1, COLOR2;
-  for(double a3=00;a3<360;a3+=360/30) {
+  for(double a3=0;a3<360;a3+=360/30) {
     a3rad = M_PI*a3/180.0;
     /*
       D_RX = PEN2 * cos(a4rad);
@@ -78,16 +78,17 @@ int main(int argc, char** argv) {
       COLOR2 = COLOR1;
     }
     if(a3 > 45 && a3 <= 90) {
+      printf("kat a3 = %d; ", (int)(a3) );
       d = x * cos(a3rad) / 2;
-      COLOR1 = 0x80ff80;
-      COLOR2 = 0xffc080;
+      COLOR1 = 0x80ff80-(0xff00*((int)a3))/90;
+      COLOR2 = 0xffc080-(0xff0000*((int)a3))/90;
     } else {
       d = 0;
     }
     //if(cos(a4rad)<1) D_R = PEN2 * cos(a4rad) / sqrt( 1 - 1/(cos(a4rad)*cos(a4rad)) );
     //else D_R = 0;
     D_R = 0;
-    printf("%F\n",D_R);
+    // printf("%F\n",D_R);
     P.pisak(x); // PEN);
     /*
     P.linia(O1_X + O1_R0 * sin(a3rad),
@@ -100,12 +101,13 @@ int main(int argc, char** argv) {
 	    O1_X + ( O1_R + d /* - D_R */) * sin(a3rad),
 	    O1_Y + ( O1_R + d /* - D_R */) * cos(a3rad),
 	    COLOR1);
+    if(a3>45 && a3 <=90) printf("kat a3 = %d; ", (int)(a3) );
     P.linia(O1_X + ( O1_R0 + d ) * sin(a3rad),
 	    O1_Y + ( O1_R0 + d ) * cos(a3rad),
 	    O1_X + ( O1_R - d /* - D_R */) * sin(a3rad),
 	    O1_Y + ( O1_R - d /* - D_R */) * cos(a3rad),
 	    COLOR2);
-    P.pisak(1);
+    P.pisak(0);
     P.linia(O1_X + O1_R0 * sin(a3rad),
 	    O1_Y + O1_R0 * cos(a3rad),
 	    O1_X + O1_R1 * sin(a3rad),

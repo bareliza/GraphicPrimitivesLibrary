@@ -546,8 +546,9 @@ public:
       		}
 
 		int dx,dy,tmp,fract,wi,xOut,yOut,dOut,
-		    x00,y00,modyfikator0, mod1;
-
+		    x00,y00,fract1,modyfikator0, mod1;
+		double alfa3, alfa4, alfa3p,func;
+		
 		dx=abs(x1-x0);
 		dy=abs(y1-y0);
 
@@ -634,12 +635,25 @@ public:
 	if (x0 > x1) {
 	  tmp = x0;x0 = x1;x1 = tmp; // XCHG x0, x1
 	  tmp = y0;y0 = y1;y1 = tmp; // XCHG y0, y1
-	}
+	}	
 	dx = x1 - x0;
 	dy = y1 - y0;
 	if (dx != 0) fract = (dy << 16) / dx;
 	else fract = 0; 
-
+        // 4    __
+        //  `\/2 '
+        fract1 = ((100 * dx / 141) << 16) / dy;
+        alfa3 = atan2(dx,dy);
+        alfa4 = alfa3 - M_PI/4;
+        func = alfa4/(M_PI/4);
+        func = func*func*func*func*5.0;
+        alfa3p = alfa3 + M_PI/60 * func - M_PI/60 ;
+#define deg(alfa) (alfa*180/M_PI)
+        printf("alfa3 = %f, alfaa4 = %f, alfa3p = %f, func = %f\n", deg(alfa3), deg(alfa4), deg(alfa3p), func);
+        // alfa3 = 45° -> f = 0 ((-1)) (0) .5 .3
+        // alfa3 = 90° -> sqrt(f) = 2 (1)
+        fract1 = ((100*(int)sqrt(dx)/100) << 16) / sqrt(dy);
+        fract1 = (int)((1<<16)*sqrt(tan(alfa3p)));
 	x00 = x0;
 	y0 <<= 16;
 	y0 += (1 << 15);
@@ -647,8 +661,8 @@ public:
 	    if( true && ( grubosc != 0 ) )  //   W Y G L A D Z A N I E
 	    {
 #define max11(a,b) ( (a) < (b) ? (b) : (a) )
-		modyfikator0 = max11( 0, (grubosc - 1) - (x0-x00+1) ); 
-		mod1 = max11( 0, (x0 - x1 - 1) + (grubosc - 1 ) );
+		modyfikator0 = max11( 0, (grubosc - 1) - ( ( fract1*(((int)(x0-x00))) )>>16 ) + 1 ); 
+		mod1 = max11( 0, ((fract1*(x0 - x1))>>16 ) - 1 + (grubosc - 1 + half) );
 		// modyfikator = grubosc - 1 dla x0 == x00
                 // modyfikator = 0; // dla x0 == x00 + int(sqrt(grubosc));		
 	      // Console.WriteLine(KolorPunktu( x0,  grubosc - half + ( y0 >> 16 ) ) );
@@ -668,7 +682,7 @@ public:
 			)
 		);
 		}
-		for (wi = -grubosc + 1 + 2 * modyfikator0; wi <= grubosc - 1 - half - 2*mod1; wi++)
+		for (wi = -grubosc + 1 + 2*modyfikator0; wi <= grubosc - 1 - half - 2*mod1; wi++)
 		rysujPunkt(x0, wi + (y0 >> 16), kolor);
 	    }
 	    y0 += fract;
