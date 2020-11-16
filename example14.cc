@@ -42,19 +42,30 @@ int main(int argc, char** argv) {
   P.yc1 = LESS_CLIPPING;
 
 #define STEP (7)
-#define PEN  (42.0)
+#define PEN  (82.0)
 #define PEN2 (PEN / 2.0)
   
-#define O1_R0 (250)
-#define O1_R (RY/2-20)
-#define O1_R1 (RY/2-20)
-#define O1_X (RX/2)
-#define O1_Y (RY/2)
+#define O1_R0 (400)
+#define O1_R (RY/2+520)
+#define O1_R1 (RY/2+520)
+#define O1_Xbase (RX/10)
+#define O1_Ybase (RX/20)
   
+  
+  int O1_X,O1_Y,a3start,a3stop;
+  O1_X = O1_Xbase;
+  O1_Y = O1_Ybase;
   P.pisak(PEN);
   double a3rad, a4, a4rad, a5, a5rad, D_R, D_RX, D_RY, d, x;
   unsigned int COLOR, COLOR1, COLOR2;
-  for(double a3=0;a3<360;a3+=360/30) {
+  // dla a3=2 jest slabo, już lepiej
+  // dla a3=4 jest slabo, też już lepiej
+  if(argc>0)a3start = atoi(argv[1]);
+  else a3start=0;
+  if(argc>1)a3stop = atoi(argv[2]);
+  else a3stop=a3start;
+  for(int start =a3start; start<=a3stop; start+=1) { 
+  for(double a3=start;a3<360;a3+=360/30) {
     a3rad = M_PI*a3/180.0;
     /*
       D_RX = PEN2 * cos(a4rad);
@@ -126,8 +137,10 @@ int main(int argc, char** argv) {
 	    O1_X + O1_R0 * sin(a3rad) + PEN2 * sin(a4rad),
 	    O1_Y + O1_R0 * cos(a3rad) + PEN2 * cos(a4rad),
 	    COLOR);
-  }      
-
+  }
+  O1_X-=0;
+  O1_Y+=0;      
+  }
   /*
   P.pisak(PEN-8);
   for(int r=35;r<=100;r+=STEP) {

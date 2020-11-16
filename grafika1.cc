@@ -212,7 +212,9 @@ public:
 	inline void rysujNieKlipowanyPunkt(int x, int y, unsigned int wartosc){
 	    ((unsigned int*)screen->pixels)[x+y*wymiar.x]=wartosc;}
 	inline unsigned int KolorPunktu(int x, int y){
-	  return ( ((unsigned int*)screen->pixels)[x+y*wymiar.x] );}
+                if(x>=0 && y>=0 && x<wymiar.x && y<wymiar.y)
+	          return ( ((unsigned int*)screen->pixels)[x+y*wymiar.x] );
+	          else return 0;}
 	void rysujPunkt(int x, int y, unsigned int wartosc, int pioro){
 		if(pioro>1)prostokat(x-(pioro+1)/2+1,y-(pioro+1)/2+1,pioro,pioro,wartosc);
 		else if(x>=0 && y>=0 && x<wymiar.x && y<wymiar.y)
@@ -546,8 +548,8 @@ public:
       		}
 
 		int dx,dy,tmp,fract,wi,xOut,yOut,dOut,
-		    x00,y00,fract1,modyfikator0, mod1;
-		double alfa3, alfa4, alfa3p,func;
+		    x00,x11,y00,y11,fract1,mod0, mod1;
+		double alfa3, alfa4, alfa3p, func, dfunc;
 		
 		dx=abs(x1-x0);
 		dy=abs(y1-y0);
@@ -638,31 +640,36 @@ public:
 	}	
 	dx = x1 - x0;
 	dy = y1 - y0;
+
 	if (dx != 0) fract = (dy << 16) / dx;
 	else fract = 0; 
+///////////////////////////////////////////////////////////////////
         // 4    __
         //  `\/2 '
-        fract1 = ((100 * dx / 141) << 16) / dy;
+#define deg(alfa) (alfa*180/M_PI)
         alfa3 = atan2(dx,dy);
         alfa4 = alfa3 - M_PI/4;
-        func = alfa4/(M_PI/4);
-        func = func*func*func*func*5.0;
-        alfa3p = alfa3 + M_PI/60 * func - M_PI/60 ;
-#define deg(alfa) (alfa*180/M_PI)
-        printf("alfa3 = %f, alfaa4 = %f, alfa3p = %f, func = %f\n", deg(alfa3), deg(alfa4), deg(alfa3p), func);
+        func = alfa4/(M_PI/4); // [0°, 45°] -> [0, 1]
+        func = func * 7.0;
+        dfunc = .8 * M_PI/60 * func - M_PI/60;
+        alfa3p = alfa3 + 1 * dfunc - (deg(alfa4) > 7.0) * M_PI/24;
+	if(alfa3p > M_PI/2) alfa3p = M_PI/2-.0005;
+//        printf("a3 = %3.3f, a4 = %3.3f, a3p = %3.3f, f = %3.3f, df = %3.3f, df(°) = %3.3f\n", 
+ //       deg(alfa3), deg(alfa4), deg(alfa3p), func, dfunc, deg(dfunc));
         // alfa3 = 45° -> f = 0 ((-1)) (0) .5 .3
         // alfa3 = 90° -> sqrt(f) = 2 (1)
-        fract1 = ((100*(int)sqrt(dx)/100) << 16) / sqrt(dy);
         fract1 = (int)((1<<16)*sqrt(tan(alfa3p)));
-	x00 = x0;
+	x00 = x0-2+1*(deg(alfa4) > 8.0 );
+	x11 = x1-1+1*(deg(alfa4) > 20.0);
+///////////////////////////////////////////////////////////////////	
 	y0 <<= 16;
 	y0 += (1 << 15);
 	for (; x0 <= x1; x0++) {
 	    if( true && ( grubosc != 0 ) )  //   W Y G L A D Z A N I E
 	    {
 #define max11(a,b) ( (a) < (b) ? (b) : (a) )
-		modyfikator0 = max11( 0, (grubosc - 1) - ( ( fract1*(((int)(x0-x00))) )>>16 ) + 1 ); 
-		mod1 = max11( 0, ((fract1*(x0 - x1))>>16 ) - 1 + (grubosc - 1 + half) );
+		mod0 = max11( 0, (grubosc - 1) - ( ( fract1*(((int)(x0-x00))) )>>16 ) + 1 ); 
+		mod1 = max11( 0, ((fract1*(x0 - x11))>>16 ) - 1 + (grubosc - 1 + half) );
 		// modyfikator = grubosc - 1 dla x0 == x00
                 // modyfikator = 0; // dla x0 == x00 + int(sqrt(grubosc));		
 	      // Console.WriteLine(KolorPunktu( x0,  grubosc - half + ( y0 >> 16 ) ) );
@@ -674,7 +681,7 @@ public:
 			)
 		); // TODO: DONE. NullPointerException:: zamienic ( <-> ) _b.GetPixel <-> WezPunkt(...) - klipowany
 		}
-		if(!modyfikator0) {
+		if(!mod0) {
 		rysujPunkt( x0, -grubosc + (y0 >> 16),
 			kolorDopelniajacy( kolor,
 				( y0 & 0xffff )
@@ -682,7 +689,7 @@ public:
 			)
 		);
 		}
-		for (wi = -grubosc + 1 + 2*modyfikator0; wi <= grubosc - 1 - half - 2*mod1; wi++)
+		for (wi = -grubosc + 1 + 2*mod0; wi <= grubosc - 1 - half - 2*mod1; wi++)
 		rysujPunkt(x0, wi + (y0 >> 16), kolor);
 	    }
 	    y0 += fract;
