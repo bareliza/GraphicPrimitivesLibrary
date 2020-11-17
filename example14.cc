@@ -4,7 +4,7 @@
 
 #include <iostream>
 
-#include "example-cfg.hh"
+#include "example-cfg1.hh"
 
 
 Projektor P(RX, RY);
@@ -41,15 +41,28 @@ int main(int argc, char** argv) {
   P.yc0 = LESS_CLIPPING;
   P.yc1 = LESS_CLIPPING;
 
+// #define debug11
+
 #define STEP (7)
-#define PEN  (82.0)
+// sprawdzic dla PEN=56.0 i R0 = 280!
+#define PEN  (48.0)
+
+#ifdef debug11
+#define PEN (56.0)
+#endif
+
 #define PEN2 (PEN / 2.0)
   
-#define O1_R0 (400)
-#define O1_R (RY/2+520)
-#define O1_R1 (RY/2+520)
-#define O1_Xbase (RX/10)
-#define O1_Ybase (RX/20)
+#define O1_R0 (245)
+
+#ifdef debug11
+#define O1_R0 (280)
+#endif
+
+#define O1_R (RY/2-50)
+#define O1_R1 (RY/2-50)
+#define O1_Xbase (RX/2)
+#define O1_Ybase (RY/2)
   
   
   int O1_X,O1_Y,a3start,a3stop;
@@ -60,9 +73,9 @@ int main(int argc, char** argv) {
   unsigned int COLOR, COLOR1, COLOR2;
   // dla a3=2 jest slabo, już lepiej
   // dla a3=4 jest slabo, też już lepiej
-  if(argc>0)a3start = atoi(argv[1]);
+  if(argc>1)a3start = atoi(argv[1]);
   else a3start=0;
-  if(argc>1)a3stop = atoi(argv[2]);
+  if(argc>2)a3stop = atoi(argv[2]);
   else a3stop=a3start;
   for(int start =a3start; start<=a3stop; start+=1) { 
   for(double a3=start;a3<360;a3+=360/30) {
@@ -94,7 +107,32 @@ int main(int argc, char** argv) {
       COLOR1 = 0x80ff80-(0xff00*((int)a3))/90;
       COLOR2 = 0xffc080-(0xff0000*((int)a3))/90;
     } else {
-      d = 0;
+      if (a3 >= 0 && a3 <= 45) { 
+         d = x * cos(M_PI/2-a3rad) / 2;    
+      } else {
+        if (a3 > 90 && a3 <= 135) {
+	  printf("ang ");
+          d = x * cos(a3rad) / 2;
+        } else {
+          if (a3 > 135 && a3 <= 180) {
+             d = x * cos(M_PI/2 - a3rad) / 2;
+          } else {      
+            if (a3 > 180 && a3 <= 225) {
+              d = - x * cos(M_PI/2-a3rad) / 2;
+            } else {
+              if (a3 > 225 && a3 <= 270) {
+                d = - x * cos(a3rad) / 2;
+              } else {  
+                if (a3 > 270 && a3 <= 315) {
+                  d = x * cos(a3rad) / 2;
+                } else { // 315 .. 360
+                  d = x * cos(M_PI/2-a3rad) / 2;
+                }
+              }
+            }
+          }
+        }
+      }
     }
     //if(cos(a4rad)<1) D_R = PEN2 * cos(a4rad) / sqrt( 1 - 1/(cos(a4rad)*cos(a4rad)) );
     //else D_R = 0;

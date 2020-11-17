@@ -547,8 +547,8 @@ public:
 		       return;
       		}
 
-		int dx,dy,tmp,fract,wi,xOut,yOut,dOut,
-		    x00,x11,y00,y11,fract1,mod0, mod1;
+		int dx, dy, tmp, fract, wi, xOut, yOut, dOut,
+		    x00, x11, y00, y11, fract1, mod0, mod1;
 		double alfa3, alfa4, alfa3p, func, dfunc;
 		
 		dx=abs(x1-x0);
@@ -654,11 +654,15 @@ public:
         dfunc = .8 * M_PI/60 * func - M_PI/60;
         alfa3p = alfa3 + 1 * dfunc - (deg(alfa4) > 7.0) * M_PI/24;
 	if(alfa3p > M_PI/2) alfa3p = M_PI/2-.0005;
-//        printf("a3 = %3.3f, a4 = %3.3f, a3p = %3.3f, f = %3.3f, df = %3.3f, df(°) = %3.3f\n", 
- //       deg(alfa3), deg(alfa4), deg(alfa3p), func, dfunc, deg(dfunc));
+        fract1 = (int)((1<<16)*sqrt(tan(alfa3p)));
+        if(fract<0) {
+          printf("~");
+          fract1 = (int)((1<<16)*sqrt(tan(M_PI-alfa3p)));
+        }  
+        //printf("a3: %3.3f a4: %3.3f a3p: %3.3f f: %3.3f df: %3.3f df°: %3.3f fr1: %3.3f\n", 
+        //       deg(alfa3), deg(alfa4), deg(alfa3p), func, dfunc, deg(dfunc), fract1/(1.0*(1<<16)));
         // alfa3 = 45° -> f = 0 ((-1)) (0) .5 .3
         // alfa3 = 90° -> sqrt(f) = 2 (1)
-        fract1 = (int)((1<<16)*sqrt(tan(alfa3p)));
 	x00 = x0-2+1*(deg(alfa4) > 8.0 );
 	x11 = x1-1+1*(deg(alfa4) > 20.0);
 ///////////////////////////////////////////////////////////////////	
@@ -670,6 +674,13 @@ public:
 #define max11(a,b) ( (a) < (b) ? (b) : (a) )
 		mod0 = max11( 0, (grubosc - 1) - ( ( fract1*(((int)(x0-x00))) )>>16 ) + 1 ); 
 		mod1 = max11( 0, ((fract1*(x0 - x11))>>16 ) - 1 + (grubosc - 1 + half) );
+		if(fract<0){
+			mod0 = 0; 
+			mod1 = max11(0, grubosc - 1 - ( (int)( sqrt(2) * (x0 - x00) ) ) + 1 );
+			if (mod1>0) printf ("%d#",mod1);
+			// x0 == x00 -> grubosc - 1
+			// x0 ==  |/ 2 / 2 (x00 - x0)  -> 0 
+		}
 		// modyfikator = grubosc - 1 dla x0 == x00
                 // modyfikator = 0; // dla x0 == x00 + int(sqrt(grubosc));		
 	      // Console.WriteLine(KolorPunktu( x0,  grubosc - half + ( y0 >> 16 ) ) );
@@ -705,27 +716,54 @@ public:
 	if (dy != 0) fract = (dx << 16) / dy;
 	else fract = 0;
 
-	y00 = y0;
+///////////////////////////////////////////////////////////////////
+        // 4    __
+        //  `\/2 '
+#define deg(alfa) (alfa*180/M_PI)
+        alfa3 = atan2(dy,dx);
+        alfa4 = alfa3 - M_PI/4;
+        func = alfa4/(M_PI/4); // [0°, 45°] -> [0, 1]
+        func = func * 7.0;
+        dfunc = .8 * M_PI/60 * func - M_PI/60;
+        alfa3p = alfa3 + 1 * dfunc - (deg(alfa4) > 7.0) * M_PI/24;
+	if(alfa3p > M_PI/2) alfa3p = M_PI/2-.0005;
+//        printf("a3 = %3.3f, a4 = %3.3f, a3p = %3.3f, f = %3.3f, df = %3.3f, df(°) = %3.3f\n", 
+ //       deg(alfa3), deg(alfa4), deg(alfa3p), func, dfunc, deg(dfunc));
+        // alfa3 = 45° -> f = 0 ((-1)) (0) .5 .3
+        // alfa3 = 90° -> sqrt(f) = 2 (1)
+        fract1 = (int)((1<<16)*sqrt(tan(alfa3p)));
+	y00 = y0-2+1*(deg(alfa4) > 8.0 );
+	y11 = y1-1+1*(deg(alfa4) > 20.0);
+///////////////////////////////////////////////////////////////////	
+//	y00 = y0;
 	x0 <<= 16;
 	x0 += (1 << 15);
 	for (; y0 <= y1; y0++) {
 	    if( true && ( grubosc != 0 ) )  //   W Y G L A D Z A N I E
 	    {
+		mod0 = max11( 0, (grubosc - 1) - ( ( fract1*(((int)(y0-y00))) )>>16 ) + 1 ); 
+		mod1 = max11( 0, ((fract1*(y0 - y11))>>16 ) - 1 + (grubosc - 1 + half) );
+		// modyfikator = grubosc - 1 dla x0 == x00
+                // modyfikator = 0; // dla x0 == x00 + int(sqrt(grubosc));		
 	      // Console.WriteLine(KolorPunktu( x0,  grubosc - half + ( y0 >> 16 ) ) );
+		if(!mod1) {
 		rysujPunkt( grubosc - half + (x0 >> 16), y0,
 			kolorDopelniajacy( kolor,
 				( 0xffff - ( x0 & 0xffff ) )
 				, KolorPunktu( grubosc - half + (x0 >> 16),  y0 )
 			)
 		); // TODO: DONE: NullPointerException:: zamienic ( <-> ) _b.GetPixel <-> WezPunkt(...) - klipowany
+		}
+		if(!mod0) {
 		rysujPunkt( -grubosc + (x0 >> 16), y0,
 			kolorDopelniajacy( kolor,
 				( x0 & 0xffff )
 				, KolorPunktu( -grubosc + (x0 >> 16), y0 )
 			) 
 		);
-
-		for (wi = -grubosc + 1; wi <= grubosc - 1 - half; wi++)
+		}
+		
+		for (wi = -grubosc + 1 + 2*mod0; wi <= grubosc - 1 - half - 2*mod1; wi++)
 		    rysujPunkt(wi + (x0 >> 16), y0, kolor);
 	    }
 	    x0 += fract;

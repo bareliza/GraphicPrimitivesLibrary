@@ -1,0 +1,1 @@
+g++ -g -o example$1 example$1.cc -lSDL -lSDLmain
