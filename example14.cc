@@ -108,14 +108,16 @@ int main(int argc, char** argv) {
       COLOR2 = 0xffc080-(0xff0000*((int)a3))/90;
     } else {
       if (a3 >= 0 && a3 <= 45) { 
-         d = x * cos(M_PI/2-a3rad) / 2;    
+       printf("KAT a3 = %d; ", (int)(a3) );
+        d = x * cos(M_PI/2-a3rad) / 2;    
       } else {
         if (a3 > 90 && a3 <= 135) {
 	  printf("ang ");
           d = x * cos(a3rad) / 2;
         } else {
           if (a3 > 135 && a3 <= 180) {
-             d = x * cos(M_PI/2 - a3rad) / 2;
+	    printf("ANG a3 = %d: ", (int)(a3));
+            d = x * cos(M_PI/2 - a3rad) / 2;
           } else {      
             if (a3 > 180 && a3 <= 225) {
               d = - x * cos(M_PI/2-a3rad) / 2;

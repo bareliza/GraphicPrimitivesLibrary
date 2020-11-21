@@ -540,11 +540,13 @@ public:
 
 	        if (x0 == x1) {
 		  liniaPionowa(x0, y0, y1, kolor, 2*grubosc+1-half);
+		  	printf("\n");
 			return;
 		}
 		if (y0 == y1) {
 		  liniaPozioma(y0, x0, x1, kolor, 2*grubosc+1-half);
-		       return;
+		  	printf("\n");
+		 	return;
       		}
 
 		int dx, dy, tmp, fract, wi, xOut, yOut, dOut,
@@ -643,7 +645,7 @@ public:
 
 	if (dx != 0) fract = (dy << 16) / dx;
 	else fract = 0; 
-///////////////////////////////////////////////////////////////////
+/////////////////////////////////////////////////////////////////// dx > dy
         // 4    __
         //  `\/2 '
 #define deg(alfa) (alfa*180/M_PI)
@@ -668,11 +670,12 @@ public:
         dfunc = .8 * M_PI/60 * func - M_PI/60;
         alfa3p = alfa3 + 1 * dfunc - (deg(alfa4) > 7.0) * M_PI/24;
 	if(alfa3p > M_PI/2) alfa3p = M_PI/2-.0005;
-        fract1 = (int)((1<<16)*sqrt(tan(alfa3p)));
         if(fract<0) {
         //  printf("~");
-          fract1 = (int)((1<<16)*sqrt(tan(M_PI-alfa3p)));
+          alfa3p+=M_PI/2;
+	  if(alfa3p > M_PI/4) alfa3p -= M_PI*5/180;
         }  
+        fract1 = (int)((1<<16)*sqrt(tan(alfa3p)));
         printf("a3: %3.3f a4: %3.3f a3p: %3.3f f: %3.3f df: %3.3f df°: %3.3f fr1: %3.3f\n", 
                deg(alfa3), deg(alfa4), deg(alfa3p), func, dfunc, deg(dfunc), fract1/(1.0*(1<<16)));
         // alfa3 = 45° -> f = 0 ((-1)) (0) .5 .3
@@ -689,15 +692,8 @@ public:
 		mod0 = max11( 0, (grubosc - 1) - ( ( fract1*(((int)(x0-x00))) )>>16 ) + 1 ); 
 		mod1 = max11( 0, ((fract1*(x0 - x11))>>16 ) - 1 + (grubosc - 1 + half) );
 		if(fract<0){
-			mod0 = 0; 
+			mod0 = max11( 0, ((fract1*(x0 - x11))>>16 ) - 1 + (grubosc - 1 + half) );
 			mod1 = max11(0, grubosc - 1 - ( ( (int)( fract1 * (x0 - x00) )) >> 16 ) + 1 );
-			//mod1 = max11(0, ( ( (int)( fract1 * (x0 - x00) )) >> 16 ) - 1 + (grubosc - 1 + half) );
-
-			//if (mod1>0) { printf ("%d#",mod1); } 
-			//else { if(flaga) { flaga=0; printf("\n"); }}
-			
-			// x0 == x00 -> grubosc - 1
-			// x0 ==  |/ 2 / 2 (x00 - x0)  -> 0 
 		}
 		// modyfikator = grubosc - 1 dla x0 == x00
                 // modyfikator = 0; // dla x0 == x00 + int(sqrt(grubosc));		
@@ -734,23 +730,37 @@ public:
 	if (dy != 0) fract = (dx << 16) / dy;
 	else fract = 0;
 
-///////////////////////////////////////////////////////////////////
+/////////////////////////////////////////////////////////////////// dy > dx
         // 4    __
         //  `\/2 '
 #define deg(alfa) (alfa*180/M_PI)
         alfa3 = atan2(dy,dx);
+ 	if(fract<0) {
+ 		// 180° -> 0°
+ 		// 135° -> 45°
+ 		// 0°-45° -> 45°-0°
+ 		alfa3=M_PI-alfa3;
+ 	}
         alfa4 = alfa3 - M_PI/4;
         func = alfa4/(M_PI/4); // [0°, 45°] -> [0, 1]
         func = func * 7.0;
         dfunc = .8 * M_PI/60 * func - M_PI/60;
         alfa3p = alfa3 + 1 * dfunc - (deg(alfa4) > 7.0) * M_PI/24;
 	if(alfa3p > M_PI/2) alfa3p = M_PI/2-.0005;
-//        printf("a3 = %3.3f, a4 = %3.3f, a3p = %3.3f, f = %3.3f, df = %3.3f, df(°) = %3.3f\n", 
- //       deg(alfa3), deg(alfa4), deg(alfa3p), func, dfunc, deg(dfunc));
+ 	if(fract<0) {
+	  //alfa3p = 22.5*M_PI/180;
+          //alfa3p+=M_PI/4;
+	  //if(alfa3p > M_PI/4) alfa3p -= M_PI*5/180;		
+	  //alfa3p = M_PI/2-alfa3p;
+ 	}
+        fract1 = (int)((1<<16)*sqrt(tan(alfa3p)));
+	//if(fract < 0) fract1 = (int)(1.029*(1<<16));
+	
+        printf("a3: %3.3f a4: %3.3f a3p: %3.3f f: %3.3f df: %3.3f df°: %3.3f fr1: %3.3f\n", 
+               deg(alfa3), deg(alfa4), deg(alfa3p), func, dfunc, deg(dfunc), fract1/(1.0*(1<<16)));
         // alfa3 = 45° -> f = 0 ((-1)) (0) .5 .3
         // alfa3 = 90° -> sqrt(f) = 2 (1)
-        fract1 = (int)((1<<16)*sqrt(tan(alfa3p)));
-	y00 = y0-2+1*(deg(alfa4) > 8.0 );
+ 	y00 = y0-2+1*(deg(alfa4) > 8.0 );
 	y11 = y1-1+1*(deg(alfa4) > 20.0);
 	flaga = 0;
 ///////////////////////////////////////////////////////////////////	
@@ -762,6 +772,10 @@ public:
 	    {
 		mod0 = max11( 0, (grubosc - 1) - ( ( fract1*(((int)(y0-y00))) )>>16 ) + 1 ); 
 		mod1 = max11( 0, ((fract1*(y0 - y11))>>16 ) - 1 + (grubosc - 1 + half) );
+		if(fract<0){
+			mod1 = max11( 0, (grubosc - 1) - ( ( fract1*(((int)(y0-y00))) )>>16 ) + 1 ); 
+			mod0 = max11( 0, ((fract1*(y0 - y11))>>16 ) - 1 + (grubosc - 1 + half) );
+		}
 		// modyfikator = grubosc - 1 dla x0 == x00
                 // modyfikator = 0; // dla x0 == x00 + int(sqrt(grubosc));		
 	      // Console.WriteLine(KolorPunktu( x0,  grubosc - half + ( y0 >> 16 ) ) );
