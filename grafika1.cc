@@ -548,7 +548,7 @@ public:
       		}
 
 		int dx, dy, tmp, fract, wi, xOut, yOut, dOut,
-		    x00, x11, y00, y11, fract1, mod0, mod1;
+		    x00, x11, y00, y11, fract1, mod0, mod1, flaga;
 		double alfa3, alfa4, alfa3p, func, dfunc;
 		
 		dx=abs(x1-x0);
@@ -648,6 +648,20 @@ public:
         //  `\/2 '
 #define deg(alfa) (alfa*180/M_PI)
         alfa3 = atan2(dx,dy);
+
+	if(fract<0) {
+	// 45°-90° -> 90°-45°
+	// 45 -> 90
+	// 90 -> 45
+	  alfa3 = M_PI/2-(alfa3-M_PI/8);
+	  //alfa3 = M_PI/2-(alfa3-M_PI/4);
+	  
+	// jest:
+	// 0-90 -> 90-0
+	// 0 -> 90
+	// 90 -> 0
+	}
+	
         alfa4 = alfa3 - M_PI/4;
         func = alfa4/(M_PI/4); // [0°, 45°] -> [0, 1]
         func = func * 7.0;
@@ -656,11 +670,11 @@ public:
 	if(alfa3p > M_PI/2) alfa3p = M_PI/2-.0005;
         fract1 = (int)((1<<16)*sqrt(tan(alfa3p)));
         if(fract<0) {
-          printf("~");
+        //  printf("~");
           fract1 = (int)((1<<16)*sqrt(tan(M_PI-alfa3p)));
         }  
-        //printf("a3: %3.3f a4: %3.3f a3p: %3.3f f: %3.3f df: %3.3f df°: %3.3f fr1: %3.3f\n", 
-        //       deg(alfa3), deg(alfa4), deg(alfa3p), func, dfunc, deg(dfunc), fract1/(1.0*(1<<16)));
+        printf("a3: %3.3f a4: %3.3f a3p: %3.3f f: %3.3f df: %3.3f df°: %3.3f fr1: %3.3f\n", 
+               deg(alfa3), deg(alfa4), deg(alfa3p), func, dfunc, deg(dfunc), fract1/(1.0*(1<<16)));
         // alfa3 = 45° -> f = 0 ((-1)) (0) .5 .3
         // alfa3 = 90° -> sqrt(f) = 2 (1)
 	x00 = x0-2+1*(deg(alfa4) > 8.0 );
@@ -676,8 +690,12 @@ public:
 		mod1 = max11( 0, ((fract1*(x0 - x11))>>16 ) - 1 + (grubosc - 1 + half) );
 		if(fract<0){
 			mod0 = 0; 
-			mod1 = max11(0, grubosc - 1 - ( (int)( sqrt(2) * (x0 - x00) ) ) + 1 );
-			if (mod1>0) printf ("%d#",mod1);
+			mod1 = max11(0, grubosc - 1 - ( ( (int)( fract1 * (x0 - x00) )) >> 16 ) + 1 );
+			//mod1 = max11(0, ( ( (int)( fract1 * (x0 - x00) )) >> 16 ) - 1 + (grubosc - 1 + half) );
+
+			//if (mod1>0) { printf ("%d#",mod1); } 
+			//else { if(flaga) { flaga=0; printf("\n"); }}
+			
 			// x0 == x00 -> grubosc - 1
 			// x0 ==  |/ 2 / 2 (x00 - x0)  -> 0 
 		}
@@ -734,8 +752,9 @@ public:
         fract1 = (int)((1<<16)*sqrt(tan(alfa3p)));
 	y00 = y0-2+1*(deg(alfa4) > 8.0 );
 	y11 = y1-1+1*(deg(alfa4) > 20.0);
+	flaga = 0;
 ///////////////////////////////////////////////////////////////////	
-//	y00 = y0;
+	y00 = y0;
 	x0 <<= 16;
 	x0 += (1 << 15);
 	for (; y0 <= y1; y0++) {
