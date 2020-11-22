@@ -47,16 +47,23 @@ int main(int argc, char** argv) {
     P.elipsa3(RY/3+40, RY/2, RY/3, RY/9, 0, 360, a3, 0xffffff);
   }      
 
-  P.pisak(3);
-  for(int r=35;r<=100;r+=5) {
-    P.elipsa3(RX-RY/3-150, RY/2, 3*r, 3*r, 0, 360, 0,0x60ff);
-    P.pisak(11);
+#define STEP (7)
+#define PEN  (22)
+  
+  P.pisak(PEN-8);
+  for(int r=35;r<=100;r+=STEP) {
+    P.elipsa3(RX-RY/3-150, RY/2, 3*r, 3*r, 0, 360, 0,0x60ff, 1);
+
+    /*
+    P.pisak(PEN);
     P.elipsa3(RX-RY/3-150, RY/2, 3*r-(90+60-r-r/2), 3*r, 0, 360, 0,0xffffff, r>70);
-    P.pisak(7);
+    P.pisak(PEN-4);
     P.elipsa3(RX-RY/3-150, RY/2, 3*r-(90+60-r-r/2), 3*r, 0, 360, 0,r<=70?0xffffa0:0xff9b00, r>70);
-    P.pisak(3);
+    P.pisak(PEN-8);
     P.elipsa3(RX-RY/3-150, RY/2, 3*r-(90+60-r-r/2), 3*r, 0, 360, 0,r<=70?0xffffff:0x00, r>70);
+    */
  }  
+  // P.Linia2(60,60,RX-60,RY-60,0xff,11);
   
   P.odswiez();
   if(argc<=3) K.czekajNaKlawisz();

@@ -96,7 +96,15 @@ public:
 		printf("Program aktualnie obs³uguje tylko 32 bity\n");
 		pioro=1;
 		wymiar.x=wymiar_x;
-		wymiar.y=wymiar_y; // dalszy kod konstruktora zapo¿yczony z dokumentacji SDL
+		wymiar.y=wymiar_y; 
+                // klipowanie, najwra@zliwsze, a zatem jest, ale podwojnie. 
+                // Mo@zna tam, gdzie zahardkodowane kolory w kodzie klipowania wstawic return-y,
+                // Co da wzrost wydajnosci, ale tylko dla istotnych procentowo przyci@e@c odcink@ow  
+                xc0 = 5;
+                yc0 = 5;
+                xc1 = 5;
+                yc1 = 5; // dalszy kod konstruktora zapozyczony z dokumentacji SDL
+                
 		/* Initialize the SDL library */
  		if( SDL_Init(SDL_INIT_VIDEO) < 0 ) {
 			fprintf(stderr,
@@ -228,10 +236,7 @@ public:
 		linia(p1.x,p1.y,p2.x,p2.y,kolor);
 	}
 
-        int xc0 = 220;
-        int xc1 = 270;
-        int yc0 = 170;
-        int yc1 = 190;
+        int xc0, xc1, yc0, yc1; // doda@c inicjalizacje w konstruktorze // dodane
   
 #define CLIP0_X (0+xc0)
 #define CLIP1_X (wymiar.x-xc1)
@@ -502,8 +507,8 @@ public:
 		}
 	}
 
-    void linia(int x0, int y0, int x1, int y1, unsigned int kolor){
-      Linia2(x0, y0, x1, y1, kolor, pioro);
+    void linia(int x0, int y0, int x1, int y1, unsigned int kolor, int rozszerz = 0, int kropki = 1){
+      Linia2(x0, y0, x1, y1, kolor, pioro, rozszerz, kropki);
     }
   
 
@@ -514,8 +519,9 @@ public:
 	// 4 :   3    0
 	// 5 :   4    1
         // 6 :   4    0
-    void Linia2(int x0, int y0, int x1, int y1, unsigned int kolor, int grubosc) {
-	_Line(x0, y0, x1, y1, kolor, (grubosc + 2) >> 1, (grubosc + 1) & 1);
+    void Linia2(int x0, int y0, int x1, int y1, unsigned int kolor, int grubosc,
+                int rozszerz, int kropki) {
+	_Line(x0, y0, x1, y1, kolor, (grubosc + 2) >> 1, (grubosc + 1) & 1, rozszerz, kropki);
     }
     /// <summary>
     /// Ogólna linia, NIE optymalizowana dla poziomych i pionowych linii.7
@@ -530,7 +536,8 @@ public:
     /// (0 -> 1, 2 -> 3, 3 -> 5 itd.)</param>
     /// <param name="half">Modyfikator grubosci, zmniejsza o jeden lub nie, patrz parametr "grubosc".</param>
     // grubosc = 0 -> 1 piksel, 1 -> 3 piksele, 2 -> 5 pikseli, ...
-    void _Line(int x0, int y0, int x1, int y1, unsigned int kolor, int grubosc, int half)
+    void _Line(int x0, int y0, int x1, int y1, unsigned int kolor, int grubosc, int half, 
+               int rozszerz, int kropki)
     {
       // Console.WriteLine($"DEBUG: _Line( {x0}, {y0}, {x1}, {y1}, {kolor}, {grubosc}, {half});");
       if ((x0 < CLIP0_X && x1 < CLIP0_X) || (x0 >= CLIP1_X && x1 >= CLIP1_X) || 
@@ -540,12 +547,12 @@ public:
 
 	        if (x0 == x1) {
 		  liniaPionowa(x0, y0, y1, kolor, 2*grubosc+1-half);
-		  	printf("\n");
+		  //	printf("\n");
 			return;
 		}
 		if (y0 == y1) {
 		  liniaPozioma(y0, x0, x1, kolor, 2*grubosc+1-half);
-		  	printf("\n");
+		  //	printf("\n");
 		 	return;
       		}
 
@@ -669,22 +676,34 @@ public:
         func = func * 7.0;
         dfunc = .8 * M_PI/60 * func - M_PI/60;
         alfa3p = alfa3 + 1 * dfunc - (deg(alfa4) > 7.0) * M_PI/24;
-	if(alfa3p > M_PI/2) alfa3p = M_PI/2-.0005;
         if(fract<0) {
         //  printf("~");
           alfa3p+=M_PI/2;
 	  if(alfa3p > M_PI/4) alfa3p -= M_PI*5/180;
         }  
+	if(alfa3p > M_PI/2) alfa3p = M_PI/2-.0005;
         fract1 = (int)((1<<16)*sqrt(tan(alfa3p)));
+/* */
         printf("a3: %3.3f a4: %3.3f a3p: %3.3f f: %3.3f df: %3.3f df°: %3.3f fr1: %3.3f\n", 
                deg(alfa3), deg(alfa4), deg(alfa3p), func, dfunc, deg(dfunc), fract1/(1.0*(1<<16)));
+/* */
         // alfa3 = 45° -> f = 0 ((-1)) (0) .5 .3
         // alfa3 = 90° -> sqrt(f) = 2 (1)
-	x00 = x0-2+1*(deg(alfa4) > 8.0 );
-	x11 = x1-1+1*(deg(alfa4) > 20.0);
-///////////////////////////////////////////////////////////////////	
 	y0 <<= 16;
 	y0 += (1 << 15);
+	
+	if( rozszerz ){
+	  x0 -= rozszerz;
+	  x1 += rozszerz;
+	  y0 -= rozszerz * fract;	
+	}
+	  
+	x00 = x0-4+1*(deg(alfa4) > 8.0 );
+	x11 = x1+2-1*(deg(alfa4) > 20.0);
+///////////////////////////////////////////////////////////////////	
+
+	if(kropki) rysujPunkt4(x0,y0>>16,kolor,grubosc-half);
+        
 	for (; x0 <= x1; x0++) {
 	    if( true && ( grubosc != 0 ) )  //   W Y G L A D Z A N I E
 	    {
@@ -719,6 +738,9 @@ public:
 	    }
 	    y0 += fract;
 	}
+
+	if(kropki) rysujPunkt4(x1,y0>>16,kolor,grubosc-half);
+
       }
       else {
 	if (y0 > y1) {
@@ -746,27 +768,39 @@ public:
         func = func * 7.0;
         dfunc = .8 * M_PI/60 * func - M_PI/60;
         alfa3p = alfa3 + 1 * dfunc - (deg(alfa4) > 7.0) * M_PI/24;
-	if(alfa3p > M_PI/2) alfa3p = M_PI/2-.0005;
  	if(fract<0) {
 	  //alfa3p = 22.5*M_PI/180;
           //alfa3p+=M_PI/4;
 	  //if(alfa3p > M_PI/4) alfa3p -= M_PI*5/180;		
 	  //alfa3p = M_PI/2-alfa3p;
  	}
+ 	alfa3p += M_PI*2/180;
+	if(alfa3p > M_PI/2) alfa3p = M_PI/2-.0005;
         fract1 = (int)((1<<16)*sqrt(tan(alfa3p)));
 	//if(fract < 0) fract1 = (int)(1.029*(1<<16));
-	
+/* */	
         printf("a3: %3.3f a4: %3.3f a3p: %3.3f f: %3.3f df: %3.3f df°: %3.3f fr1: %3.3f\n", 
                deg(alfa3), deg(alfa4), deg(alfa3p), func, dfunc, deg(dfunc), fract1/(1.0*(1<<16)));
+/* */
         // alfa3 = 45° -> f = 0 ((-1)) (0) .5 .3
         // alfa3 = 90° -> sqrt(f) = 2 (1)
- 	y00 = y0-2+1*(deg(alfa4) > 8.0 );
-	y11 = y1-1+1*(deg(alfa4) > 20.0);
-	flaga = 0;
-///////////////////////////////////////////////////////////////////	
-	y00 = y0;
+	//y00 = y0;
 	x0 <<= 16;
 	x0 += (1 << 15);
+
+	if( rozszerz ){
+	  y0 -= rozszerz;
+	  y1 += rozszerz;
+	  x0 -= rozszerz * fract;	
+	}
+
+ 	y00 = y0-4+1*(deg(alfa4) > 8.0 );
+	y11 = y1+2-1*(deg(alfa4) > 20.0);
+	flaga = 0;
+///////////////////////////////////////////////////////////////////	
+	
+	if(kropki) rysujPunkt4(x0>>16,y0,kolor,grubosc-half);
+	
 	for (; y0 <= y1; y0++) {
 	    if( true && ( grubosc != 0 ) )  //   W Y G L A D Z A N I E
 	    {
@@ -801,6 +835,10 @@ public:
 	    }
 	    x0 += fract;
 	}
+
+	if(kropki) rysujPunkt4(x0>>16,y1,kolor,grubosc-half);
+
+
       }
       // Unlock();
     }
@@ -893,18 +931,19 @@ public:
 // Przed ka¿d¹ optymalizacj¹ trzeba siê jednak upewniæ, ¿e dany fragment kodu dzia³a poprawnie...
 	}
 	void elipsa(int ox, int oy, int rx, int ry, 
-	int alfa0, int alfa1,int alfa3, unsigned int kolor){
+	int alfa0, int alfa1,int alfa3, unsigned int kolor, int dotted = 0){
 		double a;
-		int x0,y0,x1,y1;
+		int x0,y0,x1,y1,i;
 		
 		x0=ox+rx;
 		y0=oy;
-		
+		i=1;
 		for(a=alfa0*2*M_PI/360+M_PI/32;a<alfa1*2*M_PI/360;a+=M_PI/32){
 			x1=ox+(int)(cos(a)*rx);
 			y1=oy+(int)(sin(a)*ry);
-			linia(x0,y0,x1,y1,kolor);
+			if((!dotted) || (i & 1))linia(x0,y0,x1,y1,kolor);
 			x0=x1;y0=y1;
+			i++;
 		}
 		linia(x0,y0,ox+rx,oy,kolor);
 	}
@@ -928,6 +967,7 @@ public:
 		
 //#define EL3_STEP (M_PI/180)
 #define EL3_STEP (M_PI/120)
+#define ROZSZERZ (3)
 		a=alfa0*2*M_PI/360;
 		r=sqrt(1/(cos(a)*cos(a)/rx/rx+sin(a)*sin(a)/ry/ry));
 		aPrim=a+alfa3*2*M_PI/360;
@@ -951,12 +991,18 @@ public:
 			y3=oy+(int)(sin(aPrim)*r);
 			if(dotted) {
 			  if((parity & 7) == 7) {
-			    linia(x0,y0,x2,y2,kolor);
-			    linia(x1,y1,x3,y3,kolor);
+			    linia(x0,y0,x2,y2,kolor,ROZSZERZ);
+			    linia(x1,y1,x3,y3,kolor,ROZSZERZ);
+			    //linia(x0,y0,x1,y1,kolor,ROZSZERZ);
+			    //linia(x1,y1,x2,y2,kolor,ROZSZERZ);
+			    //linia(x2,y2,x3,y3,kolor,ROZSZERZ);
 			  }
 			} else {
-			  linia(x0,y0,x2,y2,kolor);
-			  linia(x1,y1,x3,y3,kolor);
+			  linia(x0,y0,x2,y2,kolor,ROZSZERZ);
+			  linia(x1,y1,x3,y3,kolor,ROZSZERZ);
+			  //linia(x0,y0,x1,y1,kolor,ROZSZERZ);
+			  //linia(x1,y1,x2,y2,kolor,ROZSZERZ);
+			  //linia(x2,y2,x3,y3,kolor,ROZSZERZ);
 			}
 			x0=x1;y0=y1;
 			x1=x2;y1=y2;

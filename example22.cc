@@ -57,6 +57,7 @@ int main(int argc, char** argv) {
     P.pisak(3);
     P.elipsa3(RX-RY/3-150, RY/2, 3*r-(90+60-r-r/2), 3*r, 0, 360, 0,r<=70?0xffffff:0x00, r>70);
  }  
+  // P.Linia2(60,60,RX-60,RY-60,0xff,11);
   
   P.odswiez();
   if(argc<=3) K.czekajNaKlawisz();

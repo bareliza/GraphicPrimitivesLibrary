@@ -50,11 +50,11 @@ int main(int argc, char** argv) {
   P.pisak(3);
   for(int r=35;r<=100;r+=5) {
     P.elipsa3(RX-RY/3-150, RY/2, 3*r, 3*r, 0, 360, 0,0x60ff);
-    P.pisak(11);
-    P.elipsa3(RX-RY/3-150, RY/2, 3*r-(90+60-r-r/2), 3*r, 0, 360, 0,0xffffff, r>70);
-    P.pisak(7);
+    //P.pisak(33);
+    //P.elipsa3(RX-RY/3-150, RY/2, 3*r-(90+60-r-r/2), 3*r, 0, 360, 0,0xffffff, r>70);
+    P.pisak(21);
     P.elipsa3(RX-RY/3-150, RY/2, 3*r-(90+60-r-r/2), 3*r, 0, 360, 0,r<=70?0xffffa0:0xff9b00, r>70);
-    P.pisak(3);
+    P.pisak(9);
     P.elipsa3(RX-RY/3-150, RY/2, 3*r-(90+60-r-r/2), 3*r, 0, 360, 0,r<=70?0xffffff:0x00, r>70);
  }  
   
