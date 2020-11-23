@@ -140,6 +140,7 @@ int main(int argc, char** argv) {
     //else D_R = 0;
     D_R = 0;
     // printf("%F\n",D_R);
+    printf("%d@",(int)x);
     P.pisak(x); // PEN);
     /*
     P.linia(O1_X + O1_R0 * sin(a3rad),

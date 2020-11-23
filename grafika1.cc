@@ -507,7 +507,8 @@ public:
 		}
 	}
 
-    void linia(int x0, int y0, int x1, int y1, unsigned int kolor, int rozszerz = 0, int kropki = 1){
+    void linia(int x0, int y0, int x1, int y1, unsigned int kolor, int rozszerz = 0, int kropki = 0){
+      printf("%d$%d$%d$%d$",x0,y0,x1,y1);
       Linia2(x0, y0, x1, y1, kolor, pioro, rozszerz, kropki);
     }
   
