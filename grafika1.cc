@@ -560,6 +560,73 @@ public:
 		int dx, dy, tmp, fract, wi, xOut, yOut, dOut,
 		    x00, x11, y00, y11, fract1, mod0, mod1, flaga;
 		double alfa3, alfa4, alfa3p, func, dfunc;
+		double aD3, aD3rad, x, d, pioro1;
+		
+		aD3rad = M_PI+atan2(x0-x1,y0-y1);
+		aD3 = 180.0*aD3rad/M_PI;
+		printf("-%d-",(int)(aD3));
+	
+		pioro1 = 42.0;
+
+	        if(pioro>10){
+	        if((aD3 > 45 && aD3 <=135) || (aD3 > 45+180 && aD3 <= 135+180)) {
+                   x = abs(pioro1 / cos(M_PI/2-aD3rad));
+    		} else {
+      		  x = abs(pioro1 / cos(aD3rad)); // f(0) = 1/2; f(45) = sqrt(2)/2 
+    		}
+    		}
+    		
+    		// pioro = x;
+    		// pioro - zachowac, w zaleznosci od kata zmodyfikowac przed line...
+    		// - i po line odzyskac. POTEM, I na zewnatrz line, 
+    		// - ORAZ uwaga na dx lub dy = 0, wtedy nic nie robić
+    		//
+    		// tu dostęp potrzebny do tego pierwotnego pióra, 
+    		// zatem te funkcje trzeba będzie odwrócić
+    		//
+    		// upraszczając - na zewnątrz czasowa konwersja, - wewnątrz - jej 
+    		// odwrotność na pioro1 PO CO? Aby uzależnić x, potrzebny dalej od aD3
+    		// 
+    		// KONIEC.
+    		
+    		if(aD3 > 45 && aD3 <= 90) {
+      		d = x * cos(aD3rad) / 2;
+    		} else {
+      		if (aD3 >= 0 && aD3 <= 45) { 
+        	d = x * cos(M_PI/2-aD3rad) / 2;    
+      		} else {
+        	if (aD3 > 90 && aD3 <= 135) {
+          	d = x * cos(aD3rad) / 2;
+        	} else {
+          	if (aD3 > 135 && aD3 <= 180) {
+            	d = x * cos(M_PI/2 - aD3rad) / 2;
+          	} else {      
+            	if (aD3 > 180 && aD3 <= 225) {
+              	d = - x * cos(M_PI/2-aD3rad) / 2;
+            	} else {
+              	if (aD3 > 225 && aD3 <= 270) {
+		d = - x * cos(aD3rad) / 2;
+        	} else {  
+		if (aD3 > 270 && aD3 <= 315) {
+		d = x * cos(aD3rad) / 2;
+		} else { // 315 .. 360
+		d = x * cos(M_PI/2-aD3rad) / 2;
+		}
+		}
+		}
+          	}
+		}
+		}
+		}
+
+        	if (aD3 > 90 && aD3 <= 135) {
+          		d = x * cos(aD3rad) / 2;
+      		}
+      		
+    		x0-=d*sin(aD3rad);
+		y0-=d*cos(aD3rad);
+		x1+=d*sin(aD3rad);
+		y1+=d*cos(aD3rad);
 		
 		dx=abs(x1-x0);
 		dy=abs(y1-y0);
