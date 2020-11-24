@@ -162,13 +162,13 @@ int main(int argc, char** argv) {
 	    O1_Y + ( O1_R0 - d ) * cos(a3rad),
 	    O1_X + ( O1_R + d /* - D_R */) * sin(a3rad),
 	    O1_Y + ( O1_R + d /* - D_R */) * cos(a3rad),
-	    COLOR1);
+	    COLOR1, 20);
     if(a3>45 && a3 <=90) printf("kat a3 = %d; ", (int)(a3) );
     P.linia(O1_X + ( O1_R0 + d ) * sin(a3rad),
 	    O1_Y + ( O1_R0 + d ) * cos(a3rad),
 	    O1_X + ( O1_R - d /* - D_R */) * sin(a3rad),
 	    O1_Y + ( O1_R - d /* - D_R */) * cos(a3rad),
-	    COLOR2);
+	    COLOR2, 5);
     P.pisak(0);
     P.linia(O1_X + O1_R0 * sin(a3rad),
 	    O1_Y + O1_R0 * cos(a3rad),

@@ -561,19 +561,19 @@ public:
 
 	        if (x0 == x1) {
 	          if(kropki){
- 			rysujPunkt4(x0-1,y0-1,kolor,pioro1/2); 
- 			rysujPunkt4(x1-1,y1-1,kolor,pioro1/2);
+ 			rysujPunkt4(x0-1,y0-1-rozszerz*((y0>y1)?(-1):1),kolor,pioro1/2); 
+ 			rysujPunkt4(x0-1,y1-1+rozszerz*((y0>y1)?(-1):1),kolor,pioro1/2);
 	          }
-		  liniaPionowa(x0, y0, y1, kolor, 2*grubosc+1-half);
+		  liniaPionowa(x0, y0-rozszerz, y1+rozszerz, kolor, 2*grubosc+1-half);
 		  //	printf("\n");
 			return;
 		}
 		if (y0 == y1) {
 		  if(kropki){
- 			rysujPunkt4(x0-1,y0-1,kolor,pioro1/2); 
- 			rysujPunkt4(x1-1,y1-1,kolor,pioro1/2);
+ 			rysujPunkt4(x0-1-rozszerz*((x0>x1)?(-1):1),y0-1,kolor,pioro1/2); 
+ 			rysujPunkt4(x1-1+rozszerz*((x0>x1)?(-1):1),y0-1,kolor,pioro1/2);
  		  }
-		  liniaPozioma(y0, x0, x1, kolor, 2*grubosc+1-half);
+		  liniaPozioma(y0, x0-rozszerz, x1+rozszerz, kolor, 2*grubosc+1-half);
 		  //	printf("\n");
 		 	return;
       		}
@@ -787,7 +787,7 @@ public:
 	x11 = x1+2-1*(deg(alfa4) > 20.0);
 ///////////////////////////////////////////////////////////////////	
 
-	if(kropki) rysujPunkt4(x0a,y0a,kolor,pioro1/2);
+	if(kropki) rysujPunkt4(x0a-rozszerz*sin(aD3rad),y0a-rozszerz*cos(aD3rad),kolor,pioro1/2);
         
 	for (; x0 <= x1; x0++) {
 	    if( true && ( grubosc != 0 ) )  //   W Y G L A D Z A N I E
@@ -824,7 +824,7 @@ public:
 	    y0 += fract;
 	}
 
-	if(kropki) rysujPunkt4(x1a,y1a,kolor,pioro1/2);
+	if(kropki) rysujPunkt4(x1a+rozszerz*sin(aD3rad),y1a+rozszerz*cos(aD3rad),kolor,pioro1/2);
 
       }
       else {
@@ -884,8 +884,8 @@ public:
 	flaga = 0;
 ///////////////////////////////////////////////////////////////////	
 	
-	if(kropki) rysujPunkt4(x0a,y0a,kolor,pioro1/2);
-	
+	if(kropki) rysujPunkt4(x0a-rozszerz*sin(aD3rad),y0a-rozszerz*cos(aD3rad),kolor,pioro1/2);
+
 	for (; y0 <= y1; y0++) {
 	    if( true && ( grubosc != 0 ) )  //   W Y G L A D Z A N I E
 	    {
@@ -921,8 +921,7 @@ public:
 	    x0 += fract;
 	}
 
-	if(kropki) rysujPunkt4(x1a,y1a,kolor,pioro1/2);
-
+	if(kropki) rysujPunkt4(x1a+rozszerz*sin(aD3rad),y1a+rozszerz*cos(aD3rad),kolor,pioro1/2);
 
       }
       // Unlock();
