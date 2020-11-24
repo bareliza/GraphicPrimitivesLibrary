@@ -151,6 +151,7 @@ int main(int argc, char** argv) {
     // printf("%F\n",D_R);
     printf("%d,%d@",(int)d,(int)x);
     P.pisak(x); // PEN);
+    P.pisak(PEN); // PEN);     
     /*
     P.linia(O1_X + O1_R0 * sin(a3rad),
 	    O1_Y + O1_R0 * cos(a3rad),

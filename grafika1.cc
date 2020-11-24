@@ -507,12 +507,25 @@ public:
 		}
 	}
 
-    void linia(int x0, int y0, int x1, int y1, unsigned int kolor, int rozszerz = 0, int kropki = 0){
-      printf("%d$%d$%d$%d$",x0,y0,x1,y1);
-      Linia2(x0, y0, x1, y1, kolor, pioro, rozszerz, kropki);
+    void linia(int x0, int y0, int x1, int y1, unsigned int kolor, int rozszerz = 0, int kropki = 1){
+      	printf("%d$%d$%d$%d$",x0,y0,x1,y1);
+	double aD3r;
+	aD3r = M_PI+atan2(x0-x1,y0-y1);
+	pioro1 = pioro;
+        if(pioro>3){
+	        if((aD3r > M_PI/4 && aD3r <=M_PI-M_PI/4)||(aD3r > M_PI/4+M_PI && aD3r <= 2*M_PI-M_PI/4)) {
+	        	pioro = abs(pioro1 / cos(M_PI/2-aD3r));
+    		} else {
+      			pioro = abs(pioro1 / cos(aD3r)); // f(0) = 1/2; f(45) = sqrt(2)/2 
+    		}
+    	}
+
+      	Linia2(x0, y0, x1, y1, kolor, pioro, rozszerz, kropki);
+
+	pioro = pioro1;
     }
   
-
+    double pioro1;
 	// g    _g   _h
 	// 1 :   2    1
 	// 2 :   2    0
@@ -547,11 +560,19 @@ public:
       // return; // Proste klipowanie
 
 	        if (x0 == x1) {
+	          if(kropki){
+ 			rysujPunkt4(x0-1,y0-1,kolor,pioro1/2); 
+ 			rysujPunkt4(x1-1,y1-1,kolor,pioro1/2);
+	          }
 		  liniaPionowa(x0, y0, y1, kolor, 2*grubosc+1-half);
 		  //	printf("\n");
 			return;
 		}
 		if (y0 == y1) {
+		  if(kropki){
+ 			rysujPunkt4(x0-1,y0-1,kolor,pioro1/2); 
+ 			rysujPunkt4(x1-1,y1-1,kolor,pioro1/2);
+ 		  }
 		  liniaPozioma(y0, x0, x1, kolor, 2*grubosc+1-half);
 		  //	printf("\n");
 		 	return;
@@ -560,15 +581,15 @@ public:
 		int dx, dy, tmp, fract, wi, xOut, yOut, dOut,
 		    x00, x11, y00, y11, fract1, mod0, mod1, flaga;
 		double alfa3, alfa4, alfa3p, func, dfunc;
-		double aD3, aD3rad, x, d, pioro1;
+		double aD3, aD3rad, x, d;
+		int x0a,y0a,x1a,y1a;
+		x0a=x0-1;x1a=x1-1;y0a=y0-1;y1a=y1-1;
 		
 		aD3rad = M_PI+atan2(x0-x1,y0-y1);
 		aD3 = 180.0*aD3rad/M_PI;
 		printf("-%d-",(int)(aD3));
 	
-		pioro1 = 42.0;
-
-	        if(pioro>10){
+	        if(pioro1>3){
 	        if((aD3 > 45 && aD3 <=135) || (aD3 > 45+180 && aD3 <= 135+180)) {
                    x = abs(pioro1 / cos(M_PI/2-aD3rad));
     		} else {
@@ -590,39 +611,35 @@ public:
     		// KONIEC.
     		
     		if(aD3 > 45 && aD3 <= 90) {
-      		d = x * cos(aD3rad) / 2;
+      		  d = x * cos(aD3rad) / 2;
     		} else {
-      		if (aD3 >= 0 && aD3 <= 45) { 
-        	d = x * cos(M_PI/2-aD3rad) / 2;    
-      		} else {
-        	if (aD3 > 90 && aD3 <= 135) {
-          	d = x * cos(aD3rad) / 2;
-        	} else {
-          	if (aD3 > 135 && aD3 <= 180) {
-            	d = x * cos(M_PI/2 - aD3rad) / 2;
-          	} else {      
-            	if (aD3 > 180 && aD3 <= 225) {
-              	d = - x * cos(M_PI/2-aD3rad) / 2;
-            	} else {
-              	if (aD3 > 225 && aD3 <= 270) {
-		d = - x * cos(aD3rad) / 2;
-        	} else {  
-		if (aD3 > 270 && aD3 <= 315) {
-		d = x * cos(aD3rad) / 2;
-		} else { // 315 .. 360
-		d = x * cos(M_PI/2-aD3rad) / 2;
-		}
-		}
-		}
-          	}
-		}
-		}
+      		  if (aD3 >= 0 && aD3 <= 45) { 
+        	    d = x * cos(M_PI/2-aD3rad) / 2;    
+      		  } else {
+        	    if (aD3 > 90 && aD3 <= 135) {
+          	      d = - x * cos(aD3rad) / 2; // ???????
+        	    } else {
+          	      if (aD3 > 135 && aD3 <= 180) {
+            	         d = x * cos(M_PI/2 - aD3rad) / 2;
+          	      } else {      
+            	        if (aD3 > 180 && aD3 <= 225) {
+              	          d = - x * cos(M_PI/2-aD3rad) / 2;
+            	        } else {
+              	          if (aD3 > 225 && aD3 <= 270) {
+		            d = - x * cos(aD3rad) / 2;
+        	          } else {  
+		            if (aD3 > 270 && aD3 <= 315) {
+		              d = x * cos(aD3rad) / 2;
+		            } else { // 315 .. 360
+		              d = - x * cos(M_PI/2-aD3rad) / 2; // ???????
+		            }
+		          }
+		        }
+          	      }
+		    }
+		  }
 		}
 
-        	if (aD3 > 90 && aD3 <= 135) {
-          		d = x * cos(aD3rad) / 2;
-      		}
-      		
     		x0-=d*sin(aD3rad);
 		y0-=d*cos(aD3rad);
 		x1+=d*sin(aD3rad);
@@ -770,7 +787,7 @@ public:
 	x11 = x1+2-1*(deg(alfa4) > 20.0);
 ///////////////////////////////////////////////////////////////////	
 
-	if(kropki) rysujPunkt4(x0,y0>>16,kolor,grubosc-half);
+	if(kropki) rysujPunkt4(x0a,y0a,kolor,pioro1/2);
         
 	for (; x0 <= x1; x0++) {
 	    if( true && ( grubosc != 0 ) )  //   W Y G L A D Z A N I E
@@ -807,7 +824,7 @@ public:
 	    y0 += fract;
 	}
 
-	if(kropki) rysujPunkt4(x1,y0>>16,kolor,grubosc-half);
+	if(kropki) rysujPunkt4(x1a,y1a,kolor,pioro1/2);
 
       }
       else {
@@ -867,7 +884,7 @@ public:
 	flaga = 0;
 ///////////////////////////////////////////////////////////////////	
 	
-	if(kropki) rysujPunkt4(x0>>16,y0,kolor,grubosc-half);
+	if(kropki) rysujPunkt4(x0a,y0a,kolor,pioro1/2);
 	
 	for (; y0 <= y1; y0++) {
 	    if( true && ( grubosc != 0 ) )  //   W Y G L A D Z A N I E
@@ -904,7 +921,7 @@ public:
 	    x0 += fract;
 	}
 
-	if(kropki) rysujPunkt4(x0>>16,y1,kolor,grubosc-half);
+	if(kropki) rysujPunkt4(x1a,y1a,kolor,pioro1/2);
 
 
       }
