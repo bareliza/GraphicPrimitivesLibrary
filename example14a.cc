@@ -33,33 +33,14 @@ punkt funkcjaR2wR2(punkt p0)
 }
 
 #define STEP (7)
-// sprawdzic dla PEN=56.0 i R0 = 280!
-#define PEN  (48.0)
-
-#ifdef debug11
-#define PEN (56.0)
-#endif
-
-#define PEN2 (PEN / 2.0)
-  
-#define O1_R0 (245)
-
-#ifdef debug11
-#define O1_R0 (280)
-#endif
-
-#define O1_R (RY/2-50)
-#define O1_R1 (RY/2-50)
-#define O1_Xbase (RX/2)
-#define O1_Ybase (RY/2)
 
 #define STEP (7)
 #define PEN  (42.0)
 #define PEN2 (PEN / 2.0)
   
 #define O1_R0 (230)
-#define O1_R (RY/2-5)
-#define O1_R1 (RY/2-5)
+#define O1_R (RY/2-35)
+#define O1_R1 (RY/2-35)
 #define O1_Xbase (RX/2)
 #define O1_Ybase (RY/2)
   

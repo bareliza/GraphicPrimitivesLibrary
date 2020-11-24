@@ -508,7 +508,7 @@ public:
 	}
 
     void linia(int x0, int y0, int x1, int y1, unsigned int kolor, int rozszerz = 0, int kropki = 1){
-      	printf("%d$%d$%d$%d$",x0,y0,x1,y1);
+      	// printf("%d$%d$%d$%d$",x0,y0,x1,y1);
 	double aD3r;
 	aD3r = M_PI+atan2(x0-x1,y0-y1);
 	pioro1 = pioro;
@@ -587,28 +587,19 @@ public:
 		
 		aD3rad = M_PI+atan2(x0-x1,y0-y1);
 		aD3 = 180.0*aD3rad/M_PI;
-		printf("-%d-",(int)(aD3));
+		// printf("-%d-",(int)(aD3));
 	
-	        if(pioro1>3){
-	        if((aD3 > 45 && aD3 <=135) || (aD3 > 45+180 && aD3 <= 135+180)) {
-                   x = abs(pioro1 / cos(M_PI/2-aD3rad));
+	        if(pioro1>3){  // Zly styl kodowania - magic number. Okresla limit grubosci,
+	        // dla ktorego program wchodzi w temat krawedzi zewnetrznych rysowanej linii
+	        // "tych krotszych" bokow prostokata
+ 	        	if((aD3 > 45 && aD3 <=135) || (aD3 > 45+180 && aD3 <= 135+180)) {
+                   		x = abs(pioro1 / cos(M_PI/2-aD3rad));
+    			} else {
+      		  		x = abs(pioro1 / cos(aD3rad)); // f(0) = 1/2; f(45) = sqrt(2)/2 
+    			}
     		} else {
-      		  x = abs(pioro1 / cos(aD3rad)); // f(0) = 1/2; f(45) = sqrt(2)/2 
+    			x = 0;
     		}
-    		}
-    		
-    		// pioro = x;
-    		// pioro - zachowac, w zaleznosci od kata zmodyfikowac przed line...
-    		// - i po line odzyskac. POTEM, I na zewnatrz line, 
-    		// - ORAZ uwaga na dx lub dy = 0, wtedy nic nie robić
-    		//
-    		// tu dostęp potrzebny do tego pierwotnego pióra, 
-    		// zatem te funkcje trzeba będzie odwrócić
-    		//
-    		// upraszczając - na zewnątrz czasowa konwersja, - wewnątrz - jej 
-    		// odwrotność na pioro1 PO CO? Aby uzależnić x, potrzebny dalej od aD3
-    		// 
-    		// KONIEC.
     		
     		if(aD3 > 45 && aD3 <= 90) {
       		  d = x * cos(aD3rad) / 2;
@@ -768,10 +759,10 @@ public:
         }  
 	if(alfa3p > M_PI/2) alfa3p = M_PI/2-.0005;
         fract1 = (int)((1<<16)*sqrt(tan(alfa3p)));
-/* */
+/* * /
         printf("a3: %3.3f a4: %3.3f a3p: %3.3f f: %3.3f df: %3.3f df°: %3.3f fr1: %3.3f\n", 
                deg(alfa3), deg(alfa4), deg(alfa3p), func, dfunc, deg(dfunc), fract1/(1.0*(1<<16)));
-/* */
+/ * */
         // alfa3 = 45° -> f = 0 ((-1)) (0) .5 .3
         // alfa3 = 90° -> sqrt(f) = 2 (1)
 	y0 <<= 16;
@@ -863,10 +854,10 @@ public:
 	if(alfa3p > M_PI/2) alfa3p = M_PI/2-.0005;
         fract1 = (int)((1<<16)*sqrt(tan(alfa3p)));
 	//if(fract < 0) fract1 = (int)(1.029*(1<<16));
-/* */	
+/* * /	
         printf("a3: %3.3f a4: %3.3f a3p: %3.3f f: %3.3f df: %3.3f df°: %3.3f fr1: %3.3f\n", 
                deg(alfa3), deg(alfa4), deg(alfa3p), func, dfunc, deg(dfunc), fract1/(1.0*(1<<16)));
-/* */
+/ * */
         // alfa3 = 45° -> f = 0 ((-1)) (0) .5 .3
         // alfa3 = 90° -> sqrt(f) = 2 (1)
 	//y00 = y0;
