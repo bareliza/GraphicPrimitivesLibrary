@@ -1038,46 +1038,55 @@ public:
 	void elipsa3(int ox, int oy, int rx, int ry, 
 		     int alfa0, int alfa1,int alfa3, unsigned int kolor, int dotted=0){
 		double r, a, aPrim;
-		int x0,y0,x1,y1,x2,y2,x3,y3;
+		double x0,y0,x1,y1,x2,y2,x3,y3;
 		
 //#define EL3_STEP (M_PI/180)
-#define EL3_STEP (M_PI/120)
-#define ROZSZERZ (3)
-		a=alfa0*2*M_PI/360;
-		r=sqrt(1/(cos(a)*cos(a)/rx/rx+sin(a)*sin(a)/ry/ry));
-		aPrim=a+alfa3*2*M_PI/360;
-		x0=ox+(int)(r*cos(aPrim));
-		y0=oy+(int)(r*sin(aPrim));
+#define EL3_STEP (M_PI/160)
+#define ROZSZERZ (1)
+#define KROPKI (1)
+#define KROPKI_P (1)
+#define PRZEPLOT (1)
+		a=alfa0*2.0*M_PI/360.0;
+		r=sqrt(1.0/(cos(a)*cos(a)/rx/rx+sin(a)*sin(a)/ry/ry));
+		aPrim=a+alfa3*2.0*M_PI/360.0;
+		x0=ox+r*cos(aPrim);
+		y0=oy+r*sin(aPrim);
 		a+=EL3_STEP;
-		aPrim=a+alfa3*2*M_PI/360;
-		x1=ox+(int)(r*cos(aPrim));
-		y1=oy+(int)(r*sin(aPrim));
+		aPrim=a+alfa3*2.0*M_PI/360.0;
+		x1=ox+r*cos(aPrim);
+		y1=oy+r*sin(aPrim);
 		a+=EL3_STEP;
-		aPrim=a+alfa3*2*M_PI/360;
-		x2=ox+(int)(r*cos(aPrim));
-		y2=oy+(int)(r*sin(aPrim));
+		aPrim=a+alfa3*2.0*M_PI/360.0;
+		x2=ox+r*cos(aPrim);
+		y2=oy+r*sin(aPrim);
 		int parity=0;
-		for(a=alfa0*2*M_PI/180+3*EL3_STEP;
-		    a<alfa1*2*M_PI/360+2*EL3_STEP;a+=EL3_STEP){
+		for(a=alfa0*2.0*M_PI/180.0+3.0*EL3_STEP;
+		    a<alfa1*2.0*M_PI/360.0+2.0*EL3_STEP;a+=EL3_STEP){
 		        parity++;
-			r=sqrt(1/(cos(a)*cos(a)/rx/rx+sin(a)*sin(a)/ry/ry));
-			aPrim=a+alfa3*2*M_PI/360;
-			x3=ox+(int)(cos(aPrim)*r);
-			y3=oy+(int)(sin(aPrim)*r);
+			r=sqrt(1.0/(cos(a)*cos(a)/rx/rx+sin(a)*sin(a)/ry/ry));
+			aPrim=a+alfa3*2.0*M_PI/360.0;
+			x3=ox+cos(aPrim)*r;
+			y3=oy+sin(aPrim)*r;
 			if(dotted) {
 			  if((parity & 7) == 7) {
-			    linia(x0,y0,x2,y2,kolor,ROZSZERZ);
-			    linia(x1,y1,x3,y3,kolor,ROZSZERZ);
-			    //linia(x0,y0,x1,y1,kolor,ROZSZERZ);
-			    //linia(x1,y1,x2,y2,kolor,ROZSZERZ);
-			    //linia(x2,y2,x3,y3,kolor,ROZSZERZ);
+			    if(PRZEPLOT) {
+			    	linia(x0,y0,x2,y2,kolor, ROZSZERZ,KROPKI_P);
+			    	linia(x1,y1,x3,y3,kolor, ROZSZERZ,KROPKI_P);
+			    } else {
+			    	linia(x0,y0,x1,y1,kolor,ROZSZERZ, KROPKI);
+			    	linia(x1,y1,x2,y2,kolor,ROZSZERZ, KROPKI);
+			    	linia(x2,y2,x3,y3,kolor,ROZSZERZ, KROPKI);
+			    }
 			  }
 			} else {
-			  linia(x0,y0,x2,y2,kolor,ROZSZERZ);
-			  linia(x1,y1,x3,y3,kolor,ROZSZERZ);
-			  //linia(x0,y0,x1,y1,kolor,ROZSZERZ);
-			  //linia(x1,y1,x2,y2,kolor,ROZSZERZ);
-			  //linia(x2,y2,x3,y3,kolor,ROZSZERZ);
+			  if(PRZEPLOT) {
+			  	linia(x0,y0,x2,y2,kolor, ROZSZERZ, KROPKI_P);
+			  	linia(x1,y1,x3,y3,kolor, ROZSZERZ, KROPKI_P);
+			  } else {
+			  	linia(x0,y0,x1,y1,kolor,ROZSZERZ, KROPKI);
+			  	linia(x1,y1,x2,y2,kolor,ROZSZERZ, KROPKI);
+			  	linia(x2,y2,x3,y3,kolor,ROZSZERZ, KROPKI);
+			  }
 			}
 			x0=x1;y0=y1;
 			x1=x2;y1=y2;
