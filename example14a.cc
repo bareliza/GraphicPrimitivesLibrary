@@ -150,7 +150,7 @@ int main(int argc, char** argv) {
 	    O1_X + ( O1_R - d /* - D_R */) * sin(a3rad),
 	    O1_Y + ( O1_R - d /* - D_R */) * cos(a3rad),
 	    COLOR2, 5);
-    P.pisak(0);
+    P.pisak(4);
     P.linia(O1_X + O1_R0 * sin(a3rad),
 	    O1_Y + O1_R0 * cos(a3rad),
 	    O1_X + O1_R1 * sin(a3rad),

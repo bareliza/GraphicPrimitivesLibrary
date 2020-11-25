@@ -243,6 +243,7 @@ public:
 #define CLIP0_Y (0+yc0)
 #define CLIP1_Y (wymiar.y-yc1)
 
+// to tez bardzo nieelegancko
 #define DOLNA_GRANICA_PIORA (8)
   
 	void liniaPionowa(int x, int y0, int y1, unsigned int kolor)
@@ -512,16 +513,24 @@ public:
 	double aD3r;
 	aD3r = M_PI+atan2(x0-x1,y0-y1);
 	pioro1 = pioro;
-        if(pioro>3){
+        if(pioro>1){ // zle kodowanie: magic number, patrz wyjasnienie nizej
 	        if((aD3r > M_PI/4 && aD3r <=M_PI-M_PI/4)||(aD3r > M_PI/4+M_PI && aD3r <= 2*M_PI-M_PI/4)) {
 	        	pioro = abs(pioro1 / cos(M_PI/2-aD3r));
     		} else {
       			pioro = abs(pioro1 / cos(aD3r)); // f(0) = 1/2; f(45) = sqrt(2)/2 
     		}
     	}
-
+	if(rozszerz){
+		x0-=sin(aD3r)*rozszerz;
+		y0-=cos(aD3r)*rozszerz;
+		x0+=sin(aD3r)*rozszerz;
+		y0+=cos(aD3r)*rozszerz;
+	}
+	if(kropki){
+		rysujPunkt4(x0,y0,kolor,pioro1/2);
+		rysujPunkt4(x1,y1,kolor,pioro1/2);
+	}
       	Linia2(x0, y0, x1, y1, kolor, pioro, rozszerz, kropki);
-
 	pioro = pioro1;
     }
   
@@ -560,20 +569,20 @@ public:
       // return; // Proste klipowanie
 
 	        if (x0 == x1) {
-	          if(kropki){
- 			rysujPunkt4(x0-1,y0-1-rozszerz*((y0>y1)?(-1):1),kolor,pioro1/2); 
- 			rysujPunkt4(x0-1,y1-1+rozszerz*((y0>y1)?(-1):1),kolor,pioro1/2);
-	          }
-		  liniaPionowa(x0, y0-rozszerz, y1+rozszerz, kolor, 2*grubosc+1-half);
+	        //  if(kropki){
+ 		//	rysujPunkt4(x0-1,y0-1-rozszerz*((y0>y1)?(-1):1),kolor,pioro1/2); 
+ 		//	rysujPunkt4(x0-1,y1-1+rozszerz*((y0>y1)?(-1):1),kolor,pioro1/2);
+	        //  }
+		  liniaPionowa(x0, y0, y1, kolor, 2*grubosc+1-half);
 		  //	printf("\n");
 			return;
 		}
 		if (y0 == y1) {
-		  if(kropki){
- 			rysujPunkt4(x0-1-rozszerz*((x0>x1)?(-1):1),y0-1,kolor,pioro1/2); 
- 			rysujPunkt4(x1-1+rozszerz*((x0>x1)?(-1):1),y0-1,kolor,pioro1/2);
- 		  }
-		  liniaPozioma(y0, x0-rozszerz, x1+rozszerz, kolor, 2*grubosc+1-half);
+		//  if(kropki){
+ 		//	rysujPunkt4(x0-1-rozszerz*((x0>x1)?(-1):1),y0-1,kolor,pioro1/2); 
+ 		//	rysujPunkt4(x1-1+rozszerz*((x0>x1)?(-1):1),y0-1,kolor,pioro1/2);
+ 		//  }
+		  liniaPozioma(y0, x0, x1, kolor, 2*grubosc+1-half);
 		  //	printf("\n");
 		 	return;
       		}
@@ -582,14 +591,14 @@ public:
 		    x00, x11, y00, y11, fract1, mod0, mod1, flaga;
 		double alfa3, alfa4, alfa3p, func, dfunc;
 		double aD3, aD3rad, x, d;
-		int x0a,y0a,x1a,y1a;
-		x0a=x0-1;x1a=x1-1;y0a=y0-1;y1a=y1-1;
+		// int x0a,y0a,x1a,y1a;
+		// x0a=x0-1;x1a=x1-1;y0a=y0-1;y1a=y1-1;
 		
 		aD3rad = M_PI+atan2(x0-x1,y0-y1);
 		aD3 = 180.0*aD3rad/M_PI;
 		// printf("-%d-",(int)(aD3));
 	
-	        if(pioro1>3){  // Zly styl kodowania - magic number. Okresla limit grubosci,
+	        if(pioro1>1){  // Zly styl kodowania - magic number. Okresla limit grubosci,
 	        // dla ktorego program wchodzi w temat krawedzi zewnetrznych rysowanej linii
 	        // "tych krotszych" bokow prostokata
  	        	if((aD3 > 45 && aD3 <=135) || (aD3 > 45+180 && aD3 <= 135+180)) {
@@ -768,17 +777,29 @@ public:
 	y0 <<= 16;
 	y0 += (1 << 15);
 	
+	/*
+	rozszerz *= abs(cos(aD3rad));
 	if( rozszerz ){
 	  x0 -= rozszerz;
 	  x1 += rozszerz;
 	  y0 -= rozszerz * fract;	
 	}
+	*/
 	  
 	x00 = x0-4+1*(deg(alfa4) > 8.0 );
 	x11 = x1+2-1*(deg(alfa4) > 20.0);
 ///////////////////////////////////////////////////////////////////	
 
-	if(kropki) rysujPunkt4(x0a-rozszerz*sin(aD3rad),y0a-rozszerz*cos(aD3rad),kolor,pioro1/2);
+	// Na czym polega trudno@s@c z "kropkami": niepewno@s@c tych minus i plus, czyli
+	// fakt, ze z pewnych powodow x0 mo@ze w tym miejscu by@c zamienione z x1a,
+	// a x0 jest juz r@ozne, bo przesuni@ete o d[elte] zwi@azan@a z rysowaniem grubosci kreskami
+	// pionowymi b@ad@@z poziomymi.
+	//
+	// To co innego. To pierwiastek z dwóch dla 45° i jedynka dla 90°
+	// i druga rzecz - to powi@azanie tego pierwszego komentarza z tym obecnym:
+	// Bo to nie tak prosto, @ze mno@zone przez cosinus / i lub sinus
+	
+	// if(kropki) rysujPunkt4(x0a-rozszerz*sin(aD3rad),y0a-rozszerz*cos(aD3rad),kolor,pioro1/2);
         
 	for (; x0 <= x1; x0++) {
 	    if( true && ( grubosc != 0 ) )  //   W Y G L A D Z A N I E
@@ -794,28 +815,28 @@ public:
                 // modyfikator = 0; // dla x0 == x00 + int(sqrt(grubosc));		
 	      // Console.WriteLine(KolorPunktu( x0,  grubosc - half + ( y0 >> 16 ) ) );
 		if(!mod1) {
-		rysujPunkt( x0,  grubosc - half + (y0 >> 16),
-			kolorDopelniajacy( kolor,
-				( 0xffff - ( y0 & 0xffff ) )
-				, KolorPunktu( x0,  grubosc - half + ( y0 >> 16 ) )
-			)
-		); // TODO: DONE. NullPointerException:: zamienic ( <-> ) _b.GetPixel <-> WezPunkt(...) - klipowany
-		}
+			rysujPunkt( x0,  grubosc - half + (y0 >> 16),
+				kolorDopelniajacy( kolor,
+					( 0xffff - ( y0 & 0xffff ) )
+					, KolorPunktu( x0,  grubosc - half + ( y0 >> 16 ) )
+				)
+			); // TODO: DONE. NullPointerException:: zamienic ( <-> ) _b.GetPixel <-> WezPunkt(...) - klipowany
+			}
 		if(!mod0) {
-		rysujPunkt( x0, -grubosc + (y0 >> 16),
-			kolorDopelniajacy( kolor,
-				( y0 & 0xffff )
-				, KolorPunktu( x0, -grubosc + ( y0 >> 16 ) ) 
-			)
-		);
-		}
+			rysujPunkt( x0, -grubosc + (y0 >> 16),
+				kolorDopelniajacy( kolor,
+					( y0 & 0xffff )
+					, KolorPunktu( x0, -grubosc + ( y0 >> 16 ) ) 
+				)
+			);
+			}
 		for (wi = -grubosc + 1 + 2*mod0; wi <= grubosc - 1 - half - 2*mod1; wi++)
 		rysujPunkt(x0, wi + (y0 >> 16), kolor);
 	    }
 	    y0 += fract;
 	}
 
-	if(kropki) rysujPunkt4(x1a+rozszerz*sin(aD3rad),y1a+rozszerz*cos(aD3rad),kolor,pioro1/2);
+	// if(kropki) rysujPunkt4(x1a+rozszerz*sin(aD3rad),y1a+rozszerz*cos(aD3rad),kolor,pioro1/2);
 
       }
       else {
@@ -863,19 +884,22 @@ public:
 	//y00 = y0;
 	x0 <<= 16;
 	x0 += (1 << 15);
-
+        
+        /*
+	rozszerz *= abs(cos(aD3rad));
 	if( rozszerz ){
 	  y0 -= rozszerz;
 	  y1 += rozszerz;
 	  x0 -= rozszerz * fract;	
 	}
-
+	*/
+	
  	y00 = y0-4+1*(deg(alfa4) > 8.0 );
 	y11 = y1+2-1*(deg(alfa4) > 20.0);
 	flaga = 0;
 ///////////////////////////////////////////////////////////////////	
 	
-	if(kropki) rysujPunkt4(x0a-rozszerz*sin(aD3rad),y0a-rozszerz*cos(aD3rad),kolor,pioro1/2);
+	// if(kropki) rysujPunkt4(x0a-rozszerz*sin(aD3rad),y0a-rozszerz*cos(aD3rad),kolor,pioro1/2);
 
 	for (; y0 <= y1; y0++) {
 	    if( true && ( grubosc != 0 ) )  //   W Y G L A D Z A N I E
@@ -890,21 +914,21 @@ public:
                 // modyfikator = 0; // dla x0 == x00 + int(sqrt(grubosc));		
 	      // Console.WriteLine(KolorPunktu( x0,  grubosc - half + ( y0 >> 16 ) ) );
 		if(!mod1) {
-		rysujPunkt( grubosc - half + (x0 >> 16), y0,
-			kolorDopelniajacy( kolor,
-				( 0xffff - ( x0 & 0xffff ) )
-				, KolorPunktu( grubosc - half + (x0 >> 16),  y0 )
-			)
-		); // TODO: DONE: NullPointerException:: zamienic ( <-> ) _b.GetPixel <-> WezPunkt(...) - klipowany
+			rysujPunkt( grubosc - half + (x0 >> 16), y0,
+				kolorDopelniajacy( kolor,
+					( 0xffff - ( x0 & 0xffff ) )
+					, KolorPunktu( grubosc - half + (x0 >> 16),  y0 )
+				)
+			); // TODO: DONE: NullPointerException:: zamienic ( <-> ) _b.GetPixel <-> WezPunkt(...) - klipowany
 		}
 		if(!mod0) {
-		rysujPunkt( -grubosc + (x0 >> 16), y0,
-			kolorDopelniajacy( kolor,
-				( x0 & 0xffff )
-				, KolorPunktu( -grubosc + (x0 >> 16), y0 )
-			) 
-		);
-		}
+			rysujPunkt( -grubosc + (x0 >> 16), y0,
+				kolorDopelniajacy( kolor,
+					( x0 & 0xffff )
+					, KolorPunktu( -grubosc + (x0 >> 16), y0 )
+				) 
+			);
+			}
 		
 		for (wi = -grubosc + 1 + 2*mod0; wi <= grubosc - 1 - half - 2*mod1; wi++)
 		    rysujPunkt(wi + (x0 >> 16), y0, kolor);
@@ -912,7 +936,7 @@ public:
 	    x0 += fract;
 	}
 
-	if(kropki) rysujPunkt4(x1a+rozszerz*sin(aD3rad),y1a+rozszerz*cos(aD3rad),kolor,pioro1/2);
+	// if(kropki) rysujPunkt4(x1a+rozszerz*sin(aD3rad),y1a+rozszerz*cos(aD3rad),kolor,pioro1/2);
 
       }
       // Unlock();

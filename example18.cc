@@ -12,7 +12,7 @@ Klawiatura K;
 
 int main(int argc, char** argv) {
   P.czysc(0xffffff);
-  int i = 10000, x0, y0, dx, dy, r, g, b, pen;
+  int i = 3000, x0, y0, dx, dy, r, g, b, pen;
   while(i) {
   	x0 = RX * random() / RAND_MAX;
   	y0 = RY * random() / RAND_MAX;
