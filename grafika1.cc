@@ -521,10 +521,11 @@ public:
     		}
     	}
 	if(rozszerz){
+		//printf("PRZED:rozszerz=%d; aD3r=%f; %d,%d,%d,%d\n", rozszerz, aD3r, x0,y0,x1,y1);
 		x0-=sin(aD3r)*rozszerz;
 		y0-=cos(aD3r)*rozszerz;
-		x0+=sin(aD3r)*rozszerz;
-		y0+=cos(aD3r)*rozszerz;
+		x1+=sin(aD3r)*rozszerz;
+		y1+=cos(aD3r)*rozszerz;
 	}
 	if(kropki){
 		rysujPunkt4(x0,y0,kolor,pioro1/2);
