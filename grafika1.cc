@@ -527,10 +527,11 @@ public:
 		x1+=sin(aD3r)*rozszerz;
 		y1+=cos(aD3r)*rozszerz;
 	}
-	if(kropki){
+/*	if(kropki){
 		rysujPunkt4(x0-1,y0-1,kolor,(pioro1)/2);
 		rysujPunkt4(x1-1,y1-1,kolor,(pioro1)/2);
 	}
+*/
       	Linia2(x0, y0, x1, y1, kolor, pioro, rozszerz, kropki);
 	pioro = pioro1;
     }
@@ -568,13 +569,18 @@ public:
 	  (y0 < CLIP0_Y && y1 < CLIP0_Y) || (y0 >= CLIP1_Y && y1 >= CLIP1_Y))
 	kolor = 0xb0ffb0;
       // return; // Proste klipowanie
-
+#define KROPKI_KOREKCJA (1.1)
+//-half)
 	        if (x0 == x1) {
 	        //  if(kropki){
  		//	rysujPunkt4(x0-1,y0-1-rozszerz*((y0>y1)?(-1):1),kolor,pioro1/2); 
  		//	rysujPunkt4(x0-1,y1-1+rozszerz*((y0>y1)?(-1):1),kolor,pioro1/2);
 	        //  }
-		  liniaPionowa(x0, y0, y1, kolor, 2*grubosc+1-half);
+			if(kropki) {
+				rysujPunkt4(x0,y0-half,kolor,(pioro1+KROPKI_KOREKCJA)/2);
+				rysujPunkt4(x1,y1-half,kolor,(pioro1+KROPKI_KOREKCJA)/2);
+			}
+			liniaPionowa(x0, y0, y1, kolor, 2*grubosc+1-half);
 		  //	printf("\n");
 			return;
 		}
@@ -583,7 +589,11 @@ public:
  		//	rysujPunkt4(x0-1-rozszerz*((x0>x1)?(-1):1),y0-1,kolor,pioro1/2); 
  		//	rysujPunkt4(x1-1+rozszerz*((x0>x1)?(-1):1),y0-1,kolor,pioro1/2);
  		//  }
-		  liniaPozioma(y0, x0, x1, kolor, 2*grubosc+1-half);
+			if(kropki) {
+				rysujPunkt4(x0,y0-half,kolor,(pioro1+KROPKI_KOREKCJA)/2);
+				rysujPunkt4(x1,y1-half,kolor,(pioro1+KROPKI_KOREKCJA)/2);
+			}
+			liniaPozioma(y0, x0, x1, kolor, 2*grubosc+1-half);
 		  //	printf("\n");
 		 	return;
       		}
@@ -592,8 +602,9 @@ public:
 		    x00, x11, y00, y11, fract1, mod0, mod1, flaga;
 		double alfa3, alfa4, alfa3p, func, dfunc;
 		double aD3, aD3rad, x, d;
-		// int x0a,y0a,x1a,y1a;
-		// x0a=x0-1;x1a=x1-1;y0a=y0-1;y1a=y1-1;
+		
+		int x0a,y0a,x1a,y1a;
+		x0a=x0;x1a=x1;y0a=y0;y1a=y1;
 		
 		aD3rad = M_PI+atan2(x0-x1,y0-y1);
 		aD3 = 180.0*aD3rad/M_PI;
@@ -800,7 +811,8 @@ public:
 	// i druga rzecz - to powi@azanie tego pierwszego komentarza z tym obecnym:
 	// Bo to nie tak prosto, @ze mno@zone przez cosinus / i lub sinus
 	
-	// if(kropki) rysujPunkt4(x0a-rozszerz*sin(aD3rad),y0a-rozszerz*cos(aD3rad),kolor,pioro1/2);
+	// if(kropki) rysujPunkt4(x0a-rozszerz*sin(aD3rad),y0a-rozszerz*cos(aD3rad),kolor,pioro1/2);	
+	if(kropki) rysujPunkt4(x0a,y0a-half,kolor,(pioro1+KROPKI_KOREKCJA)/2);
         
 	for (; x0 <= x1; x0++) {
 	    if( true && ( grubosc != 0 ) )  //   W Y G L A D Z A N I E
@@ -838,6 +850,7 @@ public:
 	}
 
 	// if(kropki) rysujPunkt4(x1a+rozszerz*sin(aD3rad),y1a+rozszerz*cos(aD3rad),kolor,pioro1/2);
+	if(kropki) rysujPunkt4(x1a,y1a-half,kolor,(pioro1+KROPKI_KOREKCJA)/2);
 
       }
       else {
@@ -901,6 +914,7 @@ public:
 ///////////////////////////////////////////////////////////////////	
 	
 	// if(kropki) rysujPunkt4(x0a-rozszerz*sin(aD3rad),y0a-rozszerz*cos(aD3rad),kolor,pioro1/2);
+	if(kropki) rysujPunkt4(x0a,y0a-half,kolor,(pioro1+KROPKI_KOREKCJA)/2);
 
 	for (; y0 <= y1; y0++) {
 	    if( true && ( grubosc != 0 ) )  //   W Y G L A D Z A N I E
@@ -938,6 +952,7 @@ public:
 	}
 
 	// if(kropki) rysujPunkt4(x1a+rozszerz*sin(aD3rad),y1a+rozszerz*cos(aD3rad),kolor,pioro1/2);
+	if(kropki) rysujPunkt4(x1a,y1a-half,kolor,(pioro1+KROPKI_KOREKCJA)/2);
 
       }
       // Unlock();
