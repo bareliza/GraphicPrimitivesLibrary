@@ -528,8 +528,8 @@ public:
 		y1+=cos(aD3r)*rozszerz;
 	}
 	if(kropki){
-		rysujPunkt4(x0,y0,kolor,pioro1/2);
-		rysujPunkt4(x1,y1,kolor,pioro1/2);
+		rysujPunkt4(x0-1,y0-1,kolor,(pioro1)/2);
+		rysujPunkt4(x1-1,y1-1,kolor,(pioro1)/2);
 	}
       	Linia2(x0, y0, x1, y1, kolor, pioro, rozszerz, kropki);
 	pioro = pioro1;
@@ -1067,7 +1067,7 @@ public:
 		
 //#define EL3_STEP (M_PI/180)
 #define EL3_STEP (M_PI/160)
-#define ROZSZERZ (1)
+#define ROZSZERZ (0)
 #define KROPKI (1)
 #define KROPKI_P (1)
 #define PRZEPLOT (1)

@@ -82,16 +82,24 @@ int main(int argc, char** argv) {
     
     // if( 1 ) { // a3 >= 0 && a3 <= 45 ) {
     if((a3 > 45 && a3 <=135) || (a3 > 45+180 && a3 <= 135+180)) {
-      x = abs(PEN / cos(a5rad));
+      //x = abs(PEN / cos(a5rad));
       // d = 0;
       COLOR1 = 0xff8080;
       COLOR2 = COLOR1;
     } else {
-      x = abs(PEN / cos(a3rad)); // f(0) = 1/2; f(45) = sqrt(2)/2 
+      // x = abs(PEN / cos(a3rad)); // f(0) = 1/2; f(45) = sqrt(2)/2 
       // d = 0; // x / (2 * cos(a3rad));
       COLOR1 = 0x8080ff;
       COLOR2 = COLOR1;
     }
+
+    if(a3 > 45 && a3 <= 90) {
+      // d = x * cos(a3rad) / 2;
+      COLOR1 = 0x80ff80-(0xff00*((int)a3))/90;
+      COLOR2 = 0xffc080-(0xff0000*((int)a3))/90;
+    }
+    
+    /*
     if(a3 > 45 && a3 <= 90) {
       d = x * cos(a3rad) / 2;
       COLOR1 = 0x80ff80-(0xff00*((int)a3))/90;
@@ -123,15 +131,15 @@ int main(int argc, char** argv) {
         }
       }
     }
-
-    printf("K@AT a3 = %d; ", (int)(a3) );
+    */
+    //printf("K@AT a3 = %d; ", (int)(a3) );
     d = 0;
     //if(cos(a4rad)<1) D_R = PEN2 * cos(a4rad) / sqrt( 1 - 1/(cos(a4rad)*cos(a4rad)) );
     //else D_R = 0;
-    D_R = 0;
+    //D_R = 0;
     // printf("%F\n",D_R);
-    printf("%d,%d@",(int)d,(int)x);
-    P.pisak(x); // PEN);
+    //printf("%d,%d@",(int)d,(int)x);
+    //P.pisak(x); // PEN);
     P.pisak(PEN); // PEN);     
     /*
     P.linia(O1_X + O1_R0 * sin(a3rad),
@@ -143,14 +151,14 @@ int main(int argc, char** argv) {
 	    O1_Y + ( O1_R0 - d ) * cos(a3rad),
 	    O1_X + ( O1_R + d /* - D_R */) * sin(a3rad),
 	    O1_Y + ( O1_R + d /* - D_R */) * cos(a3rad),
-	    COLOR1, 20);
+	    COLOR1, 20, argc>3);
     if(a3>45 && a3 <=90) printf("kat a3 = %d; ", (int)(a3) );
     P.linia(O1_X + ( O1_R0 + d ) * sin(a3rad),
 	    O1_Y + ( O1_R0 + d ) * cos(a3rad),
 	    O1_X + ( O1_R - d /* - D_R */) * sin(a3rad),
 	    O1_Y + ( O1_R - d /* - D_R */) * cos(a3rad),
-	    COLOR2, 5);
-    P.pisak(4);
+	    COLOR2, 5, argc>3);
+    P.pisak(0);
     P.linia(O1_X + O1_R0 * sin(a3rad),
 	    O1_Y + O1_R0 * cos(a3rad),
 	    O1_X + O1_R1 * sin(a3rad),
@@ -189,5 +197,5 @@ int main(int argc, char** argv) {
   // P.Linia2(60,60,RX-60,RY-60,0xff,11);
   
   P.odswiez();
-  if(argc<=3) K.czekajNaKlawisz();
+  if(argc<=5) K.czekajNaKlawisz();
 }

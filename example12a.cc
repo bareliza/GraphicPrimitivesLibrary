@@ -41,9 +41,9 @@ int main(int argc, char** argv) {
   P.yc1 = LESS_CLIPPING;
 
   for(int a3=60;a3<360;a3+=360/7) {
-    P.pisak(10);
+    P.pisak(18);
     P.elipsa3(RY/3+40, RY/2, RY/3, RY/9, 0, 360, a3, 0xff0000);
-    P.pisak(5);
+    P.pisak(16);
     P.elipsa3(RY/3+40, RY/2, RY/3, RY/9, 0, 360, a3, 0xffffff);
   }      
 

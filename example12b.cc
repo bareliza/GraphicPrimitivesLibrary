@@ -40,22 +40,22 @@ int main(int argc, char** argv) {
   P.yc0 = LESS_CLIPPING;
   P.yc1 = LESS_CLIPPING;
 
-  for(int a3=60;a3<360;a3+=360/7) {
-    P.pisak(10);
-    P.elipsa3(RY/3+40, RY/2, RY/3, RY/9, 0, 360, a3, 0xff0000);
-    P.pisak(5);
-    P.elipsa3(RY/3+40, RY/2, RY/3, RY/9, 0, 360, a3, 0xffffff);
+  for(double a3=0.0/*60.0*/;a3<360.0;a3+=360.0/5.0) {
+    P.pisak(22);
+    P.elipsa3(RY/4+70, RY/2, RY/3, RY/7, 0, 360, a3, 0xff0000);
+    P.pisak(12);
+    P.elipsa3(RY/4+70, RY/2, RY/3, RY/7, 0, 360, a3, 0x03f1f);
   }      
 
-  P.pisak(7);
+  P.pisak(8);
   for(int r=35;r<=100;r+=5) {
-    P.elipsa3(RX-RY/3-150, RY/2, 3*r, 3*r, 0, 360, 0,0x60ff);
-    P.pisak(15);
-    P.elipsa3(RX-RY/3-150, RY/2, 3*r-(90+60-r-r/2), 3*r, 0, 360, 0,0xffffff, r>70);
-    P.pisak(11);
-    P.elipsa3(RX-RY/3-150, RY/2, 3*r-(90+60-r-r/2), 3*r, 0, 360, 0,r<=70?0xffffa0:0xff9b00, r>70);
-    P.pisak(7);
-    P.elipsa3(RX-RY/3-150, RY/2, 3*r-(90+60-r-r/2), 3*r, 0, 360, 0,r<=70?0xffffff:0x00, r>70);
+    P.elipsa3(RX-RY/3-120, RY/2, 3*r, 3*r, 0, 360, 0,0x60ff);
+    P.pisak(16);
+    P.elipsa3(RX-RY/3-120, RY/2, 3*r-(90+60-r-r/2), 3*r, 0, 360, 0,0xffffff, r>70);
+    P.pisak(12);
+    P.elipsa3(RX-RY/3-120, RY/2, 3*r-(90+60-r-r/2), 3*r, 0, 360, 0,r<=70?0xffa080:0xff9b00, r>70);
+    P.pisak(8);
+    P.elipsa3(RX-RY/3-120, RY/2, 3*r-(90+60-r-r/2), 3*r, 0, 360, 0,r<=70?0xffffff:0x00, r>70);
  }  
   
   P.odswiez();
