@@ -72,12 +72,12 @@ int main(int argc, char** argv) {
   else a3stop=a3start;
   //double a3=0.0;
    for(int start =a3start; start<=a3stop; start+=1) { 
-     for(double a3=start;a3<720;a3+=0.10) {
+     for(double a3=start;a3<45;a3+=0.10) {
        P.pisak(8);
 #define R1 (0)
         for(int i=0;i<=8;i++)
 	  P.elipsa3(RX/2+R1*cos(deg2rad(a3)), RY/2+R1*sin(deg2rad(a3)), 4*i, RY/3+4*i, 0, 180, a3, 
-                  0xff00ff+4*i*0x10000+4*i*0x100-0x1*4*i/* i*0x100 */ /* PINK+R1*i+G1*i-B1*i i:0x4..0x20 */); 
+                  0xcf00ff+4*i*0x10000+4*i*0x100-0x1*4*i/* i*0x100 */ /* PINK+R1*i+G1*i-B1*i i:0x4..0x20 */); 
                   // 4*i: 0x04..0x20     
       P.odswiez();
       usleep(10000); // 10ms
