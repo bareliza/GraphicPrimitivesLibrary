@@ -567,8 +567,12 @@ public:
       // Console.WriteLine($"DEBUG: _Line( {x0}, {y0}, {x1}, {y1}, {kolor}, {grubosc}, {half});");
       if ((x0 < CLIP0_X && x1 < CLIP0_X) || (x0 >= CLIP1_X && x1 >= CLIP1_X) || 
 	  (y0 < CLIP0_Y && y1 < CLIP0_Y) || (y0 >= CLIP1_Y && y1 >= CLIP1_Y))
-	kolor = 0xb0ffb0;
-      // return; // Proste klipowanie
+	{
+#ifdef KLIPOWANIE
+		return;
+#endif	
+		kolor = 0xb0ffb0;
+	} // return; // Proste klipowanie
 #define KROPKI_KOREKCJA (1.1)
 //-half)
 	        if (x0 == x1) {
@@ -725,12 +729,21 @@ public:
 		    (x1 < CLIP0_X && y0 >= CLIP1_Y) ||
 
 		    (x0 >= CLIP1_X && y1 < CLIP0_Y) ||
-		    (x1 >= CLIP1_X && y0 < CLIP0_Y)) kolor = 0x8080ff;
-
+		    (x1 >= CLIP1_X && y0 < CLIP0_Y)) {
+#ifdef KLIPOWANIE
+			return;
+#endif				
+			kolor = 0x8080ff;
+		}
 		if ((x0 <  CLIP0_X && x1 <  CLIP0_X) ||
 		    (x0 >= CLIP1_X && x1 >= CLIP1_X) ||
 	   	    (y0 <  CLIP0_Y && y1 <  CLIP0_Y) ||
-		    (y0 >= CLIP1_Y && y1 >= CLIP1_Y)) kolor = 0xffd0ff;
+		    (y0 >= CLIP1_Y && y1 >= CLIP1_Y)) {
+#ifdef KLIPOWANIE
+			return;
+#endif	
+			kolor = 0xffd0ff;
+		}
 		// return;
 
 		///////////// BAD CODING - redundancja kodu klipujacego
