@@ -72,7 +72,7 @@ int main(int argc, char** argv) {
   else a3stop=a3start;
   //double a3=0.0;
    for(int start =a3start; start<=a3stop; start+=1) { 
-     for(double a3=start;a3<720;a3+=0.10) {
+     for(double a3=start;a3<45;a3+=0.10) {
        P.pisak(8);
 #define R1 (0)
         for(int i=0;i<=8;i++)
