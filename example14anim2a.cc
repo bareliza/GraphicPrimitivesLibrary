@@ -58,8 +58,7 @@ int main(int argc, char** argv) {
 
 // #define debug11
 
-  int O1_X,O1_Y,a3start,a3stop,one2speed;
-  unsigned int kolor;
+  int O1_X,O1_Y,a3start,a3stop;
   O1_X = O1_Xbase;
   O1_Y = O1_Ybase;
   P.pisak(PEN);
@@ -67,26 +66,24 @@ int main(int argc, char** argv) {
   unsigned int COLOR, COLOR1, COLOR2;
   // dla a3=2 jest slabo, już lepiej
   // dla a3=4 jest slabo, też już lepiej
-  if(argc>1)kolor = strtol(argv[1], NULL, 16);
-  else kolor=0x7f00ff;
-  if(argc>2)a3start = atoi(argv[2]);
+  if(argc>1)a3start = atoi(argv[1]);
   else a3start=0;
-  if(argc>3)a3stop = atoi(argv[3]);
-  else a3stop=45;
-  if(argc>4)one2speed = atoi(argv[4]);
-  else one2speed = 10000;// 10ms
+  if(argc>2)a3stop = atoi(argv[2]);
+  else a3stop=a3start;
   //double a3=0.0;
-  for(double a3=a3start;a3<a3stop;a3+=0.10) {
-        P.pisak(8);
+   for(int start =a3start; start<=a3stop; start+=1) { 
+     for(double a3=start;a3<45;a3+=0.10) {
+       P.pisak(8);
 #define R1 (0)
         for(int i=0;i<=8;i++)
 	  P.elipsa3(RX/2+R1*cos(deg2rad(a3)), RY/2+R1*sin(deg2rad(a3)), 4*i, RY/3+4*i, 0, 180, a3, 
-                  kolor+15*i*0x10000+15*i*0x100-0x1*15*i/* i*0x100 */ /* PINK+R1*i+G1*i-B1*i i:0x4..0x20 */); 
+                  0xcf00ff+4*i*0x10000+4*i*0x100-0x1*4*i/* i*0x100 */ /* PINK+R1*i+G1*i-B1*i i:0x4..0x20 */); 
                   // 4*i: 0x04..0x20     
       P.odswiez();
-      usleep(one2speed);
+      usleep(10000); // 10ms
       P.czysc(0xffffff);
+    }
   }
   P.odswiez();
-  if(argc<=6) K.czekajNaKlawisz();
+  if(argc<=5) K.czekajNaKlawisz();
 }
