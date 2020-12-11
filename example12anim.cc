@@ -49,7 +49,7 @@ int main(int argc, char** argv) {
     P.elipsa3(RY/3+40, RY/2, RY/3, RY/9, 0, 360, a3, 0xffffff);
   }      
 
-  for(double a3=0.0;a3<360.0;a3+=360.0/720.0) {
+  for(double a3=0.0;a3<45.0;a3+=1) {
   		P.pisak(3);
   		for(int r=35;r<=100;r+=5) {
     			P.elipsa3(RX-RY/3-150, RY/2, 3*r, 3*r, 0, 360, 0,0x60ff);
@@ -60,8 +60,8 @@ int main(int argc, char** argv) {
     			P.pisak(3);
     			P.elipsa3(RX-RY/3-150, RY/2, 3*r-(90+60-r-r/2), 3*r, 0, 360, a3,r<=70?0xffffff:0x00, r>70);
  		}
- 		P.odswiez();
- 		usleep(100000);		
+ 		P.odswiez(); 		
+		//usleep(20000); // 20ms		
  }		  
   
   P.odswiez();

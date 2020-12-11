@@ -1076,11 +1076,15 @@ public:
 //		 x1=cos(alfa_prim)*r; y1=sin(alfa_prim*r);
 // To chyba tyle, teraz jeszcze trzeba to zaprogramowaæ...
 	void elipsa3(int ox, int oy, int rx, int ry, 
-		     int alfa0, int alfa1,int alfa3, unsigned int kolor, int dotted=0){
+		     double alfa0, double alfa1,double alfa3, unsigned int kolor, int dotted=0){
 		double r, a, aPrim;
 		double x0,y0,x1,y1,x2,y2,x3,y3;
 		
 //#define EL3_STEP (M_PI/180)
+//#define EL3_STEP (M_PI/160)
+// podwaja szybkosc /z 4 do 8 klatek na sekunde/ przykladowej animacji:
+//#define EL3_STEP (M/PI/30)
+//#define EL3_STEP (M_PI/80)
 #define EL3_STEP (M_PI/160)
 #define ROZSZERZ (0)
 #define KROPKI (1)
