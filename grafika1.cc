@@ -3,6 +3,7 @@
 #include "SDL/SDL.h"
 //#define __cplusplus
 #include <stdio.h>
+#include <stdlib.h>
 //#include <io.h>
 
 #include <math.h>
@@ -510,7 +511,7 @@ public:
 
     void linia(int x0, int y0, int x1, int y1, unsigned int kolor, int rozszerz = 0, int kropki = 1){
       	// printf("%d$%d$%d$%d$",x0,y0,x1,y1);
-	double aD3r;
+	double aD3r, aD3rPrim, r;
 	aD3r = M_PI+atan2(x0-x1,y0-y1);
 	pioro1 = pioro;
         if(pioro>1){ // zle kodowanie: magic number, patrz wyjasnienie nizej
@@ -527,6 +528,43 @@ public:
 		x1+=sin(aD3r)*rozszerz;
 		y1+=cos(aD3r)*rozszerz;
 	}
+	
+	// aD3r mod M_PI/4 == M_PI/4 --> rozszerz dodatkowo o 10% (5%) (n%):
+	
+#define rad2deg(a) (180.0*a/M_PI)
+	if( pioro > 1 && 0 ) {
+		aD3rPrim = aD3r;
+		while(aD3rPrim >= M_PI/2) aD3rPrim -= M_PI/2;
+		// aD3r' zawarte w [ 0°, 90° ) 
+		// 45° -> n% 0° i 90° -> 0%
+		//printf("%3.3f ", rad2deg(aD3rPrim));		
+		aD3rPrim = aD3rPrim / (M_PI/2);
+		//printf("[0, 1) %3.3f ", aD3rPrim);		
+		// .. zawarte w [0, 1)
+		// 
+		//    /     =>
+		//   /          /\
+		//
+
+//#define abs11(a) ( ((a)<0) ? (-a) : (a) )
+		aD3rPrim = 2 * ( 0.5-abs(aD3rPrim-0.5) );
+		//printf ("%3.3f\n", aD3rPrim);
+
+		// dla 60 pixeli odleglosci
+		// 8 pixeli korekcji
+		r = sqrt((x1-x0)*(x1-x0)+(y1-y0)*(y1-y0));
+//#define KANCERA2 (60 * (aD3rPrim * 8 + 1 * (aD3r > M_PI)) / r)
+//#define KANCERA3 (60 * (aD3rPrim * 8 - 1 * (aD3r > M_PI)) / r)
+
+#define KANCERA2 ( (aD3rPrim * 8 + 1 * (aD3r > M_PI)) )
+#define KANCERA3 ( (aD3rPrim * 8 - 1 * (aD3r > M_PI)) )
+		x0-=sin(aD3r)*KANCERA2;
+		y0-=cos(aD3r)*KANCERA2;
+		x1+=sin(aD3r)*KANCERA3;
+		y1+=cos(aD3r)*KANCERA3;
+	}
+	
+	
 /*	if(kropki){
 		rysujPunkt4(x0-1,y0-1,kolor,(pioro1)/2);
 		rysujPunkt4(x1-1,y1-1,kolor,(pioro1)/2);
@@ -767,53 +805,34 @@ public:
         //  `\/2 '
 #define deg(alfa) (alfa*180/M_PI)
         alfa3 = atan2(dx,dy);
-
-	if(fract<0) {
-	// 45°-90° -> 90°-45°
-	// 45 -> 90
-	// 90 -> 45
-	  alfa3 = M_PI/2-(alfa3-M_PI/8);
-	  //alfa3 = M_PI/2-(alfa3-M_PI/4);
-	  
-	// jest:
-	// 0-90 -> 90-0
-	// 0 -> 90
-	// 90 -> 0
-	}
+	if(fract<0) { // 45°-90° -> 90°-45°; 45° -> 90°, 90° -> 45°
+	  alfa3 = M_PI/2-(alfa3-M_PI/8); } // jest: 0-90 -> 90-0; 0 -> 90, 90 -> 0
 	
         alfa4 = alfa3 - M_PI/4;
         func = alfa4/(M_PI/4); // [0°, 45°] -> [0, 1]
         func = func * 7.0;
         dfunc = .8 * M_PI/60 * func - M_PI/60;
         alfa3p = alfa3 + 1 * dfunc - (deg(alfa4) > 7.0) * M_PI/24;
-        if(fract<0) {
-        //  printf("~");
+        if(fract<0) { //  printf("~");
           alfa3p+=M_PI/2;
 	  if(alfa3p > M_PI/4) alfa3p -= M_PI*5/180;
         }  
 	if(alfa3p > M_PI/2) alfa3p = M_PI/2-.0005;
         fract1 = (int)((1<<16)*sqrt(tan(alfa3p)));
+
+	y0 <<= 16;
+	y0 += (1 << 15);
+
+#define KANCERA11 (-2)	
+	x00 = x0-4-KANCERA11+1*(deg(alfa4) > 8.0 );
+	x11 = x1+2+KANCERA11-1*(deg(alfa4) > 20.0);
+///////////////////////////////////////////////////////////////////	
 /* * /
         printf("a3: %3.3f a4: %3.3f a3p: %3.3f f: %3.3f df: %3.3f df°: %3.3f fr1: %3.3f\n", 
                deg(alfa3), deg(alfa4), deg(alfa3p), func, dfunc, deg(dfunc), fract1/(1.0*(1<<16)));
 / * */
         // alfa3 = 45° -> f = 0 ((-1)) (0) .5 .3
         // alfa3 = 90° -> sqrt(f) = 2 (1)
-	y0 <<= 16;
-	y0 += (1 << 15);
-	
-	/*
-	rozszerz *= abs(cos(aD3rad));
-	if( rozszerz ){
-	  x0 -= rozszerz;
-	  x1 += rozszerz;
-	  y0 -= rozszerz * fract;	
-	}
-	*/
-	  
-	x00 = x0-4+1*(deg(alfa4) > 8.0 );
-	x11 = x1+2-1*(deg(alfa4) > 20.0);
-///////////////////////////////////////////////////////////////////	
 
 	// Na czym polega trudno@s@c z "kropkami": niepewno@s@c tych minus i plus, czyli
 	// fakt, ze z pewnych powodow x0 mo@ze w tym miejscu by@c zamienione z x1a,
@@ -831,11 +850,13 @@ public:
 	    if( true && ( grubosc != 0 ) )  //   W Y G L A D Z A N I E
 	    {
 #define max11(a,b) ( (a) < (b) ? (b) : (a) )
-		mod0 = max11( 0, (grubosc - 1) - ( ( fract1*(((int)(x0-x00))) )>>16 ) + 1 ); 
-		mod1 = max11( 0, ((fract1*(x0 - x11))>>16 ) - 1 + (grubosc - 1 + half) );
+#define KANCERA1 (1)
+#define KANCERA0 (1)
+		mod0 = max11( 0, (grubosc - 1) - ( ( fract1*(((int)(x0-x00))) )>>16 ) + KANCERA0 ); 
+		mod1 = max11( 0, ((fract1*(x0 - x11))>>16 ) + KANCERA1 + (grubosc - 1 + half) );
 		if(fract<0){
-			mod0 = max11( 0, ((fract1*(x0 - x11))>>16 ) - 1 + (grubosc - 1 + half) );
-			mod1 = max11(0, grubosc - 1 - ( ( (int)( fract1 * (x0 - x00) )) >> 16 ) + 1 );
+			mod0 = max11( 0, ((fract1*(x0 - x11))>>16 ) + KANCERA0 + (grubosc - 1 + half) );
+			mod1 = max11(0, grubosc - 1 - ( ( (int)( fract1 * (x0 - x00) )) >> 16 ) + KANCERA1 );
 		}
 		// modyfikator = grubosc - 1 dla x0 == x00
                 // modyfikator = 0; // dla x0 == x00 + int(sqrt(grubosc));		
@@ -881,12 +902,9 @@ public:
         //  `\/2 '
 #define deg(alfa) (alfa*180/M_PI)
         alfa3 = atan2(dy,dx);
- 	if(fract<0) {
- 		// 180° -> 0°
- 		// 135° -> 45°
- 		// 0°-45° -> 45°-0°
- 		alfa3=M_PI-alfa3;
- 	}
+ 	if(fract<0) {// 180° -> 0°; 135° -> 45°; 0°-45° -> 45°-0°
+ 		alfa3=M_PI-alfa3; }
+
         alfa4 = alfa3 - M_PI/4;
         func = alfa4/(M_PI/4); // [0°, 45°] -> [0, 1]
         func = func * 7.0;
@@ -901,7 +919,12 @@ public:
  	alfa3p += M_PI*2/180;
 	if(alfa3p > M_PI/2) alfa3p = M_PI/2-.0005;
         fract1 = (int)((1<<16)*sqrt(tan(alfa3p)));
-	//if(fract < 0) fract1 = (int)(1.029*(1<<16));
+	x0 <<= 16;
+	x0 += (1 << 15);
+        
+ 	y00 = y0-4-KANCERA11+1*(deg(alfa4) > 8.0 );
+	y11 = y1+2+KANCERA11-1*(deg(alfa4) > 20.0);
+///////////////////////////////////////////////////////////////////	
 /* * /	
         printf("a3: %3.3f a4: %3.3f a3p: %3.3f f: %3.3f df: %3.3f df°: %3.3f fr1: %3.3f\n", 
                deg(alfa3), deg(alfa4), deg(alfa3p), func, dfunc, deg(dfunc), fract1/(1.0*(1<<16)));
@@ -909,34 +932,19 @@ public:
         // alfa3 = 45° -> f = 0 ((-1)) (0) .5 .3
         // alfa3 = 90° -> sqrt(f) = 2 (1)
 	//y00 = y0;
-	x0 <<= 16;
-	x0 += (1 << 15);
-        
-        /*
-	rozszerz *= abs(cos(aD3rad));
-	if( rozszerz ){
-	  y0 -= rozszerz;
-	  y1 += rozszerz;
-	  x0 -= rozszerz * fract;	
-	}
-	*/
-	
- 	y00 = y0-4+1*(deg(alfa4) > 8.0 );
-	y11 = y1+2-1*(deg(alfa4) > 20.0);
-	flaga = 0;
-///////////////////////////////////////////////////////////////////	
 	
 	// if(kropki) rysujPunkt4(x0a-rozszerz*sin(aD3rad),y0a-rozszerz*cos(aD3rad),kolor,pioro1/2);
 	if(kropki) rysujPunkt4(x0a,y0a-half,kolor,(pioro1+KROPKI_KOREKCJA)/2);
-
+	//if(kolor == 0) kolor = 0xff0000;
 	for (; y0 <= y1; y0++) {
 	    if( true && ( grubosc != 0 ) )  //   W Y G L A D Z A N I E
 	    {
-		mod0 = max11( 0, (grubosc - 1) - ( ( fract1*(((int)(y0-y00))) )>>16 ) + 1 ); 
-		mod1 = max11( 0, ((fract1*(y0 - y11))>>16 ) - 1 + (grubosc - 1 + half) );
+		mod0 = max11( 0, (grubosc - 1) - ( ( fract1*(((int)(y0-y00))) )>>16 ) + KANCERA0 ); 
+		mod1 = max11( 0, ((fract1*(y0 - y11))>>16 ) + KANCERA1 + (grubosc - 1 + half) );
 		if(fract<0){
-			mod1 = max11( 0, (grubosc - 1) - ( ( fract1*(((int)(y0-y00))) )>>16 ) + 1 ); 
-			mod0 = max11( 0, ((fract1*(y0 - y11))>>16 ) - 1 + (grubosc - 1 + half) );
+			//if(kolor == 0xff0000) kolor = 0xff00;
+			mod1 = max11( 0, (grubosc - 1) - ( ( (int)( fract1*(((int)(y0-y00))) ))>>16 ) + KANCERA1 ); 
+			mod0 = max11( 0, ((fract1*(y0 - y11))>>16 ) + KANCERA0 + (grubosc - 1 + half) );
 		}
 		// modyfikator = grubosc - 1 dla x0 == x00
                 // modyfikator = 0; // dla x0 == x00 + int(sqrt(grubosc));		
@@ -1099,9 +1107,11 @@ public:
 //#define EL3_STEP (M/PI/30)
 //#define EL3_STEP (M_PI/80)
 #define EL3_STEP (M_PI/160)
-#define ROZSZERZ (0)
+#define ROZSZERZ (2)
 #define KROPKI (1)
 #define KROPKI_P (1)
+//#define KROPKI (0)
+//#define KROPKI_P (0)
 #define PRZEPLOT (1)
 		a=alfa0*2.0*M_PI/360.0;
 		r=sqrt(1.0/(cos(a)*cos(a)/rx/rx+sin(a)*sin(a)/ry/ry));

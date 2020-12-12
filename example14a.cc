@@ -47,6 +47,7 @@ punkt funkcjaR2wR2(punkt p0)
   
 int main(int argc, char** argv) {
   P.czysc(0xffffff);
+  //printf("%d\n\n\n", O1_R1-O1_R0);
 
 #define LESS_CLIPPING (2)  
   P.xc0 = LESS_CLIPPING;
@@ -151,13 +152,13 @@ int main(int argc, char** argv) {
 	    O1_Y + ( O1_R0 - d ) * cos(a3rad),
 	    O1_X + ( O1_R + d /* - D_R */) * sin(a3rad),
 	    O1_Y + ( O1_R + d /* - D_R */) * cos(a3rad),
-	    COLOR1, 20, argc>3);
+	    COLOR1, 0, argc>3);
     if(a3>45 && a3 <=90) printf("kat a3 = %d; ", (int)(a3) );
     P.linia(O1_X + ( O1_R0 + d ) * sin(a3rad),
 	    O1_Y + ( O1_R0 + d ) * cos(a3rad),
 	    O1_X + ( O1_R - d /* - D_R */) * sin(a3rad),
 	    O1_Y + ( O1_R - d /* - D_R */) * cos(a3rad),
-	    COLOR2, 5, argc>3);
+	    COLOR2, -10, argc>3);
     P.pisak(0);
     P.linia(O1_X + O1_R0 * sin(a3rad),
 	    O1_Y + O1_R0 * cos(a3rad),
