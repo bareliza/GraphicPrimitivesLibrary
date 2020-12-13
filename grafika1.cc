@@ -823,9 +823,22 @@ public:
 	y0 <<= 16;
 	y0 += (1 << 15);
 
+// dlugosc wystajacego, mniej kancery, pierwsze dla delty ujemnej.
+#define KANCERA01 (1)
 #define KANCERA11 (-2)	
-	x00 = x0-4-KANCERA11+1*(deg(alfa4) > 8.0 );
-	x11 = x1+2+KANCERA11-1*(deg(alfa4) > 20.0);
+#define KANCERA12 (-1)
+// jw. dla dy>dx
+#define KANCERA01Y (1)
+#define KANCERA11Y (0)	
+#define KANCERA12Y (1)
+// dodatnie, np. 6 eliminuje kancere w 100%, ale maleje dlugosc
+#define KANCERA1 (1)
+#define KANCERA0 (1)
+// jw. dla dy>dx
+#define KANCERA1Y (4)
+#define KANCERA0Y (4)
+	x00 = x0-4-KANCERA01*(fract<0)-KANCERA11+KANCERA12*(deg(alfa4) > 8.0 );
+	x11 = x1+4+KANCERA01*(fract<0)+KANCERA11-KANCERA12*(deg(alfa4) > 20.0);
 ///////////////////////////////////////////////////////////////////	
 /* * /
         printf("a3: %3.3f a4: %3.3f a3p: %3.3f f: %3.3f df: %3.3f df°: %3.3f fr1: %3.3f\n", 
@@ -850,8 +863,6 @@ public:
 	    if( true && ( grubosc != 0 ) )  //   W Y G L A D Z A N I E
 	    {
 #define max11(a,b) ( (a) < (b) ? (b) : (a) )
-#define KANCERA1 (1)
-#define KANCERA0 (1)
 		mod0 = max11( 0, (grubosc - 1) - ( ( fract1*(((int)(x0-x00))) )>>16 ) + KANCERA0 ); 
 		mod1 = max11( 0, ((fract1*(x0 - x11))>>16 ) + KANCERA1 + (grubosc - 1 + half) );
 		if(fract<0){
@@ -921,9 +932,9 @@ public:
         fract1 = (int)((1<<16)*sqrt(tan(alfa3p)));
 	x0 <<= 16;
 	x0 += (1 << 15);
-        
- 	y00 = y0-4-KANCERA11+1*(deg(alfa4) > 8.0 );
-	y11 = y1+2+KANCERA11-1*(deg(alfa4) > 20.0);
+
+	y00 = y0-4-KANCERA01Y*(fract<0)-KANCERA11Y+KANCERA12Y*(deg(alfa4) > 8.0 );
+	y11 = y1+4+KANCERA01Y*(fract<0)+KANCERA11Y-KANCERA12Y*(deg(alfa4) > 20.0);
 ///////////////////////////////////////////////////////////////////	
 /* * /	
         printf("a3: %3.3f a4: %3.3f a3p: %3.3f f: %3.3f df: %3.3f df°: %3.3f fr1: %3.3f\n", 
@@ -939,12 +950,12 @@ public:
 	for (; y0 <= y1; y0++) {
 	    if( true && ( grubosc != 0 ) )  //   W Y G L A D Z A N I E
 	    {
-		mod0 = max11( 0, (grubosc - 1) - ( ( fract1*(((int)(y0-y00))) )>>16 ) + KANCERA0 ); 
-		mod1 = max11( 0, ((fract1*(y0 - y11))>>16 ) + KANCERA1 + (grubosc - 1 + half) );
+		mod0 = max11( 0, (grubosc - 1) - ( ( fract1*(((int)(y0-y00))) )>>16 ) + KANCERA0Y ); 
+		mod1 = max11( 0, ((fract1*(y0 - y11))>>16 ) + KANCERA1Y + (grubosc - 1 + half) );
 		if(fract<0){
 			//if(kolor == 0xff0000) kolor = 0xff00;
-			mod1 = max11( 0, (grubosc - 1) - ( ( (int)( fract1*(((int)(y0-y00))) ))>>16 ) + KANCERA1 ); 
-			mod0 = max11( 0, ((fract1*(y0 - y11))>>16 ) + KANCERA0 + (grubosc - 1 + half) );
+			mod1 = max11( 0, (grubosc - 1) - ( ( (int)( fract1*(((int)(y0-y00))) ))>>16 ) + KANCERA1Y ); 
+			mod0 = max11( 0, ((fract1*(y0 - y11))>>16 ) + KANCERA0Y + (grubosc - 1 + half) );
 		}
 		// modyfikator = grubosc - 1 dla x0 == x00
                 // modyfikator = 0; // dla x0 == x00 + int(sqrt(grubosc));		
@@ -1107,7 +1118,7 @@ public:
 //#define EL3_STEP (M/PI/30)
 //#define EL3_STEP (M_PI/80)
 #define EL3_STEP (M_PI/160)
-#define ROZSZERZ (2)
+#define ROZSZERZ (0)
 #define KROPKI (1)
 #define KROPKI_P (1)
 //#define KROPKI (0)
