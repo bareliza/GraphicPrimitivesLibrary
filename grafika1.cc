@@ -935,6 +935,8 @@ public:
 
 	y00 = y0-4-KANCERA01Y*(fract<0)-KANCERA11Y+KANCERA12Y*(deg(alfa4) > 8.0 );
 	y11 = y1+4+KANCERA01Y*(fract<0)+KANCERA11Y-KANCERA12Y*(deg(alfa4) > 20.0);
+// MOZNA PROBOWAC CEZELOWAC DALEJ, ale ZA DUZO JUZ TEGO:
+//	if( (deg(alfa4) <= 10.0) && (fract<0) ) kolor = 0xff00;
 ///////////////////////////////////////////////////////////////////	
 /* * /	
         printf("a3: %3.3f a4: %3.3f a3p: %3.3f f: %3.3f df: %3.3f df°: %3.3f fr1: %3.3f\n", 
