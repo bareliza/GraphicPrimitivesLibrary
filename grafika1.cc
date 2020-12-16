@@ -139,6 +139,30 @@ public:
 	int pioro;
 
     char t[256];
+
+
+#define min11(a,b) ((a) < (b) ? (a) : (b))
+	void wczytajBMP(char *plik){
+		SDL_Surface* s = SDL_LoadBMP(plik);
+   		if (s == NULL) {
+        		fprintf(stderr, "Couldn't load %s: %s\n", plik, SDL_GetError());
+        		return;
+    		}
+
+		if(SDL_BlitSurface(s, NULL, screen, NULL) < 0)
+        		fprintf(stderr, "BlitSurface error: %s\n", SDL_GetError());
+
+    		SDL_UpdateRect(screen, 0, 0, s->w, s->h);
+		/*
+		for(int x=0;x<min11(wymiar.x,s->w);++x) {
+			for(int y=0;y<min11(wymiar.y,s->h);++y) {
+				rysujPunkt(x,y,((unsigned int*)s->pixels)[x+y*s->pitch]);
+			}
+		}
+		*/
+
+		SDL_FreeSurface(s);
+	}    
 	
 	Projektor(void){} // initialize(512, 512);}
 	Projektor(int wymiar_x, int wymiar_y){initialize(wymiar_x, wymiar_y);}
@@ -1216,7 +1240,6 @@ public:
 			(r.punkty[3*x+2+y*3*r.x]<<16));
 	}
     void zapiszBMP(char *plik){SDL_SaveBMP(screen,plik);}
-    
     void skalujObraz(int skala, double jasnosc = 1)
     {
          int x, y, skala2 = skala*skala, i, j;
