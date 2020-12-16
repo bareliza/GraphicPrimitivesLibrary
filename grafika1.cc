@@ -26,11 +26,19 @@ struct wektor2w{
 	wektor2w(){}
 	wektor2w(int xp, int yp){x=xp;y=yp;}
 };
+struct wektor2wR{
+	double x, y;
+	wektor2wR(){}
+	wektor2wR(double xp, double yp){x=xp;y=yp;}
+};
 wektor2w operator +(const wektor2w& w1, const wektor2w& w2){
 	return wektor2w(w1.x+w2.x,w1.y+w2.y);
 }
 wektor2w operator -(const wektor2w& w1, const wektor2w& w2){
 	return wektor2w(w1.x-w2.x,w1.y-w2.y);
+}
+wektor2w operator *(const wektor2wR& s, const wektor2w& w){
+	return wektor2w(s.x*((double)w.x),s.y*((double)w.y));
 }
 typedef wektor2w punkt;
 typedef unsigned int kolor;
