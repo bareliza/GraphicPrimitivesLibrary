@@ -16,6 +16,9 @@ void linia(int x0,int y0, int x1, int y1, unsigned int kolor) {
 void linia(punkt a, punkt b, unsigned int kolor) {
 	linia(a.x, a.y, b.x, b.y, kolor);
 }
+void linia(punkt a, punkt b) {
+	linia(a.x, a.y, b.x, b.y, ostatniKolor);
+}
 // do pomyslenia, jak to sie powinno scalic
 void liniaOPCJE(punkt a, punkt b, unsigned int kolor, int dluzej) {
 	P.linia(a.x, a.y, b.x, b.y, kolor, dluzej);
@@ -86,7 +89,7 @@ int main(int argc, char **argv){
   for(int j=0;j<P.wymiar.x;j+=100)
 	P.linia(j,0,j,P.wymiar.x,0xa00000);
 
-#define PUNKTOW (20)
+#define PUNKTOW (40)
   punkt punkty[PUNKTOW][2];
 
   int Xkolano1, Ykolano1;
@@ -169,15 +172,66 @@ int main(int argc, char **argv){
   ramie2 = reka2 + punkt(-5-5,-5-7);
   punkt& strzalkowa2rozm = punkty[17][1];
   punkt& ramie2rozm = punkty[18][1];
-  strzalkowa2rozm = punkt(26,65);
+  strzalkowa2rozm = punkt(28,75);
   ramie2rozm = punkt(27,80);
 
+  punkt& dlon1A = punkty[19][0];
+  punkt& dlon1B = punkty[20][0];
+  punkt& dlon1C = punkty[21][0];
+  punkt& dlon2A = punkty[22][0];
+  punkt& dlon2B = punkty[23][0];
+  punkt& dlon2C = punkty[24][0];
+  punkt& dlonieRozm = punkty[19][1];
+
+  dlon1A = punkt(30,220);
+  dlon1B = dlon1A + punkt(5,18);
+  dlon1C = dlon1B + punkt(10,10);
+  dlon2A = punkt(330,235);
+  dlon2B = punkt(18,5);
+  dlon2C = punkt(35,20);
+  dlonieRozm = punkt(8,0);
+  
+  punkt& ucho1A = punkty[25][0];
+  punkt& ucho1B = punkty[26][0];
+  punkt& ucho2A = punkty[27][0];
+  punkt& ucho2B = punkty[28][0];
+  punkt& uszyRozm = punkty[25][1];
+
+  ucho1A = punkt(135,58); 
+  ucho1B = ucho1A + punkt(0,28); 
+  ucho2A = punkt(210,58); 
+  ucho2B = ucho2A + punkt(0,28); 
+  uszyRozm = punkt(4,0); 
+
+  punkt& stopa1A = punkty[29][0];
+  punkt& stopa1B = punkty[30][0];
+  punkt& stopa2A = punkty[31][0];
+  punkt& stopa2B = punkty[32][0];
+  punkt& stopa2C = punkty[33][0];
+  punkt& stopa2D = punkty[34][0];
+  punkt& stopyRozm = punkty[29][1];
+
+  stopa1A = punkt(60,460);
+  stopa1B = punkt(80,490);
+  stopa2A = punkt(255,490);
+  stopa2B = punkt(255,505);
+  stopa2C = punkt(295,505);
+  stopa2D = punkt(280,490);
+  stopyRozm = punkt(10,0);
+
+
   // skalowanie:
-#define S wektor2wR(1.3,1.3)
-#define S1 wektor2wR(1.3,1.3)
+//#define S wektor2wR(1.3,1.3)
+//#define S1 wektor2wR(1.3,1.3)
+//#define S wektor2wR(0.5, 0.5)
+//#define S1 wektor2wR(0.5, 0.5)
+//#define S wektor2wR(0.8, 0.8)
+//#define S1 wektor2wR(0.8, 0.8)
+#define S wektor2wR(1, 1)
+#define S1 wektor2wR(1, 1)
 
   for(int i=0;i<PUNKTOW;++i) {
-      punkty[i][0] = S * punkty[i][0] + punkt(200,-30);
+      punkty[i][0] = S * punkty[i][0]; // + punkt(400,30);
       punkty[i][1] = S1 * punkty[i][1];
   }
 
@@ -208,67 +262,138 @@ int main(int argc, char **argv){
   
   // tors
   P.pisak(torsRozm.x);
-  // D,C
   linia(torsD,torsC,0xa04080);
   liniaDo(torsB);
   liniaDo(torsA);
   liniaDo(torsD);
 
   // wzor na torsie:
-  // D,B:
   P.pisak(torsDBrozm.y);
-  linia(torsD,torsB,0); //0x302010);
-  // A+(5,5):
-  //P.wypelnionyOkrag(145,134,0x0,56>>1);
-  wypelnionaElipsa(wzorA, torsACrozm.x,torsACrozm.x, 0,180,110,0); // 0x302010);
-  // C+(2,2):
-  wypelnionaElipsa(wzorC, torsACrozm.y,torsACrozm.y, 0,180,290,0); // 0x302010);
-  /* */
-  //wypelnionaElipsa(145,134,17,26,0,360,30,0); // 0x302010);
+  linia(torsD,torsB,0);
+  wypelnionaElipsa(wzorA, torsACrozm.x,torsACrozm.x, 0,180,110,0);
+  wypelnionaElipsa(wzorC, torsACrozm.y,torsACrozm.y, 0,180,290,0);
 
   // glowa
   wypelnionyOkrag(glowa, glowaRozm.x,0x802040);
 
-#define KOLOROWY (1)
+#define KOLOROWY (0)
+#define REKA1KOLOR       (KOLOROWY ? 0x0a4080 : 0xa00050)
+#define RAMIE1KOLOR      (KOLOROWY ? 0xff0000 : 0xd00070)
+#define RAMIE2KOLOR      (KOLOROWY ? 0xff0000 : 0xa02000)
+#define STRZALKOWA2KOLOR (KOLOROWY ? 0x0a30a0 : 0xf06000)
   // reka1
   wypelnionyOkrag(reka1, receRozm.x, 0xff00);
-  wypelnionaElipsa(reka1, reka1rozm, 0,180,31.5, KOLOROWY ? 0xa4080 : 0xa00050);
-  wypelnionaElipsa(ramie1 , ramie1rozm, 0,180,180+31.5+10, KOLOROWY ? 0xff0000 : 0xd00070); //0xa4080);
+  wypelnionaElipsa(reka1, reka1rozm, 0,180,31.5, REKA1KOLOR);
+  wypelnionaElipsa(ramie1 , ramie1rozm, 0,180,180+31.5+10, RAMIE1KOLOR); //0xa4080);
 
   // reka2
   wypelnionyOkrag(reka2, receRozm.y, 0xff00);
-  wypelnionaElipsa(ramie2, ramie2rozm, 0,180,41.5+90+15, KOLOROWY ? 0xff0000 :  0xa06030); //0xa30a0);
-  double alfa0strz2 = 180+41.5+10+90;
-  //wypelnionaElipsa(strzalkowa2, strzalkowa2rozm, 0,180,alfa0strz2, KOLOROWY ? 0xa30a0 : 0xd08040 );
+  wypelnionaElipsa(ramie2, ramie2rozm, 0,180,41.5+90+15, RAMIE2KOLOR); //0xa30a0);
+  double alfa0strz2 = 180+41.5+5+90;
+  wypelnionaElipsa(strzalkowa2, strzalkowa2rozm, 0,180, alfa0strz2, STRZALKOWA2KOLOR );
 
+  // dlonie:
+  P.pisak(dlonieRozm.x);
+  linia(dlon1A,dlon1B,0xff);
+  liniaDo(dlon1C);
+  P.pisak(dlonieRozm.x);
+  linia(dlon2A,dlon2A+dlon2B,0xff);
+  liniaDo(dlon2A+dlon2C);
+
+  // uszy:
+  P.pisak(uszyRozm.x);
+  linia(ucho1A,ucho1B,0xff);
+  linia(ucho2A,ucho2B,0xff);
+
+  // stopy:
+  P.pisak(stopyRozm.x);
+  linia(stopa1A,stopa1B,0xff);
+  linia(stopa2A,stopa2B,0xff);
+  liniaDo(stopa2C);
+  liniaDo(stopa2D);
+  liniaDo(stopa2A);
+  linia(stopa2A,stopa2C);
+  linia(stopa2B,stopa2D);
+ 
 #define ANIM_STEP (5.0-delta)
 // animacji kat bazowy
 #define AN_KAT_B (130)
 
+
  for(int i=0;i<100;i+=1) {
   double delta = 3;
   for(double alfaStrz2=alfa0strz2-30-AN_KAT_B; alfaStrz2<alfa0strz2+30-AN_KAT_B;alfaStrz2 += ANIM_STEP) {
+//    wypelnionaElipsa(strzalkowa2, strzalkowa2rozm + punkt(2,2), 0,360,alfaStrz2-ANIM_STEP, 0xffffff ); 
+    wypelnionyOkrag(strzalkowa2, strzalkowa2rozm.y + 20, 0xffffff);
+
+  // tors
+  P.pisak(torsRozm.x);
+  linia(torsD,torsC,0xa04080);
+  liniaDo(torsB);
+  liniaDo(torsA);
+  liniaDo(torsD);
+
+  // wzor na torsie:
+  P.pisak(torsDBrozm.y);
+  linia(torsD,torsB,0);
+  wypelnionaElipsa(wzorA, torsACrozm.x,torsACrozm.x, 0,180,110,0);
+  wypelnionaElipsa(wzorC, torsACrozm.y,torsACrozm.y, 0,180,290,0);
+
+
     if(alfaStrz2<alfa0strz2-AN_KAT_B) delta -= .3; // 60 / 4 = 15, 15*.1 = 1.5
     else delta += .3;
-    wypelnionaElipsa(strzalkowa2, strzalkowa2rozm + punkt(2,2), 0,180,alfaStrz2-ANIM_STEP, 0xffffff ); 
     wypelnionyOkrag(reka2, receRozm.y, 0xff00);
-    wypelnionaElipsa(ramie2, ramie2rozm, 0,180,41.5+90+15, KOLOROWY ? 0xff0000 :  0xa06030); //0xa30a0);
-    wypelnionaElipsa(strzalkowa2, strzalkowa2rozm, 0,180,alfaStrz2, KOLOROWY ? 0xa30a0 : 0xd08040 );
+    wypelnionaElipsa(ramie2, ramie2rozm, 0,180,41.5+90+15, RAMIE2KOLOR);
+    wypelnionaElipsa(strzalkowa2, strzalkowa2rozm, 0,180,alfaStrz2, STRZALKOWA2KOLOR );
+
+#define deg2rad(alfa) (M_PI*(alfa)/180)
+    dlon2A = strzalkowa2 + 
+		punkt( ((double)strzalkowa2rozm.y) * cos(deg2rad(90.0+alfaStrz2)), 
+                       ((double)strzalkowa2rozm.y) * sin(deg2rad(90.0+alfaStrz2)));
+    P.pisak(dlonieRozm.x);
+    linia(dlon2A,dlon2A+dlon2B,0xff);
+    liniaDo(dlon2A+dlon2C);
+
     P.odswiez();
     K.sprawdzIWyjdzGdyKlawisz();
   }
   delta = 3;
   for(double alfaStrz2=alfa0strz2+30-AN_KAT_B; alfaStrz2>alfa0strz2-30-AN_KAT_B;alfaStrz2 -= ANIM_STEP) {
+//    wypelnionaElipsa(strzalkowa2, strzalkowa2rozm + punkt(2,2), 0,360,alfaStrz2+ANIM_STEP, 0xffffff ); 
+    wypelnionyOkrag(strzalkowa2, strzalkowa2rozm.y + 20, 0xffffff);
+
+  // tors
+  P.pisak(torsRozm.x);
+  linia(torsD,torsC,0xa04080);
+  liniaDo(torsB);
+  liniaDo(torsA);
+  liniaDo(torsD);
+
+  // wzor na torsie:
+  P.pisak(torsDBrozm.y);
+  linia(torsD,torsB,0);
+  wypelnionaElipsa(wzorA, torsACrozm.x,torsACrozm.x, 0,180,110,0);
+  wypelnionaElipsa(wzorC, torsACrozm.y,torsACrozm.y, 0,180,290,0);
+
+
     if(alfaStrz2>alfa0strz2-AN_KAT_B) delta -= .3; // 60 / 4 = 15, 15*.1 = 1.5
     else delta += .3;
-    wypelnionaElipsa(strzalkowa2, strzalkowa2rozm + punkt(2,2), 0,180,alfaStrz2+ANIM_STEP, 0xffffff ); 
     wypelnionyOkrag(reka2, receRozm.y, 0xff00);
-    wypelnionaElipsa(ramie2, ramie2rozm, 0,180,41.5+90+15, KOLOROWY ? 0xff0000 :  0xa06030); //0xa30a0);
-    wypelnionaElipsa(strzalkowa2, strzalkowa2rozm, 0,180,alfaStrz2, KOLOROWY ? 0xa30a0 : 0xd08040 );
+    wypelnionaElipsa(ramie2, ramie2rozm, 0,180,41.5+90+15, RAMIE2KOLOR );
+    wypelnionaElipsa(strzalkowa2, strzalkowa2rozm, 0,180,alfaStrz2, STRZALKOWA2KOLOR );
+
+    dlon2A = strzalkowa2 + 
+		punkt( ((double)strzalkowa2rozm.y) * cos(deg2rad(90.0+alfaStrz2)), 
+                       ((double)strzalkowa2rozm.y) * sin(deg2rad(90.0+alfaStrz2)));
+    P.pisak(dlonieRozm.x);
+    linia(dlon2A,dlon2A+dlon2B,0xff);
+    liniaDo(dlon2A+dlon2C);
+ 
     P.odswiez();
     K.sprawdzIWyjdzGdyKlawisz();
   }
  }
+
   P.odswiez();
   K.czekajNaKlawisz();
 }
