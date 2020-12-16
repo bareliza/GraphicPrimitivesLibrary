@@ -211,8 +211,8 @@ int main(int argc, char **argv){
   punkt& stopa2D = punkty[34][0];
   punkt& stopyRozm = punkty[29][1];
 
-  stopa1A = punkt(60,460);
-  stopa1B = punkt(80,490);
+  stopa1A = punkt(50,450);
+  stopa1B = punkt(70,480);
   stopa2A = punkt(255,490);
   stopa2B = punkt(255,505);
   stopa2C = punkt(295,505);
@@ -221,17 +221,19 @@ int main(int argc, char **argv){
 
 
   // skalowanie:
-//#define S wektor2wR(1.3,1.3)
-//#define S1 wektor2wR(1.3,1.3)
+#define S wektor2wR(1.3,1.3)
+#define S1 wektor2wR(1.3,1.3)
+//#define S wektor2wR(1.1,1.1)
+//#define S1 wektor2wR(1.1,1.1)
 //#define S wektor2wR(0.5, 0.5)
 //#define S1 wektor2wR(0.5, 0.5)
 //#define S wektor2wR(0.8, 0.8)
 //#define S1 wektor2wR(0.8, 0.8)
-#define S wektor2wR(1, 1)
-#define S1 wektor2wR(1, 1)
+//#define S wektor2wR(1, 1)
+//#define S1 wektor2wR(1, 1)
 
   for(int i=0;i<PUNKTOW;++i) {
-      punkty[i][0] = S * punkty[i][0]; // + punkt(400,30);
+      punkty[i][0] = S * punkty[i][0] + punkt(200,-30);
       punkty[i][1] = S1 * punkty[i][1];
   }
 
@@ -297,8 +299,10 @@ int main(int argc, char **argv){
   linia(dlon1A,dlon1B,0xff);
   liniaDo(dlon1C);
   P.pisak(dlonieRozm.x);
-  linia(dlon2A,dlon2A+dlon2B,0xff);
-  liniaDo(dlon2A+dlon2C);
+  linia(dlon2A,dlon2A+punkt(18,5),0xff);
+  liniaDo(dlon2A+punkt(35,20));
+//  linia(dlon2A,dlon2A+dlon2B,0xff);
+//  liniaDo(dlon2A+dlon2C);
 
   // uszy:
   P.pisak(uszyRozm.x);
@@ -351,8 +355,10 @@ int main(int argc, char **argv){
 		punkt( ((double)strzalkowa2rozm.y) * cos(deg2rad(90.0+alfaStrz2)), 
                        ((double)strzalkowa2rozm.y) * sin(deg2rad(90.0+alfaStrz2)));
     P.pisak(dlonieRozm.x);
-    linia(dlon2A,dlon2A+dlon2B,0xff);
-    liniaDo(dlon2A+dlon2C);
+//    linia(dlon2A,dlon2A+dlon2B,0xff);
+//    liniaDo(dlon2A+dlon2C);
+    linia(dlon2A,dlon2A+punkt(18,5),0xff);
+    liniaDo(dlon2A+punkt(35,20));
 
     P.odswiez();
     K.sprawdzIWyjdzGdyKlawisz();
@@ -386,8 +392,10 @@ int main(int argc, char **argv){
 		punkt( ((double)strzalkowa2rozm.y) * cos(deg2rad(90.0+alfaStrz2)), 
                        ((double)strzalkowa2rozm.y) * sin(deg2rad(90.0+alfaStrz2)));
     P.pisak(dlonieRozm.x);
-    linia(dlon2A,dlon2A+dlon2B,0xff);
-    liniaDo(dlon2A+dlon2C);
+//    linia(dlon2A,dlon2A+dlon2B,0xff);
+//    liniaDo(dlon2A+dlon2C);
+    linia(dlon2A,dlon2A+punkt(18,5),0xff);
+    liniaDo(dlon2A+punkt(35,20));
  
     P.odswiez();
     K.sprawdzIWyjdzGdyKlawisz();
