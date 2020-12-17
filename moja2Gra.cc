@@ -70,23 +70,35 @@ void wypelnionyOkrag(int x, int y, int r, unsigned int kolor) {
 
 int main(int argc, char **argv){
   P.czysc(0xffffff);
-  P.wczytajBMP("20201214_102131-Postac-1a1.bmp");
+//  P.wczytajBMP("20201214_102131-Postac-1a1.bmp");
+  P.wczytajBMP("Postac-swobodna.bmp");
   P.linia(10,10,640,640,0x600060);
   P.pisak(0);
 
-  for(int i=0;i<P.wymiar.y;i+=10)
+//#define S wektor2wR(1.3,1.3)
+//#define S1 wektor2wR(1.3,1.3)
+//#define S wektor2wR(1.1,1.1)
+//#define S1 wektor2wR(1.1,1.1)
+//#define S wektor2wR(0.5, 0.5)
+//#define S1 wektor2wR(0.5, 0.5)
+//#define S wektor2wR(0.8, 0.8)
+//#define S1 wektor2wR(0.8, 0.8)
+#define S wektor2wR(1, 1)
+#define S1 wektor2wR(1, 1)
+
+  for(int i=0;i<P.wymiar.y;i += S.x * 10.0)
 	P.linia(0,i,P.wymiar.x,i,0xa000);
-  for(int j=0;j<P.wymiar.x;j+=10)
+  for(int j=0;j<P.wymiar.x;j += S.y * 10.0)
 	P.linia(j,0,j,P.wymiar.x,0xa000);
 
-  for(int i=0;i<P.wymiar.y;i+=50)
+  for(int i=0;i<P.wymiar.y;i += S.x * 50.0)
 	P.linia(0,i,P.wymiar.x,i,0x80);
-  for(int j=0;j<P.wymiar.x;j+=50)
+  for(int j=0;j<P.wymiar.x;j += S.y * 50.0)
 	P.linia(j,0,j,P.wymiar.x,0x80);
 
-  for(int i=0;i<P.wymiar.y;i+=100)
+  for(int i=0;i<P.wymiar.y;i += S.x * 100.0)
 	P.linia(0,i,P.wymiar.x,i,0xa00000);
-  for(int j=0;j<P.wymiar.x;j+=100)
+  for(int j=0;j<P.wymiar.x;j += S.y * 100.0)
 	P.linia(j,0,j,P.wymiar.x,0xa00000);
 
 #define PUNKTOW (40)
@@ -97,26 +109,26 @@ int main(int argc, char **argv){
   Ykolano1 = 365-3;
 
   punkt& kolano1 = punkty[0][0];
-  kolano1 = punkt(150-2,365-3+1);  
   punkt& udo1 = punkty[1][0];
-  udo1 = kolano1 + punkt(0,-1);
   punkt& lydka1 = punkty[2][0];
-  lydka1 = kolano1 + punkt(-41+2,52-1-1);
   punkt& kolano1rozm = punkty[0][1];
-  kolano1rozm = punkt(27,0);
   punkt& udo1rozm = punkty[1][1];
-  udo1rozm = punkt(30-3,92+3);
   punkt& lydka1rozm = punkty[2][1];
+  kolano1 = punkt(150-2,365-3+1);  
+  udo1 = kolano1 + punkt(0,-1);
+  lydka1 = kolano1 + punkt(-41+2,52-1-1);
+  kolano1rozm = punkt(27,0);
+  udo1rozm = punkt(30-3,92+3);
   lydka1rozm = punkt(27,73+4);
 
 
   punkt& kolano2 = punkty[3][0];
-  kolano2 = punkt(258,445);
   punkt& lydka2 = punkty[4][0];
-  lydka2 = kolano2 + punkt(1,10);
   punkt& kolano2rozm = punkty[3][1];
-  kolano2rozm = punkt(30,99);
   punkt& lydka2rozm = punkty[4][1];
+  kolano2 = punkt(258,445);
+  lydka2 = kolano2 + punkt(1,10);
+  kolano2rozm = punkt(30,99);
   lydka2rozm = punkt(29,42);
 
   punkt& udo2A = punkty[5][0];
@@ -197,10 +209,10 @@ int main(int argc, char **argv){
   punkt& ucho2B = punkty[28][0];
   punkt& uszyRozm = punkty[25][1];
 
-  ucho1A = punkt(135,58); 
-  ucho1B = ucho1A + punkt(0,28); 
-  ucho2A = punkt(210,58); 
-  ucho2B = ucho2A + punkt(0,28); 
+  ucho1A = punkt(135,63); 
+  ucho1B = ucho1A + punkt(0,23); 
+  ucho2A = punkt(207,63); 
+  ucho2B = ucho2A + punkt(0,23); 
   uszyRozm = punkt(4,0); 
 
   punkt& stopa1A = punkty[29][0];
@@ -213,27 +225,16 @@ int main(int argc, char **argv){
 
   stopa1A = punkt(50,450);
   stopa1B = punkt(70,480);
-  stopa2A = punkt(255,490);
-  stopa2B = punkt(255,505);
-  stopa2C = punkt(295,505);
-  stopa2D = punkt(280,490);
-  stopyRozm = punkt(10,0);
+  stopa2A = punkt(247,497);
+  stopa2B = punkt(245,505);
+  stopa2C = punkt(285,508);
+  stopa2D = punkt(270,498);
+  stopyRozm = punkt(15,10);
 
 
   // skalowanie:
-#define S wektor2wR(1.3,1.3)
-#define S1 wektor2wR(1.3,1.3)
-//#define S wektor2wR(1.1,1.1)
-//#define S1 wektor2wR(1.1,1.1)
-//#define S wektor2wR(0.5, 0.5)
-//#define S1 wektor2wR(0.5, 0.5)
-//#define S wektor2wR(0.8, 0.8)
-//#define S1 wektor2wR(0.8, 0.8)
-//#define S wektor2wR(1, 1)
-//#define S1 wektor2wR(1, 1)
-
   for(int i=0;i<PUNKTOW;++i) {
-      punkty[i][0] = S * punkty[i][0] + punkt(200,-30);
+      punkty[i][0] = S * punkty[i][0] + punkt(250 + 60,50); // + punkt(200,-30);
       punkty[i][1] = S1 * punkty[i][1];
   }
 
@@ -278,10 +279,12 @@ int main(int argc, char **argv){
   // glowa
   wypelnionyOkrag(glowa, glowaRozm.x,0x802040);
 
-#define KOLOROWY (0)
+#define CZERWONY (0xff0000)
+
+#define KOLOROWY (1)
 #define REKA1KOLOR       (KOLOROWY ? 0x0a4080 : 0xa00050)
-#define RAMIE1KOLOR      (KOLOROWY ? 0xff0000 : 0xd00070)
-#define RAMIE2KOLOR      (KOLOROWY ? 0xff0000 : 0xa02000)
+#define RAMIE1KOLOR      (KOLOROWY ? CZERWONY : 0xd00070)
+#define RAMIE2KOLOR      (KOLOROWY ? CZERWONY : 0xa02000)
 #define STRZALKOWA2KOLOR (KOLOROWY ? 0x0a30a0 : 0xf06000)
   // reka1
   wypelnionyOkrag(reka1, receRozm.x, 0xff00);
@@ -312,23 +315,34 @@ int main(int argc, char **argv){
   // stopy:
   P.pisak(stopyRozm.x);
   linia(stopa1A,stopa1B,0xff);
+
+  P.pisak(stopyRozm.y);
   linia(stopa2A,stopa2B,0xff);
   liniaDo(stopa2C);
   liniaDo(stopa2D);
   liniaDo(stopa2A);
   linia(stopa2A,stopa2C);
   linia(stopa2B,stopa2D);
- 
-#define ANIM_STEP (5.0-delta)
-// animacji kat bazowy
-#define AN_KAT_B (130)
 
+
+  ///////////////////////////////////////
+  // animacja: 
+  ///////////////////////////////////////
+
+
+#define ANIM_STEP (1.0-delta)
+#define ddelta (.3/5)
+// animacji kat bazowy
+#define AN_KAT_B (0)
+// animacji zakres 
+#define AN_ZAKR (5)
+#define ROZM_ANIM (strzalkowa2rozm.y + 39)
 
  for(int i=0;i<100;i+=1) {
   double delta = 3;
-  for(double alfaStrz2=alfa0strz2-30-AN_KAT_B; alfaStrz2<alfa0strz2+30-AN_KAT_B;alfaStrz2 += ANIM_STEP) {
+  for(double alfaStrz2=alfa0strz2-AN_ZAKR-AN_KAT_B; alfaStrz2<alfa0strz2+AN_ZAKR-AN_KAT_B;alfaStrz2 += ANIM_STEP) {
 //    wypelnionaElipsa(strzalkowa2, strzalkowa2rozm + punkt(2,2), 0,360,alfaStrz2-ANIM_STEP, 0xffffff ); 
-    wypelnionyOkrag(strzalkowa2, strzalkowa2rozm.y + 20, 0xffffff);
+    wypelnionyOkrag(strzalkowa2 + punkt(10,0), ROZM_ANIM, 0xffffff);
 
   // tors
   P.pisak(torsRozm.x);
@@ -344,8 +358,8 @@ int main(int argc, char **argv){
   wypelnionaElipsa(wzorC, torsACrozm.y,torsACrozm.y, 0,180,290,0);
 
 
-    if(alfaStrz2<alfa0strz2-AN_KAT_B) delta -= .3; // 60 / 4 = 15, 15*.1 = 1.5
-    else delta += .3;
+    if(alfaStrz2<alfa0strz2-AN_KAT_B) delta -= ddelta; // 60 / 4 = 15, 15*.1 = 1.5
+    else delta += ddelta;
     wypelnionyOkrag(reka2, receRozm.y, 0xff00);
     wypelnionaElipsa(ramie2, ramie2rozm, 0,180,41.5+90+15, RAMIE2KOLOR);
     wypelnionaElipsa(strzalkowa2, strzalkowa2rozm, 0,180,alfaStrz2, STRZALKOWA2KOLOR );
@@ -364,9 +378,9 @@ int main(int argc, char **argv){
     K.sprawdzIWyjdzGdyKlawisz();
   }
   delta = 3;
-  for(double alfaStrz2=alfa0strz2+30-AN_KAT_B; alfaStrz2>alfa0strz2-30-AN_KAT_B;alfaStrz2 -= ANIM_STEP) {
+  for(double alfaStrz2=alfa0strz2+AN_ZAKR-AN_KAT_B; alfaStrz2>alfa0strz2-AN_ZAKR-AN_KAT_B;alfaStrz2 -= ANIM_STEP) {
 //    wypelnionaElipsa(strzalkowa2, strzalkowa2rozm + punkt(2,2), 0,360,alfaStrz2+ANIM_STEP, 0xffffff ); 
-    wypelnionyOkrag(strzalkowa2, strzalkowa2rozm.y + 20, 0xffffff);
+    wypelnionyOkrag(strzalkowa2 + punkt(10,0), ROZM_ANIM, 0xffffff);
 
   // tors
   P.pisak(torsRozm.x);
@@ -382,8 +396,8 @@ int main(int argc, char **argv){
   wypelnionaElipsa(wzorC, torsACrozm.y,torsACrozm.y, 0,180,290,0);
 
 
-    if(alfaStrz2>alfa0strz2-AN_KAT_B) delta -= .3; // 60 / 4 = 15, 15*.1 = 1.5
-    else delta += .3;
+    if(alfaStrz2>alfa0strz2-AN_KAT_B) delta -= ddelta; // 60 / 4 = 15, 15*.1 = 1.5
+    else delta += ddelta;
     wypelnionyOkrag(reka2, receRozm.y, 0xff00);
     wypelnionaElipsa(ramie2, ramie2rozm, 0,180,41.5+90+15, RAMIE2KOLOR );
     wypelnionaElipsa(strzalkowa2, strzalkowa2rozm, 0,180,alfaStrz2, STRZALKOWA2KOLOR );
