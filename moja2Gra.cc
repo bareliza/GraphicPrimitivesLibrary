@@ -231,10 +231,12 @@ int main(int argc, char **argv){
   stopa2D = punkt(270,498);
   stopyRozm = punkt(15,10);
 
-
+  ////////////////////////////////////////////
   // skalowanie:
+  ////////////////////////////////////////////
+
   for(int i=0;i<PUNKTOW;++i) {
-      punkty[i][0] = S * punkty[i][0] + punkt(250 + 60,50); // + punkt(200,-30);
+      punkty[i][0] = S * punkty[i][0] + punkt(250 + 60,10); // + punkt(200,-30);
       punkty[i][1] = S1 * punkty[i][1];
   }
 
