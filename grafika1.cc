@@ -60,6 +60,7 @@ public:
 struct Klawiatura{
 	SDL_Event event;
 	int klawisz;
+	punkt mysz;
 
 	void sprawdzIWyjdzGdyKlawisz(void){
 		SDL_PollEvent( &event );
@@ -89,10 +90,20 @@ struct Klawiatura{
 	}
 	
 	void odswiez(void){
-		SDL_PollEvent( &event );
-		if(event.type==SDL_KEYDOWN){ klawisz=event.key.keysym.sym; printf("EEE\n"); }
-		if(event.type==SDL_KEYUP){klawisz=-1;printf("BLABLABLA\n");}
-//		if(event.type==SDL_MOUSEMOVE)printf( "Mouse move\n");
+		if (SDL_PollEvent( &event )) {
+			if(event.type==SDL_KEYDOWN){ klawisz=event.key.keysym.sym; printf("EEE\n"); }
+			if(event.type==SDL_KEYUP){klawisz=-1;printf("BLABLABLA\n");}
+			if(event.type==SDL_MOUSEMOTION){ 
+				mysz.x = event.motion.x;
+				mysz.y = event.motion.y;
+				printf( "Mouse move\n"); 
+			}
+		} else {
+			zeruj();
+		}
+	}
+	void zeruj(void){
+		event.type = SDL_USEREVENT; // quick hack
 	}
 };
 
@@ -224,7 +235,7 @@ public:
 	SDL_Color *forecol;
 	SDL_Rect dstrect;
 	
-	void freeTextMemory(SDL_Surface *s)
+	void freeTekstMemory(SDL_Surface *s)
 	{
 		SDL_FreeSurface(s);
 	}
@@ -246,7 +257,7 @@ public:
 								SDL_GetError());
 			TTF_CloseFont(czcionka2);
 		}
-		freeTextMemory(text);		
+		freeTekstMemory(text);		
 	}
 
 	void tekst2(int x, int y, char* format, void* ptr){

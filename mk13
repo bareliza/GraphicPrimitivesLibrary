@@ -1,1 +1,1 @@
-g++ -o example13 example13.cc -lSDL -lSDLmain
+g++ -o example13 example13.cc -lSDL_ttf -lSDL -lSDLmain

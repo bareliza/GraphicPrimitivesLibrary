@@ -1,4 +1,4 @@
-g++ -o example5 example5.cc -lSDL -lSDLmain
-g++ -o example6 example6.cc -lSDL -lSDLmain
-g++ -o example7 example7.cc -lSDL -lSDLmain
-g++ -o example8 example8.cc -lSDL -lSDLmain
+g++ -o example5 example5.cc -lSDL_ttf -lSDL -lSDLmain
+g++ -o example6 example6.cc -lSDL_ttf -lSDL -lSDLmain
+g++ -o example7 example7.cc -lSDL_ttf -lSDL -lSDLmain
+g++ -o example8 example8.cc -lSDL_ttf -lSDL -lSDLmain
