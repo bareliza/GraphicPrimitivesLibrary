@@ -127,16 +127,16 @@ int main(int argc, char **argv){
   punkt& lydka1rozm = punkty[2][1];
   kolano1 = punkt(150-2,365-3+1);  
   udo1 = kolano1 + punkt(0,-1);
-  lydka1 = kolano1 + punkt(-41+2,52-1-1);
+  lydka1 = kolano1 + punkt(-41+2, 52-1-1) + punkt(-20, 20) - punkt(5,5);
   kolano1rozm = punkt(27,0);
   udo1rozm = punkt(30-3,92+3);
-  lydka1rozm = punkt(28,60+4);
+  lydka1rozm = punkt(28,90+4);
 
 #define OST (35)
   punkt& lydka01 = punkty[OST][0];
-  lydka01 = punkt(374, 438) - punkt(250+50, 0);
+  lydka01 = punkt(80, 432); // - punkt(250+50, 0);
   punkt& lydka01rozm = punkty[OST][1]; 
-  lydka01rozm = punkt(22, 22);
+  lydka01rozm = punkt(28, 28);
   
   punkt& kolano2 = punkty[3][0];
   punkt& lydka2 = punkty[4][0];
@@ -256,7 +256,9 @@ int main(int argc, char **argv){
       punkty[i][1] = S1 * punkty[i][1];
   }
 
-  // Rysowanie:
+  ////////////////////////////////////////////
+  // rysowanie:
+  ////////////////////////////////////////////
 
   // kolano1
   wypelnionyOkrag(kolano1, kolano1rozm.x, 0xc04000); // 27
@@ -266,8 +268,8 @@ int main(int argc, char **argv){
   //wypelnionaElipsa(Xkolano1-41,Ykolano1+52,28,70,0,360,55,0xd06000);
   //P.elipsa3(Xkolano1-41+2,Ykolano1+52-1,27,73,0,360,55,0xd06000);
   // lydka1
-  wypelnionaElipsa(lydka1 ,lydka1rozm , 0,360,55,0xd06000);
-  wypelnionaElipsa(lydka01, lydka01rozm, 0,180,55,0xc04000);
+  wypelnionaElipsa(lydka01, lydka01rozm, 0,360,55,0xc04000);
+  wypelnionaElipsa(lydka1 ,lydka1rozm , 0,180,55+180,0xd06000);
  
   // lydka2
   //P.elipsa3(lydka2.x,lydka2.y, 29,42,0,360,0,0xff00);
@@ -370,9 +372,21 @@ int main(int argc, char **argv){
  
   P.otworzCzcionke("TerminusTTF-4.46.0.ttf", 0, 0, 1, 32);
 
+  int miarkaAktywna = 0;
+  punkt miarkaStart, delta;
+
   while(K.klawisz != SDLK_ESCAPE) {
   	K.odswiez();
-  	if(K.event.type = SDL_MOUSEMOTION && 
+  	if(K.event.type == SDL_MOUSEBUTTONDOWN) {
+  		if ( miarkaAktywna ) {
+  			miarkaAktywna = 0;
+  		} else {
+  			miarkaAktywna= 1;
+  		}
+  		
+  		if(miarkaAktywna) miarkaStart = mysz1;
+  	}
+  	if(K.event.type == SDL_MOUSEMOTION && 
   	   ( (K.mysz.x != mysz0.x) || (K.mysz.y != mysz0.y) )
   	   ) {
   		printf("mysz x: %d y: %d\n", K.mysz.x, K.mysz.y);
@@ -380,9 +394,14 @@ int main(int argc, char **argv){
                  mysz1 = K.mysz;
                  if ( mysz1.x > 300 ) mysz1.x -= 300;
 
-  		P.prostokat(0, 0, 150, 40, 0xffffff);
+  		P.prostokat(0, 0, 300, 40, 0xffffff);
   		P.tekst2(15, 2, "%d", &(mysz1.x) );
-  		P.tekst2(85, 2, "%d", &(mysz1.y) );
+  		P.tekst2(75, 2, "%d", &(mysz1.y) );
+  		if(miarkaAktywna) {
+  			delta = mysz1 - miarkaStart;
+  			P.tekst2(155, 2, "%d", &(delta.x) );
+  			P.tekst2(225, 2, "%d", &(delta.y) );
+  		}
   		P.odswiez();				
 	}
 	K.zeruj();
