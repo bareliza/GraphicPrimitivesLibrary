@@ -1,6 +1,7 @@
 #ifdef _ALE_ZLY_STYL_BIBLIOTEK_
 //#undef __cplusplus
 #include "SDL/SDL.h"
+#include "SDL/SDL_ttf.h"
 //#define __cplusplus
 #include <stdio.h>
 #include <stdlib.h>
@@ -183,6 +184,86 @@ public:
 		initialize(wymiar_x, wymiar_y);
 		this->K=&K;
 	}
+
+//	char czcionka1[256];
+	int czcBold, czcItalic, czcOutline, czcRozm;
+	TTF_Font *czcionka2;
+	SDL_Surface *text, *temp;
+
+	void otworzCzcionke(char* plikTTF, int bold, int italic, int outline, int rozmiar)
+	{
+	/* Initialize the TTF library */
+		if ( TTF_Init() < 0 ) {
+			fprintf(stderr, "Couldn't initialize TTF: %s\n",SDL_GetError());
+			SDL_Quit();
+			exit(2);
+		}
+
+//		strncpy(plikTTF, czcionka1, 255);
+//		czcionka1[255] = 0;
+		czcBold = bold;
+		czcItalic = italic;
+		czcOutline = outline;
+		czcRozm = rozmiar;
+
+		czcionka2 = TTF_OpenFont(plikTTF, czcRozm);
+		TTF_SetFontStyle(czcionka2, 
+			(bold ? TTF_STYLE_BOLD : 0) | (italic ? TTF_STYLE_ITALIC : 0)
+		);
+		TTF_SetFontOutline(czcionka2, czcOutline);
+		TTF_SetFontKerning(czcionka2, 0); // kerning);
+		TTF_SetFontHinting(czcionka2, TTF_HINTING_NONE);
+
+		// TODO: jezeli rozwaze uzywanie wiecej, niz jednej czcionki
+		// (watpliwe teraz, choc pewnie kiedys jest niezerowe prawdopodobienstwo)
+		// - zrobic zwalnianie pamieci czcionki, 
+		// lub raczej tablice czcionek uzywanych, jezeli uzywane cyklicznie
+	}
+
+	SDL_Color initialBlack = { 0x00, 0x00, 0x00, 0 };
+	SDL_Color *forecol;
+	SDL_Rect dstrect;
+	
+	void freeTextMemory(SDL_Surface *s)
+	{
+		SDL_FreeSurface(s);
+	}
+	
+	void tekst1(int x, int y, char* tekst) {
+		forecol = &initialBlack; 
+		text = TTF_RenderUTF8_Solid(czcionka2, tekst, *forecol);
+
+		dstrect.x = x;
+		dstrect.y = y;
+		dstrect.w = text->w;
+		dstrect.h = text->h;
+		printf("Font is generally %d big, and string is %hd big\n",
+						TTF_FontHeight(czcionka2), text->h);
+
+		/* Blit the text surface */
+		if ( SDL_BlitSurface(text, NULL, screen, &dstrect) < 0 ) {
+			fprintf(stderr, "Couldn't blit text to display: %s\n", 
+								SDL_GetError());
+			TTF_CloseFont(czcionka2);
+		}
+		freeTextMemory(text);		
+	}
+
+	void tekst2(int x, int y, char* format, void* ptr){
+		int i,j,k;
+		char c;
+         
+		i=0;
+		while(format[i]!='%' && format[i]!=0)i++;
+		if(format[i]=='%') {
+			while(format[i]!='f' && format[i]!='d' && format[i]!=0)i++;
+			if(format[i]=='f')sprintf(t, format, ( *((double *)ptr) ) );
+			if(format[i]=='d')sprintf(t, format, ( *((int *)ptr) ) );
+		} else sprintf(t, format);
+		
+		tekst1(x, y, t);
+	}
+
 	void tekst(int x, int y, char* format, void* ptr){
          int i,j,k;
          char c;
@@ -191,8 +272,8 @@ public:
          while(format[i]!='%' && format[i]!=0)i++;
          if(format[i]=='%'){
              while(format[i]!='f' && format[i]!='d' && format[i]!=0)i++;
-             if(format[i]=='f')sprintf(t, format, (double *)ptr);
-             if(format[i]=='d')sprintf(t, format, (int *)ptr);
+             if(format[i]=='f')sprintf(t, format, ( *((double *)ptr) ) );
+             if(format[i]=='d')sprintf(t, format, ( *((int *)ptr) ) );
          }else sprintf(t, format);
          
          for(i=0;i<strlen(t);i++){

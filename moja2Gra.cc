@@ -101,6 +101,15 @@ int main(int argc, char **argv){
   for(int j=0;j<P.wymiar.x;j += S.y * 100.0)
 	P.linia(j,0,j,P.wymiar.x,0xa00000);
 
+  P.otworzCzcionke("TerminusTTF-4.46.0.ttf", 0, 0, 1, 32);
+  
+  int myszx, myszy;
+  myszx = 999;
+  myszy = 888;
+
+  P.tekst2(15, 2, "%d", &myszx);
+  P.tekst2(85, 2, "%d", &myszy);
+
 #define PUNKTOW (40)
   punkt punkty[PUNKTOW][2];
 

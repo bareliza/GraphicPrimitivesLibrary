@@ -1,1 +1,1 @@
-g++ -o $1 $1.cc -lSDL -lSDLmain
+g++ -o $1 $1.cc -lSDL_ttf -lSDL -lSDLmain
