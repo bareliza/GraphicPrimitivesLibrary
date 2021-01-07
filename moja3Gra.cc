@@ -392,7 +392,7 @@ int main(int argc, char **argv){
   		printf("mysz x: %d y: %d\n", K.mysz.x, K.mysz.y);
 		mysz0 = K.mysz;
                  mysz1 = K.mysz;
-                 if ( mysz1.x > 300 ) mysz1.x -= 300;
+                 if ( mysz1.x >= 300 ) mysz1.x -= 300;
 
   		P.prostokat(0, 0, 300, 40, 0xffffff);
   		P.tekst2(15, 2, "%d", &(mysz1.x) );
@@ -401,6 +401,8 @@ int main(int argc, char **argv){
   			delta = mysz1 - miarkaStart;
   			P.tekst2(155, 2, "%d", &(delta.x) );
   			P.tekst2(225, 2, "%d", &(delta.y) );
+  			P.pisak(0);
+  			P.linia(miarkaStart, mysz1, 0xff0000);
   		}
   		P.odswiez();				
 	}
