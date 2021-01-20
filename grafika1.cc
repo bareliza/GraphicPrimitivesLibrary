@@ -1244,58 +1244,89 @@ public:
 //#define EL3_STEP (M/PI/30)
 //#define EL3_STEP (M_PI/80)
 #define EL3_STEP (M_PI/160)
-#define ROZSZERZ (0)
+#define ROZSZERZ (-5)
 #define KROPKI (1)
 #define KROPKI_P (1)
-//#define KROPKI (0)
-//#define KROPKI_P (0)
-#define PRZEPLOT (1)
+#define EL3_STEP (M_PI/15)
+// 180 / x = 12 => x = 180 / 12 => x = 60 / 4 = 15
+#define EL3_STEP_DEG (12) 
+#define KROPKI (0)
+#define KROPKI_P (0)
+//#define PRZEPLOT (1)
+#define PRZEPLOT (0)
+		int d = 4;
+		int dspin = -1;
+		int adeg = 0;
 		a=alfa0*2.0*M_PI/360.0;
 		r=sqrt(1.0/(cos(a)*cos(a)/rx/rx+sin(a)*sin(a)/ry/ry));
 		aPrim=a+alfa3*2.0*M_PI/360.0;
 		x0=ox+r*cos(aPrim);
 		y0=oy+r*sin(aPrim);
-		a+=EL3_STEP;
+		a+=EL3_STEP/d;
+		adeg += EL3_STEP_DEG/d;
+		r=sqrt(1.0/(cos(a)*cos(a)/rx/rx+sin(a)*sin(a)/ry/ry));
 		aPrim=a+alfa3*2.0*M_PI/360.0;
 		x1=ox+r*cos(aPrim);
 		y1=oy+r*sin(aPrim);
-		a+=EL3_STEP;
+		a+=EL3_STEP/d;
+		adeg += EL3_STEP_DEG/d;
+		r=sqrt(1.0/(cos(a)*cos(a)/rx/rx+sin(a)*sin(a)/ry/ry));
 		aPrim=a+alfa3*2.0*M_PI/360.0;
 		x2=ox+r*cos(aPrim);
 		y2=oy+r*sin(aPrim);
-		int parity=0;
-		for(a=alfa0*2.0*M_PI/180.0+3.0*EL3_STEP;
-		    a<alfa1*2.0*M_PI/360.0+2.0*EL3_STEP;a+=EL3_STEP){
+		a+=EL3_STEP/d;
+		adeg += EL3_STEP_DEG/d;
+		int parity = 0;
+		for(;//a=alfa0*2.0*M_PI/180.0+3.0*EL3_STEP/d, adeg = 0;
+		    //a<alfa1*2.0*M_PI/360.0+( 2.0 + 1.0*(!PRZEPLOT) )*EL3_STEP;
+		    a<alfa1*2.0*M_PI/360.0+( 1.0 + 1.0*(!PRZEPLOT) )*EL3_STEP/d;
+		    a += EL3_STEP/d, adeg += EL3_STEP_DEG/d)
+		    {
+		    	printf("a° = %02d, d = %d ", adeg, d);
+		        if(adeg == 20 ||
+		           adeg == 45 || 
+		           adeg == 67) d += dspin;
+		        if(adeg>90) {
+		            printf("\n");
+		            adeg = 0;
+		            dspin = -dspin;
+		        }
 		        parity++;
 			r=sqrt(1.0/(cos(a)*cos(a)/rx/rx+sin(a)*sin(a)/ry/ry));
 			aPrim=a+alfa3*2.0*M_PI/360.0;
 			x3=ox+cos(aPrim)*r;
 			y3=oy+sin(aPrim)*r;
-			if(dotted) {
+			if (dotted) {
 			  if((parity & 7) == 7) {
-			    if(PRZEPLOT) {
-			    	linia(x0,y0,x2,y2,kolor, ROZSZERZ,KROPKI_P);
-			    	linia(x1,y1,x3,y3,kolor, ROZSZERZ,KROPKI_P);
+			    if (PRZEPLOT) {
+			    	linia(x0,y0,x2,y2,kolor, ROZSZERZ, KROPKI_P);
+			    	linia(x1,y1,x3,y3,kolor, ROZSZERZ, KROPKI_P);
 			    } else {
-			    	linia(x0,y0,x1,y1,kolor,ROZSZERZ, KROPKI);
-			    	linia(x1,y1,x2,y2,kolor,ROZSZERZ, KROPKI);
-			    	linia(x2,y2,x3,y3,kolor,ROZSZERZ, KROPKI);
+			    	linia(x0,y0,x1,y1,kolor, ROZSZERZ, KROPKI);
+			    	//linia(x1,y1,x2,y2,kolor, ROZSZERZ, KROPKI);
+			    	//linia(x2,y2,x3,y3,kolor, ROZSZERZ, KROPKI);
 			    }
 			  }
 			} else {
-			  if(PRZEPLOT) {
+			  if (PRZEPLOT) {
 			  	linia(x0,y0,x2,y2,kolor, ROZSZERZ, KROPKI_P);
 			  	linia(x1,y1,x3,y3,kolor, ROZSZERZ, KROPKI_P);
 			  } else {
-			  	linia(x0,y0,x1,y1,kolor,ROZSZERZ, KROPKI);
-			  	linia(x1,y1,x2,y2,kolor,ROZSZERZ, KROPKI);
-			  	linia(x2,y2,x3,y3,kolor,ROZSZERZ, KROPKI);
+			  	linia(x0,y0,x1,y1,kolor, ROZSZERZ, KROPKI);
+			  	//linia(x1,y1,x2,y2,kolor, ROZSZERZ, KROPKI);
+			  	//linia(x2,y2,x3,y3,kolor, ROZSZERZ, KROPKI);
 			  }
 			}
 			x0=x1;y0=y1;
 			x1=x2;y1=y2;
 			x2=x3;y2=y3;
 		}
+		a=2*M_PI;
+		r=sqrt(1.0/(cos(a)*cos(a)/rx/rx+sin(a)*sin(a)/ry/ry));
+		aPrim=a+alfa3*2.0*M_PI/360.0;
+		x2=ox+r*cos(aPrim);
+		y2=oy+r*sin(aPrim);
+		linia(x0,y0,x2,y2, kolor, ROZSZERZ, KROPKI);
 	}
 	void elipsa2(int ox, int oy, int rx, int ry, 
 	int alfa0, int alfa1, unsigned int kolor){
