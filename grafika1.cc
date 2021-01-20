@@ -67,7 +67,7 @@ struct Klawiatura{
 		switch( event.type ){
             case SDL_KEYDOWN:printf( "Key press detected\n" );exit(0);
             case SDL_MOUSEBUTTONDOWN:printf( "mouse press detected\n" );exit(0);
-            case SDL_KEYUP:printf( "Key release detected\n" );break;
+            case SDL_KEYUP:/*printf( "Key release detected\n" );*/break;
 			default:break;
 		}
 	}
@@ -78,9 +78,9 @@ struct Klawiatura{
 		SDL_WaitEvent( &event );
 		klawisz=event.key.keysym.sym;
 		switch( event.type ){
-			case SDL_KEYDOWN:printf( "Key press detected\n" );return 1;
-			case SDL_MOUSEBUTTONDOWN:printf( "mouse press detected\n" );return 1;
-            case SDL_KEYUP:printf( "Key release detected\n" );return 1;
+			case SDL_KEYDOWN:/*printf( "Key press detected\n" );*/return 1;
+			case SDL_MOUSEBUTTONDOWN:/*printf( "mouse press detected\n" );*/return 1;
+            case SDL_KEYUP:/*printf( "Key release detected\n" );*/return 1;
 			default:return 0;
 		}
 	}
@@ -1237,6 +1237,11 @@ public:
 		     double alfa0, double alfa1,double alfa3, unsigned int kolor, int dotted=0){
 		double r, a, aPrim;
 		double x0,y0,x1,y1,x2,y2,x3,y3;
+
+//////////////////////
+// To by@laby pi@ekna elipsa, gdyby: parametry wspolrzednych tu i w odcinku byly staloprzecinkowe, z powiedzmy czterema bitami po przecinku
+// albo chociaz x10 : 320,200 => 3200, 2000
+//////////////////////
 		
 //#define EL3_STEP (M_PI/180)
 //#define EL3_STEP (M_PI/160)
@@ -1244,19 +1249,35 @@ public:
 //#define EL3_STEP (M/PI/30)
 //#define EL3_STEP (M_PI/80)
 #define EL3_STEP (M_PI/160)
-#define ROZSZERZ (-5)
+//#define ROZSZERZ (-3)
+#define ROZSZERZ (0)
 #define KROPKI (1)
 #define KROPKI_P (1)
-#define EL3_STEP (M_PI/15)
-// 180 / x = 12 => x = 180 / 12 => x = 60 / 4 = 15
-#define EL3_STEP_DEG (12) 
-#define KROPKI (0)
-#define KROPKI_P (0)
+//#define KROPKI (0)
+//#define KROPKI_P (0)
 //#define PRZEPLOT (1)
-#define PRZEPLOT (0)
-		int d = 4;
+//#define PRZEPLOT (0)
+// 180 / x = 12 => x = 180 / 12 => x = 60 / 4 = 15
+#define EL3_STEP (M_PI/15)
+#define EL3_STEP_DEG (12)
+// superquality:  /36,  5 stopni // [za duzo, artefakty] 
+//      Quality:  /20,  9 stopni // jak nizej
+//      quality:  /18, 10 stopni // artefakty z niepodzielnosci 10 przez 2,3,4
+//      optimum:  /15, 12 stopni
+//        speed:   /9, 20 stopni
+ 
+		int PRZEPLOT = 0;
 		int dspin = -1;
+		int d0, d;		
+		if(rx<ry) {
+			d0 = 4;
+			d = d0+3*dspin;
+		} else {
+			d0 = 4;
+			d = d0;
+		}
 		int adeg = 0;
+		int quarterCounter = 0;
 		a=alfa0*2.0*M_PI/360.0;
 		r=sqrt(1.0/(cos(a)*cos(a)/rx/rx+sin(a)*sin(a)/ry/ry));
 		aPrim=a+alfa3*2.0*M_PI/360.0;
@@ -1279,19 +1300,64 @@ public:
 		int parity = 0;
 		for(;//a=alfa0*2.0*M_PI/180.0+3.0*EL3_STEP/d, adeg = 0;
 		    //a<alfa1*2.0*M_PI/360.0+( 2.0 + 1.0*(!PRZEPLOT) )*EL3_STEP;
-		    a<alfa1*2.0*M_PI/360.0+( 1.0 + 1.0*(!PRZEPLOT) )*EL3_STEP/d;
+		    //a<alfa1*2.0*M_PI/360.0+( 1.0 + 1.0*(!PRZEPLOT) )*EL3_STEP/d;
+		    a<alfa1*2.0*M_PI/360.0+( 1.0 + 1.0 )*EL3_STEP/d;
+		    //a<alfa1*2.0*M_PI/360.0+( 3.0 + 1.0 )*EL3_STEP/d;
 		    a += EL3_STEP/d, adeg += EL3_STEP_DEG/d)
 		    {
-		    	printf("a° = %02d, d = %d ", adeg, d);
-		        if(adeg == 20 ||
-		           adeg == 45 || 
-		           adeg == 67) d += dspin;
-		        if(adeg>90) {
-		            printf("\n");
-		            adeg = 0;
+
+#define RAD2DEG(a) (180*a/M_PI)
+#define RAD2DEGi(a) ((int)RAD2DEG(a))
+//		    	printf(
+//			    "QC = %01d, adeg = %02d, a>deg = %02.2f, d = %d, d0 = %d, dspin = %d \n", 
+//			    quarterCounter, adeg, RAD2DEG(a), d, d0, dspin);
+		if(rx<ry) {
+		        if(adeg < 22) {
+				d = d0 + 3*dspin;
+			} else {
+				if(adeg < 45) { 
+					d = d0 + 2*dspin;
+				} else {
+					if(adeg < 67) {
+						d= d0 + 1*dspin;
+					} else { 
+						d = d0;
+					}
+				}
+			} 
+		} else { // odwrotnie... :}}}
+		        if(adeg >= 67) {
+				d = d0 + 3*dspin;
+			} else {
+				if(adeg >= 45) { 
+					d = d0 + 2*dspin;
+				} else {
+					if(adeg >= 22) {
+						d= d0 + 1*dspin;
+					} else { 
+						d = d0;
+					}
+				}
+			} 
+		}	        
+		        if(adeg>90 && d0 == 4) {
+//		            printf("\n");
+		            adeg = RAD2DEGi(a) % 90;
 		            dspin = -dspin;
+			    d0 = 1;
+			    quarterCounter++;
 		        }
-		        parity++;
+		        if(adeg>90 && d0 == 1) {
+//		            printf("\n");
+		            adeg = RAD2DEGi(a) % 90;
+		            dspin = -dspin;
+			    d0 = 4;
+			    quarterCounter++;
+		        }
+//			if((d==4) || (d==3)) PRZEPLOT=1;else 
+			PRZEPLOT=0;
+
+			parity++;
 			r=sqrt(1.0/(cos(a)*cos(a)/rx/rx+sin(a)*sin(a)/ry/ry));
 			aPrim=a+alfa3*2.0*M_PI/360.0;
 			x3=ox+cos(aPrim)*r;

@@ -45,12 +45,13 @@ int main(int argc, char** argv) {
 
   // for(int a3=60;a3<360;a3+=360/7) {
   int a3 = 0;
-  // for(int dry = 2*RY/9; dry >=0; dry -= 50)
-  int dry = 3*RY/9; // Delta RY. DRY 
+  for(int dry = RY/2-40; dry >=0; dry -= 50)
+  //int dry = 3*RY/9; // Delta RY. DRY 
   {
     for(int i=0;i<3;++i) {
     	P.pisak(PISAKI[i]);
-    	P.elipsa3(RX/2, RY/2, RY/2-20, RY/2-20, 0, 360, a3, KOLORY[i]);
+    	P.elipsa3(RX/2-150, RY/2, RY/2-20-dry, RY/2-20, 0, 360, a3, KOLORY[i]);
+    	P.elipsa3(RX/2+150, RY/2, RY/2-20, RY/2-20-dry, 0, 360, a3, KOLORY[i]);
     }
   }
   // }      
