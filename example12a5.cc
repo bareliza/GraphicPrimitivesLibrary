@@ -45,7 +45,7 @@ int main(int argc, char** argv) {
 
   // for(int a3=60;a3<360;a3+=360/7) {
   int a3 = 0;
-  for(int dry = RY/2-40; dry >=150; dry -= 50)
+  for(int dry = RY/2-40; dry >=0; dry -= 50)
   //int dry = 3*RY/9; // Delta RY. DRY 
   {
     for(int i=0;i<3;++i) {

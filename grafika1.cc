@@ -320,6 +320,7 @@ public:
         }
 
 	void pisak(int i){pioro=i;}
+	int pisak(void){return pioro;}
 	void czysc(){prostokat(0,0,wymiar.x-1,wymiar.y-1,0);}
 	void czysc(int c){prostokat(0,0,wymiar.x-1,wymiar.y-1,c);}
 	void odswiez(int x, int y, int xe, int ye){SDL_UpdateRect(screen,x,y,xe,ye);}
@@ -1220,6 +1221,7 @@ public:
 		}
 		linia(x0,y0,ox+rx,oy,kolor);
 	}
+	int mmm=1;
 	void elipsa(int ox, int oy, int rx, int ry, unsigned int kolor){
 		elipsa(ox,oy,rx,ry,0,360,0,kolor);}	
 // S¹ nie mniej ni¿ dwa sposoby obrotu: albo przez funkcjê obrotu punktu wokó³ punktu o k¹t alfa3,
@@ -1248,24 +1250,25 @@ public:
 // podwaja szybkosc /z 4 do 8 klatek na sekunde/ przykladowej animacji:
 //#define EL3_STEP (M/PI/30)
 //#define EL3_STEP (M_PI/80)
-#define EL3_STEP (M_PI/160)
-#define ROZSZERZ (-3)
-//#define ROZSZERZ (0)
+//#define EL3_STEP (M_PI/160)
+//#define ROZSZERZ (-3)
+#define ROZSZERZ (0)
 #define KROPKI (1)
 #define KROPKI_P (1)
-#define KROPKI (0)
-#define KROPKI_P (0)
+//#define KROPKI (0)
+//#define KROPKI_P (0)
 //#define PRZEPLOT (1)
 //#define PRZEPLOT (0)
 // 180 / x = 12 => x = 180 / 12 => x = 60 / 4 = 15
-#define EL3_STEP (M_PI/15)
-#define EL3_STEP_DEG (12)
+#define EL3_STEP (M_PI/30)
+#define EL3_STEP_DEG (6)
 // superquality:  /36,  5 stopni // [za duzo, artefakty] 
 //      Quality:  /20,  9 stopni // jak nizej
 //      quality:  /18, 10 stopni // artefakty z niepodzielnosci 10 przez 2,3,4
 //      optimum:  /15, 12 stopni
 //        speed:   /9, 20 stopni
  
+		int tmpPen;
 		int PRZEPLOT = 0;
 		int dspin = -1;
 		int d0, d;		
@@ -1303,7 +1306,8 @@ public:
 		    //a<alfa1*2.0*M_PI/360.0+( 1.0 + 1.0*(!PRZEPLOT) )*EL3_STEP/d;
 		    a<alfa1*2.0*M_PI/360.0+( 1.0 + 1.0 )*EL3_STEP/d;
 		    //a<alfa1*2.0*M_PI/360.0+( 3.0 + 1.0 )*EL3_STEP/d;
-		    a += EL3_STEP/d, adeg += EL3_STEP_DEG/d)
+#define CZYNNIK ( ((d==1)?mmm:1) )
+		    a += CZYNNIK*EL3_STEP/d, adeg += CZYNNIK*EL3_STEP_DEG/d)
 		    {
 
 #define RAD2DEG(a) (180*a/M_PI)
@@ -1312,6 +1316,7 @@ public:
 //			    "QC = %01d, adeg = %02d, a>deg = %02.2f, d = %d, d0 = %d, dspin = %d \n", 
 //			    quarterCounter, adeg, RAD2DEG(a), d, d0, dspin);
 		if(rx<ry) {
+			/* */
 		        if(adeg < 22) {
 				d = d0 + 3*dspin;
 			} else {
@@ -1325,6 +1330,8 @@ public:
 					}
 				}
 			} 
+			/* */
+			//d=1;
 		} else { // odwrotnie... :}}}
 		        if(adeg >= 67) {
 				d = d0 + 3*dspin;
@@ -1376,12 +1383,29 @@ public:
 			  }
 			} else {
 			  if (PRZEPLOT) {
-			  	linia(x0,y0,x2,y2,kolor, ROZSZERZ, KROPKI_P);
-			  	linia(x1,y1,x3,y3,kolor, ROZSZERZ, KROPKI_P);
+//			  	linia(x0,y0,x2,y2,( ((quarterCounter==0) || (quarterCounter==2)) && (kolor == 0) )?0x00a000:kolor,ROZSZERZ,KROPKI_P);
+//			  	linia(x1,y1,x3,y3,( ((quarterCounter==0) || (quarterCounter==2)) && (kolor == 0) )?0x00a000:kolor,ROZSZERZ,KROPKI_P);
+			  	linia(x0,y0,x2,y2,kolor,ROZSZERZ,KROPKI_P);
+			  	linia(x1,y1,x3,y3,kolor,ROZSZERZ,KROPKI_P);
+#define DBGLNSHIFT (1)
+/*
+				tmpPen=this->pisak();				
+				this->pisak(0);
+			  	linia(x0-DBGLNSHIFT,y0,x2-DBGLNSHIFT,y2,0xef80ff,0,KROPKI_P);
+			  	linia(x1-DBGLNSHIFT,y1,x3-DBGLNSHIFT,y3,0xef80ff,0,KROPKI_P);
+				this->pisak(tmpPen);
+*/
 			  } else {
-			  	linia(x0,y0,x1,y1,kolor, ROZSZERZ, KROPKI);
+//			  	linia(x0,y0,x1,y1,( ((quarterCounter==0) || (quarterCounter==2)) && (kolor == 0) )?0x00a000:kolor, ROZSZERZ, KROPKI);
+			  	linia(x0,y0,x1,y1,kolor,ROZSZERZ,KROPKI);
 			  	//linia(x1,y1,x2,y2,kolor, ROZSZERZ, KROPKI);
 			  	//linia(x2,y2,x3,y3,kolor, ROZSZERZ, KROPKI);
+/*
+				tmpPen=this->pisak();				
+				this->pisak(0);
+			  	linia(x0-DBGLNSHIFT,y0,x1-DBGLNSHIFT,y1,0xef80ff, 0, KROPKI);
+				this->pisak(tmpPen);
+*/
 			  }
 			}
 			x0=x1;y0=y1;
