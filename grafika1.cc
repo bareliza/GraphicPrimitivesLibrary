@@ -1249,12 +1249,12 @@ public:
 //#define EL3_STEP (M/PI/30)
 //#define EL3_STEP (M_PI/80)
 #define EL3_STEP (M_PI/160)
-//#define ROZSZERZ (-3)
-#define ROZSZERZ (0)
+#define ROZSZERZ (-3)
+//#define ROZSZERZ (0)
 #define KROPKI (1)
 #define KROPKI_P (1)
-//#define KROPKI (0)
-//#define KROPKI_P (0)
+#define KROPKI (0)
+#define KROPKI_P (0)
 //#define PRZEPLOT (1)
 //#define PRZEPLOT (0)
 // 180 / x = 12 => x = 180 / 12 => x = 60 / 4 = 15
@@ -1355,6 +1355,7 @@ public:
 			    quarterCounter++;
 		        }
 //			if((d==4) || (d==3)) PRZEPLOT=1;else 
+//			if( ( d == 4 ) ) PRZEPLOT=1; else 
 			PRZEPLOT=0;
 
 			parity++;
