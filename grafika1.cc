@@ -96,7 +96,7 @@ struct Klawiatura{
 			if(event.type==SDL_MOUSEMOTION){ 
 				mysz.x = event.motion.x;
 				mysz.y = event.motion.y;
-				printf( "Mouse move\n"); 
+				//printf( "Mouse move\n"); 
 			}
 		} else {
 			zeruj();
@@ -248,8 +248,8 @@ public:
 		dstrect.y = y;
 		dstrect.w = text->w;
 		dstrect.h = text->h;
-		printf("Font is generally %d big, and string is %hd big\n",
-						TTF_FontHeight(czcionka2), text->h);
+		//printf("Font is generally %d big, and string is %hd big\n",
+		//				TTF_FontHeight(czcionka2), text->h);
 
 		/* Blit the text surface */
 		if ( SDL_BlitSurface(text, NULL, screen, &dstrect) < 0 ) {
