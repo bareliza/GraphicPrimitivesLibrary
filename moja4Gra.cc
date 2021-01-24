@@ -323,14 +323,14 @@ int main(int argc, char **argv){
   linia(dlon1A,dlon1B,0xff);
   liniaDo(dlon1C);
   P.pisak(dlonieRozm.x);
-  linia(dlon2A,dlon2A+punkt(18,5),0xff);
+  linia(dlon2A,dlon2A+punkt(18,5),0xff0000);
   liniaDo(dlon2A+punkt(35,20));
 //  linia(dlon2A,dlon2A+dlon2B,0xff);
 //  liniaDo(dlon2A+dlon2C);
 
   // uszy:
   P.pisak(uszyRozm.x);
-  linia(ucho1A,ucho1B,0xff);
+  linia(ucho1A,ucho1B,0xff0000);
   linia(ucho2A,ucho2B,0xff);
 
   // stopy:
@@ -344,6 +344,22 @@ int main(int argc, char **argv){
   liniaDo(stopa2A);
   linia(stopa2A,stopa2C);
   linia(stopa2B,stopa2D);
+
+  ////////////////////////////////////////////
+  // punkty do edycji:
+  ////////////////////////////////////////////
+
+  punkt paa,pbb;
+  paa.x = 11;
+  paa.y = 11;
+  paa.x = 5;
+  paa.y = 5;
+
+  for(int i=0;i<PUNKTOW;++i) {
+      P.prostokat(punkty[i][0]-pbb, paa, 0x00ff00);
+      P.odswiez();             
+  }
+
 
   ///////////////////////////////////////
   // wskaznik myszy: 

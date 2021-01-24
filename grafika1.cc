@@ -1197,6 +1197,10 @@ public:
 //             odswiez();
          }
     }
+	void prostokat(punkt  o, punkt v, unsigned int kolor){
+		prostokat(o.x, o.y, v.x, v.y, kolor);
+	}
+
 	void prostokat(int ox, int oy, int wx, int wy, unsigned int kolor){
 		int x,y;
 		for(x=ox;x<ox+wx;x++)
