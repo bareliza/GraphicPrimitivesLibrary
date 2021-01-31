@@ -350,13 +350,14 @@ int main(int argc, char **argv){
   ////////////////////////////////////////////
 
   punkt paa,pbb;
-  paa.x = 11;
-  paa.y = 11;
-  paa.x = 5;
-  paa.y = 5;
+  paa.x = 15;
+  paa.y = 15;
+  pbb.x = 7;
+  pbb.y = 7;
+  P.pisak(5);
 
   for(int i=0;i<PUNKTOW;++i) {
-      P.prostokat(punkty[i][0]-pbb, paa, 0x00ff00);
+      P.ramka(punkty[i][0]-pbb, paa, 0xffff80);
       P.odswiez();             
   }
 
@@ -472,6 +473,7 @@ int main(int argc, char **argv){
 
  for(int i=0;i<100;i+=1) {
   double delta = 3;
+  //if(i>2)P.mmm=3;
   for(double alfaStrz2=alfa0strz2-AN_ZAKR-AN_KAT_B; alfaStrz2<alfa0strz2+AN_ZAKR-AN_KAT_B;alfaStrz2 += ANIM_STEP) {
 //    wypelnionaElipsa(strzalkowa2, strzalkowa2rozm + punkt(2,2), 0,360,alfaStrz2-ANIM_STEP, 0xffffff ); 
     wypelnionyOkrag(strzalkowa2 + punkt(10,0), ROZM_ANIM, 0xffffff);

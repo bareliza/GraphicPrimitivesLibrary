@@ -358,9 +358,6 @@ public:
 	int czytajPunkt(int x, int y){return ((unsigned int*)screen->pixels)[x+y*wymiar.x];}
 	int czcionka_czytajPunkt(int x, int y){
         return ((unsigned int*)czcionka->pixels)[x+y*(czcionka->w)];}
-	void linia(punkt p1,punkt p2,unsigned int kolor){
-		linia(p1.x,p1.y,p2.x,p2.y,kolor);
-	}
 
         int xc0, xc1, yc0, yc1; // doda@c inicjalizacje w konstruktorze // dodane
   
@@ -634,6 +631,57 @@ public:
 		}
 	}
 
+    void ramka(punkt p0, punkt p1, unsigned int kolor) {
+	ramka(p0.x,p0.y,p1.x,p1.y,kolor);
+    }
+    
+    void ramka(int x0, int y0,int dx, int dy, unsigned int kolor) {
+    	if(pioro & 1)
+    		ramkaGruboscNieparzysta(x0,y0,dx,dy,kolor);
+    	else
+    		ramkaGruboscParzysta(x0,y0,dx,dy,kolor);
+    }
+    
+    void ramkaGruboscNieparzysta(int x0, int y0,int dx, int dy, unsigned int kolor) {
+    	punkt a(x0,y0);
+    	punkt a1(x0-1,y0);
+    	punkt b(x0+dx,y0);
+//    	punkt b1(x0+dx,y0);
+    	punkt c(x0+dx,y0+dy);
+//    	punkt c1poziomy(x0+dx-1,y0+dy);
+//    	punkt c1pionowy(x0+dx,y0+dy-1);
+    	punkt d(x0,y0+dy);
+//    	punkt d1(x0,y0+dy);
+//	linia(a1,b,kolor,pioro>>1,0);
+//	linia(b1,c1pionowy,kolor,pioro>>1,0);
+//	linia(c1poziomy,d1,kolor,pioro>>1,0);
+//	linia(d,a,kolor,pioro>>1,0);
+	linia(a1,b,kolor,pioro>>1,0);
+	linia(b,c,kolor,pioro>>1,0);
+	linia(c,d,kolor,pioro>>1,0);
+	linia(d,a,kolor,pioro>>1,0);
+    }
+    //
+    void ramkaGruboscParzysta(int x0, int y0,int dx, int dy, unsigned int kolor) {
+    	punkt a(x0,y0);
+    	punkt a1(x0-1,y0);
+    	punkt b(x0+dx-1,y0);
+    	punkt b1(x0+dx,y0);
+    	punkt c(x0+dx,y0+dy);
+    	punkt c1poziomy(x0+dx-1,y0+dy);
+    	punkt c1pionowy(x0+dx,y0+dy-1);
+    	punkt d(x0,y0+dy-1);
+    	punkt d1(x0,y0+dy);
+	linia(a1,b,kolor,pioro>>1,0);
+	linia(b1,c1pionowy,kolor,pioro>>1,0);
+	linia(c1poziomy,d1,kolor,pioro>>1,0);
+	linia(d,a,kolor,pioro>>1,0);
+    }
+
+    void linia(punkt p1,punkt p2,unsigned int kolor, int rozszerz = 0, int kropki = 1){
+	linia(p1.x,p1.y,p2.x,p2.y,kolor,rozszerz,kropki);
+    }
+	
     void linia(int x0, int y0, int x1, int y1, unsigned int kolor, int rozszerz = 0, int kropki = 1){
       	// printf("%d$%d$%d$%d$",x0,y0,x1,y1);
 	double aD3r, aD3rPrim, r;
