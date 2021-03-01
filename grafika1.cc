@@ -38,10 +38,23 @@ wektor2w operator +(const wektor2w& w1, const wektor2w& w2){
 wektor2w operator -(const wektor2w& w1, const wektor2w& w2){
 	return wektor2w(w1.x-w2.x,w1.y-w2.y);
 }
+wektor2wR operator +(const wektor2wR& w1, const wektor2wR& w2){
+	return wektor2wR(w1.x+w2.x,w1.y+w2.y);
+}
+wektor2wR operator -(const wektor2wR& w1, const wektor2wR& w2){
+	return wektor2wR(w1.x-w2.x,w1.y-w2.y);
+}
+wektor2wR operator *(const wektor2wR& w1, const double& w2){
+	return wektor2wR(w1.x*w2,w1.y*w2);
+}
+wektor2wR operator /(const wektor2wR& w1, const double& w2){
+	return wektor2wR(w1.x/w2,w1.y/w2);
+}
 wektor2w operator *(const wektor2wR& s, const wektor2w& w){
 	return wektor2w(s.x*((double)w.x),s.y*((double)w.y));
 }
 typedef wektor2w punkt;
+typedef wektor2wR punktR;
 typedef unsigned int kolor;
 
 template <class A> class Stos{
