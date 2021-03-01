@@ -4,7 +4,7 @@
 
 #include <iostream>
 
-#include "example-cfg.hh"
+#include "example-cfg2.hh"
 
 Projektor P(RX, RY);
 Klawiatura K;
@@ -63,13 +63,15 @@ punkt fR2wR2(punkt p0)
   return p2; 
 }
 
-#define KROKOW (40.0)
+int DELTA1=0;
+int KROPKI1=1;
+#define KROKOW (80.0)
 void okrag(int ox, int oy, int r, unsigned int kolor)
 {
 	for(double i=1.0;i<=KROKOW;++i) {
 		punkt p0(ox+r*sin(i*2.0*M_PI/KROKOW), oy+r*cos(i*2.0*M_PI/KROKOW));
 		punkt p1(ox+r*sin((i+1)*2.0*M_PI/KROKOW), oy+r*cos((i+1)*2.0*M_PI/KROKOW));
-		P.linia(fR2wR2(p0),fR2wR2(p1),kolor);	
+		P.linia(fR2wR2(p0),fR2wR2(p1),kolor, DELTA1, KROPKI1);	
 	}
 } 
 
@@ -102,7 +104,7 @@ void elipsa(int ox, int oy, int rx, int ry, int obrot, unsigned int kolor)
 		punkt p0obr1(p0obr.x, p0obr.y);		
 		punkt p1obr1(p1obr.x, p1obr.y);		
 //		P.linia(p0obr1,p1obr1,kolor);			
-		P.linia(fR2wR2(p0obr1),fR2wR2(p1obr1),kolor);	
+		P.linia(fR2wR2(p0obr1),fR2wR2(p1obr1),kolor,DELTA1,KROPKI1);	
 	}
 } 
 
@@ -111,7 +113,7 @@ int PISAKI[3] = {18, 14, 12};
 int KOLORY[3] = {0x0000ff, 0xff0000, 0xffffff};
 
 int main(int argc, char** argv) {
-  P.czysc(0xffffff); // ffffff);
+  P.czysc(0xdfdfdf); // ffffff);
 
 #define LESS_CLIPPING (10)  
   P.xc0 = LESS_CLIPPING;
@@ -132,13 +134,40 @@ int main(int argc, char** argv) {
   //  }
   // }
   //}      
-  P.pisak(0);
-  unsigned int kolor = 0xff00;
+  P.pisak(18);
+  unsigned int kolor = 0;//0xff00;
+  unsigned int kolor1 = 0xffffff;//0xd0d0d0;
   int r = RY/2 - 30;
-  for (int obrot = 0; obrot < 350;obrot += 360 / 7)
+  for (int obrot = 0; obrot < 350;obrot += 360 / 5) { // , kolor -= 0xf00, kolor1 -= 0x40404) {
   //for (int r = RY/2 -20; r>150; r-=20, kolor -= 0xf00)
-  	elipsa(RX/2,RY/2,r,r*100/200,obrot,kolor); 
+	DELTA1=0;
+	KROPKI1=1;	
+	P.pisak(80);
+  	elipsa(RX/2,RY/2,r,r*100/150,obrot,kolor); 
+	DELTA1=0;
+	KROPKI1=1;	
+	P.pisak(78);
+  	elipsa(RX/2,RY/2,r,r*100/150,obrot,kolor1); 
+  }
+  
+  int x, y;
+  for (x = 50, y=50; x < RX - 100; x+=100,y+=35) {
+	P.pisak(18);
+	//P.linia(x,y,x+100,y+35,0xff00ff);
+	P.pisak(12);
+	//P.linia(x,y+100,x+100,y+135,0xffb0ff);
+  }
+
+  DELTA1=0;
+  KROPKI1=1;
+  P.pisak(12);
+  //okrag (RX/2,RY/2,300,0xff00ff);
+  P.pisak(8);
+  DELTA1=1;
+  KROPKI1=0;
+  //okrag (RX/2,RY/2,300,0xffb0ff);
 
   P.odswiez();
   if(argc<=3) K.czekajNaKlawisz();
+  if(K.klawisz==SDLK_s) P.zapiszBMP("tiruriru.bmp");
 }
