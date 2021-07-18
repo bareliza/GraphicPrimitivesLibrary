@@ -244,6 +244,7 @@ void ustalLudka(void) {
 double alfa0strz2;
 
 void rysujLudka(void) {
+  P.czysc(0xffffff);
   ////////////////////////////////////////////
   // rysowanie:
   ////////////////////////////////////////////
