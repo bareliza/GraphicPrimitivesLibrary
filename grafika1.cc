@@ -336,6 +336,7 @@ public:
 	int pisak(void){return pioro;}
 	void czysc(){prostokat(0,0,wymiar.x-1,wymiar.y-1,0);}
 	void czysc(int c){prostokat(0,0,wymiar.x-1,wymiar.y-1,c);}
+	inline void odswiez(punkt p, punkt e){odswiez(p.x, p.y, e.x, e.y);}
 	void odswiez(int x, int y, int xe, int ye){SDL_UpdateRect(screen,x,y,xe,ye);}
 	void odswiez(void){SDL_UpdateRect(screen,0,0,wymiar.x,wymiar.y);}
 	void wyswietl(void){SDL_UpdateRect(screen,0,0,wymiar.x,wymiar.y);}
