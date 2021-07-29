@@ -44,12 +44,19 @@ void liniaDo(punkt p) {
   liniaDo(p.x, p.y);
 }
 
+int trybEdycji = 0;
+
 void wypelnionaElipsa(int x, int y, int rx, int ry, double a0, double a1, double a2, unsigned int kolor) {
 	int pen1;
 	pen1 = P.pioro;	
 	P.pisak(8);
-	for(int i=ry-3;i>0;i-=6) {
-		P.elipsa3(x,y,rx-4,i,a0,a1,a2,kolor);	
+
+	if(trybEdycji) {
+		P.elipsa3(x,y,rx-4,ry-3,a0,a1,a2,kolor);
+	} else {
+		for(int i=ry-3;i>0;i-=6) {
+			P.elipsa3(x,y,rx-4,i,a0,a1,a2,kolor);	
+		}
 	}
 	P.pisak(pen1);
 }
@@ -427,6 +434,8 @@ int main(int argc, char **argv){
   	if(K.event.type == SDL_MOUSEBUTTONDOWN) {
   		if ( miarkaAktywna ) {
   			miarkaAktywna = 0;
+			trybEdycji = 0;
+			rysujLudka();
 
 			from.x = miarkaStart0.x-2;
 			from.y = miarkaStart0.y-2;
@@ -504,9 +513,11 @@ int main(int argc, char **argv){
 	}
 	
 	if(miarkaAktywna && (nrPunktu != -1)) {
+		trybEdycji = 1;
 		punkty[nrPunktu][0] = mysz0;
 		rysujLudka();
 	}
+	
 	
 	P.odswiez();
 	// usleep(10000); // 40 ms => 25 razy na sekunde; 10ms => 100 x na sekunde 
