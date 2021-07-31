@@ -49,11 +49,12 @@ int trybEdycji = 0;
 void wypelnionaElipsa(int x, int y, int rx, int ry, double a0, double a1, double a2, unsigned int kolor) {
 	int pen1;
 	pen1 = P.pioro;	
-	P.pisak(8);
 
 	if(trybEdycji) {
+		P.pisak(1);
 		P.elipsa3(x,y,rx-4,ry-3,a0,a1,a2,kolor);
 	} else {
+		P.pisak(8);
 		for(int i=ry-3;i>0;i-=6) {
 			P.elipsa3(x,y,rx-4,i,a0,a1,a2,kolor);	
 		}
@@ -464,9 +465,11 @@ int main(int argc, char **argv){
                  mysz1 = K.mysz;
                  if ( mysz1.x >= 300 ) mysz1.x -= 300;
 
-  		P.prostokat(0, 0, 300, 40, 0xffffff);
+  		P.prostokat(0, 0, 300, 80, 0xff80ff);
   		P.tekst2(15, 2, "%d", &(mysz1.x) );
   		P.tekst2(75, 2, "%d", &(mysz1.y) );
+  		P.tekst2(155, 42, "%d", &(miarkaAktywna) );
+  		P.tekst2(225, 42, "%d", &(nrPunktu) );
   		P.odswiez(0,0,300,40);
   		if(miarkaAktywna) {
   			delta = mysz1 - miarkaStart;
@@ -494,22 +497,23 @@ int main(int argc, char **argv){
 	P.rysujPunkt(mysz0.x, mysz0.y, 0x0ff00ff);
 	P.odswiez(mysz0.x, mysz0.y,1,1);
         
-	nrPunktu = -1;
-	int i1;
-	for(i1=0;i1<PUNKTOW;i1++) {
-		punkt pcc;
-		pcc = mysz0-punkty[i1][0];
-		if((abs(pcc.x) < 10) && (abs(pcc.y) < 10)) {
-			P.pisak(2);
-			P.ramka(punkty[i1][0] - pbb, paa, 0x00ff00);
-			//P.odswiez();//punkty[i1][0]-pbb, paa);
-			nrPunktu = i1;
-		} else {
-			P.pisak(2);
-			P.ramka(punkty[i1][0] - pbb, paa, 0xffff80);
-			//P.odswiez();//punkty[i1][0]-pbb, paa);
-		}
-		
+	if(miarkaAktywna == 0) {
+		nrPunktu = -1;
+		int i1;
+		for(i1=0;i1<PUNKTOW;i1++) {
+			punkt pcc;
+			pcc = mysz0-punkty[i1][0];
+			if((abs(pcc.x) < 10) && (abs(pcc.y) < 10)) {
+				P.pisak(2);
+				P.ramka(punkty[i1][0] - pbb, paa, 0x00ff00);
+				//P.odswiez();//punkty[i1][0]-pbb, paa);
+				nrPunktu = i1;
+			} else {
+				P.pisak(2);
+				P.ramka(punkty[i1][0] - pbb, paa, 0xffff80);
+				//P.odswiez();//punkty[i1][0]-pbb, paa);
+			}
+		}		
 	}
 	
 	if(miarkaAktywna && (nrPunktu != -1)) {
