@@ -80,6 +80,12 @@ void wypelnionyOkrag(int x, int y, int r, unsigned int kolor) {
 
 #define PUNKTOW (40)
   punkt punkty[PUNKTOW][2];
+  int toElipsa[PUNKTOW] = {
+    0, 1, 1, 1, 1, 0, 0, 0, 0, 0,
+    0, 0, 0, 0, 1, 1, 0, 1, 1, 0,
+    0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+    0, 0, 0, 0, 0, 0, 0, 0, 0, 0
+  };
 
   punkt& kolano1 = punkty[0][0];
   punkt& udo1 = punkty[1][0];
@@ -386,10 +392,10 @@ int main(int argc, char **argv){
   paa.y = 15;
   pbb.x = 7;
   pbb.y = 7;
-  P.pisak(5);
+  P.pisak(8);
 
   for(int i=0;i<PUNKTOW;++i) {
-      P.ramka(punkty[i][0]-pbb, paa, 0xff8080);
+      P.ramka(punkty[i][0]-pbb, paa, toElipsa[i] ? 0x00009f : 0xff8080);
       P.odswiez();             
   }
 
@@ -510,7 +516,7 @@ int main(int argc, char **argv){
 				nrPunktu = i1;
 			} else {
 				P.pisak(2);
-				P.ramka(punkty[i1][0] - pbb, paa, 0xffff80);
+				P.ramka(punkty[i1][0] - pbb, paa, toElipsa[i1] ? 0x00009f : 0xffff80);
 				//P.odswiez();//punkty[i1][0]-pbb, paa);
 			}
 		}		
