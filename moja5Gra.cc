@@ -84,7 +84,29 @@ void wypelnionyOkrag(int x, int y, int r, unsigned int kolor) {
     0, 1, 1, 1, 1, 0, 0, 0, 0, 0,
     0, 0, 0, 0, 1, 1, 0, 1, 1, 0,
     0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
-    0, 0, 0, 0, 0, 0, 0, 0, 0, 0
+    0, 0, 0, 0, 0, 1, 0, 0, 0, 0
+  };
+
+  punkt biegunowe[PUNKTOW];
+  
+  double katy[PUNKTOW] = {
+    0, 169, 55+180, 171,    0,           0, 0,             0,          0, 0,
+    0,   0,  0,       0, 31.5, 180+31.5+10, 0, 180+41.5+5+90, 41.5+90+15, 0,
+    0, 0, 0, 0, 0,  0, 0, 0, 0, 0,
+    0, 0, 0, 0, 0, 55, 0, 0, 0, 0
+  };
+
+  const punkt pz = punkt(0,0);
+
+  punkt promienie[PUNKTOW] = {
+    pz, punkt(30-3,92+3), punkt(28,90+4), punkt(30,99), punkt(29,42),   
+    pz, pz,               pz,             pz,           pz,
+    
+    pz,           pz,           pz,           pz, punkt(28,65),
+    punkt(25,60), pz, punkt(28,75), punkt(27,80), pz,
+    
+    pz, pz, pz, pz, pz, pz, pz, pz, pz, pz,
+    pz, pz, pz, pz, pz, punkt(28,28), pz, pz, pz, pz
   };
 
   punkt& kolano1 = punkty[0][0];
@@ -267,20 +289,20 @@ void rysujLudka(void) {
   wypelnionyOkrag(kolano1, kolano1rozm.x, 0xc04000); // 27
 //  P.elipsa3(150-2,365-3,29,90,0,180,170,0x602000);	  
   // udo1
-  wypelnionaElipsa(udo1, udo1rozm, 0,180,169,0xa02000);	  
+  wypelnionaElipsa(udo1, promienie[1] /* udo1rozm */, 0,180,katy[1],0xa02000);	  
   //wypelnionaElipsa(Xkolano1-41,Ykolano1+52,28,70,0,360,55,0xd06000);
   //P.elipsa3(Xkolano1-41+2,Ykolano1+52-1,27,73,0,360,55,0xd06000);
   // lydka1
-  wypelnionaElipsa(lydka01, lydka01rozm, 0,360,55,0xc04000);
-  wypelnionaElipsa(lydka1 ,lydka1rozm , 0,180,55+180,0xd06000);
- 
+  wypelnionaElipsa(lydka01, promienie[35] /* lydka01rozm */, 0,360,katy[35],0xc04000);
+  wypelnionaElipsa(lydka1 , promienie[2] /* lydka1rozm */, 0,180,katy[2],0xd06000);
+                    // punkty[2][0]
   // lydka2
   //P.elipsa3(lydka2.x,lydka2.y, 29,42,0,360,0,0xff00);
-  wypelnionaElipsa(lydka2, lydka2rozm, 0,360,0,0xc00060);
+  wypelnionaElipsa(lydka2, promienie[4] /* lydka2rozm */, 0,360,katy[4],0xc00060);
   // kolano2
   //P.elipsa3(kolano2.x,kolano2.y ,30,99,0,180,171,0xff00);
-  wypelnionaElipsa(kolano2, kolano2rozm, 0,180,171,0xa00030);
-  
+  wypelnionaElipsa(kolano2, promienie[3] /* kolano2rozm */, 0,180,katy[3],0xa00030);
+                     // punkty[3][0]
   // udo2
   P.pisak(udo2ABrozm.x);
   linia(udo2A,udo2B, 0x4010);
@@ -312,14 +334,14 @@ void rysujLudka(void) {
 #define STRZALKOWA2KOLOR (KOLOROWY ? 0x0a30a0 : 0xf06000)
   // reka1
   wypelnionyOkrag(reka1, receRozm.x, 0xff00);
-  wypelnionaElipsa(reka1, reka1rozm, 0,180,31.5, REKA1KOLOR);
-  wypelnionaElipsa(ramie1 , ramie1rozm, 0,180,180+31.5+10, RAMIE1KOLOR); //0xa4080);
+  wypelnionaElipsa(reka1,  promienie[14] /* reka1rozm */, 0,180, katy[14], REKA1KOLOR);
+  wypelnionaElipsa(ramie1 , promienie[15] /* ramie1rozm */, 0,180, katy[15], RAMIE1KOLOR); //0xa4080);
 
   // reka2
   wypelnionyOkrag(reka2, receRozm.y, 0xff00);
-  wypelnionaElipsa(ramie2, ramie2rozm, 0,180,41.5+90+15, RAMIE2KOLOR); //0xa30a0);
-  alfa0strz2 = 180+41.5+5+90;
-  wypelnionaElipsa(strzalkowa2, strzalkowa2rozm, 0,180, alfa0strz2, STRZALKOWA2KOLOR );
+  wypelnionaElipsa(ramie2, promienie[18] /* ramie2rozm */, 0,180, katy[18], RAMIE2KOLOR); //0xa30a0);
+  // alfa0strz2 = 180+41.5+5+90;
+  wypelnionaElipsa(strzalkowa2, promienie[17] /* strzalkowa2rozm */, 0,180, katy[17], STRZALKOWA2KOLOR );
 
   // dlonie:
   P.pisak(dlonieRozm.x);
@@ -387,17 +409,22 @@ int main(int argc, char **argv){
   // punkty do edycji:
   ////////////////////////////////////////////
 
-  punkt paa,pbb;
+  punkt paa,pbb,pee;
   paa.x = 15;
   paa.y = 15;
   pbb.x = 7;
   pbb.y = 7;
   P.pisak(8);
 
+#define DEG2RAD(deg) (M_PI * ((double)deg) / 180.0)
   for(int i=0;i<PUNKTOW;++i) {
       P.ramka(punkty[i][0]-pbb, paa, toElipsa[i] ? 0x00009f : 0xff8080);
-      P.odswiez();             
+      if(toElipsa[i]) {
+	pee = punkt(cos(DEG2RAD(katy[i]+90)) * promienie[i].y, sin(DEG2RAD(katy[i]+90)) * promienie[i].y);
+	P.ramka(punkty[i][0]+pee-pbb, paa, 0xffff00);
+      }
   }
+  P.odswiez();             
 
 
   ///////////////////////////////////////
@@ -517,6 +544,11 @@ int main(int argc, char **argv){
 			} else {
 				P.pisak(2);
 				P.ramka(punkty[i1][0] - pbb, paa, toElipsa[i1] ? 0x00009f : 0xffff80);
+      				if(toElipsa[i1]) {
+					pee = punkt(cos(DEG2RAD(katy[i1]+90)) * promienie[i1].y,
+					      sin(DEG2RAD(katy[i1]+90)) * promienie[i1].y);
+					P.ramka(punkty[i1][0]+pee-pbb, paa, 0xffff00);
+      				}
 				//P.odswiez();//punkty[i1][0]-pbb, paa);
 			}
 		}		
