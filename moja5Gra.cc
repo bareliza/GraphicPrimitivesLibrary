@@ -551,6 +551,17 @@ int main(int argc, char **argv){
       				}
 				//P.odswiez();//punkty[i1][0]-pbb, paa);
 			}
+			if(toElipsa[i1]) {
+				pee = punkt(cos(DEG2RAD(katy[i1]+90)) * promienie[i1].y,
+				      sin(DEG2RAD(katy[i1]+90)) * promienie[i1].y);				
+				pcc = mysz0 - (punkty[i1][0] + pee);
+				if((abs(pcc.x) < 10) && (abs(pcc.y) < 10)) {
+					P.pisak(2);
+					P.ramka(punkty[i1][0]+pee-pbb, paa, 0x00ff00);
+					//P.odswiez();//punkty[i1][0]-pbb, paa);
+					nrPunktu = i1;
+				}				
+			}
 		}		
 	}
 	
