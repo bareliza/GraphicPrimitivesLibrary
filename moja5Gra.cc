@@ -460,7 +460,7 @@ int main(int argc, char **argv){
 
   SDL_Surface *tmpSurface = SDL_ConvertSurface(P.screen, P.screen->format, SDL_SWSURFACE);
   SDL_Rect from, to;
-  int nrPunktu;
+  int nrPunktu, edycjaElipsy;
   
   while(K.klawisz != SDLK_ESCAPE) {
 	delta0=deltaA;
@@ -532,6 +532,7 @@ int main(int argc, char **argv){
         
 	if(miarkaAktywna == 0) {
 		nrPunktu = -1;
+		edycjaElipsy = -1;
 		int i1;
 		for(i1=0;i1<PUNKTOW;i1++) {
 			punkt pcc;
@@ -560,14 +561,22 @@ int main(int argc, char **argv){
 					P.ramka(punkty[i1][0]+pee-pbb, paa, 0x00ff00);
 					//P.odswiez();//punkty[i1][0]-pbb, paa);
 					nrPunktu = i1;
+					edycjaElipsy = 1;
 				}				
 			}
 		}		
 	}
 	
-	if(miarkaAktywna && (nrPunktu != -1)) {
+	if( miarkaAktywna && (nrPunktu != -1) && (edycjaElipsy == -1) ) {
 		trybEdycji = 1;
 		punkty[nrPunktu][0] = mysz0;
+		rysujLudka();
+	}
+	if( miarkaAktywna && (nrPunktu != -1) && (edycjaElipsy == 1) ) {
+		trybEdycji = 1;
+		pee = mysz0 - punkty[nrPunktu][0];
+#define RAD2DEG(a) ( (a) * 180.0 / M_PI)
+		katy[nrPunktu] = RAD2DEG(atan2(pee.y, pee.x) - M_PI / 2);
 		rysujLudka();
 	}
 	
