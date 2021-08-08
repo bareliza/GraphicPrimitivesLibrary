@@ -79,7 +79,42 @@ void wypelnionyOkrag(int x, int y, int r, unsigned int kolor) {
 }
 
 #define PUNKTOW (40)
-  punkt punkty[PUNKTOW][2];
+//  punkt punkty[PUNKTOW][2];
+  punkt punkty[PUNKTOW][2] = 
+  {
+    { punkt( 440, 367 ), punkt (  27,   0 ) }, { punkt( 443, 365 ), punkt (  27,  95 ) }, 
+    { punkt( 439, 449 ), punkt (  28,  94 ) }, { punkt( 503, 451 ), punkt (  30,  99 ) }, 
+    { punkt( 504, 433 ), punkt (  29,  42 ) }, { punkt( 502, 302 ), punkt (  50,  46 ) }, 
+    { punkt( 505, 360 ), punkt (   0,   0 ) }, { punkt( 451, 258 ), punkt (  56,   0 ) }, 
+    { punkt( 493, 257 ), punkt (   0,   0 ) }, { punkt( 495, 129 ), punkt (   0,   0 ) }, 
+    { punkt( 445, 134 ), punkt (   0,   0 ) }, { punkt( 450, 139 ), punkt (  46,  50 ) }, 
+    { punkt( 495, 259 ), punkt (  31,  26 ) }, { punkt( 471,  66 ), punkt (  37,   0 ) }, 
+    { punkt( 384, 197 ), punkt (  28,  65 ) }, { punkt( 395, 176 ), punkt (  25,  60 ) }, 
+    { punkt( 550, 180 ), punkt (  30,  28 ) }, { punkt( 552, 187 ), punkt (  28,  75 ) }, 
+    { punkt( 553, 189 ), punkt (  27,  80 ) }, { punkt( 346, 266 ), punkt (   8,   0 ) }, 
+    { punkt( 360, 256 ), punkt (   0,   0 ) }, { punkt( 381, 255 ), punkt (   0,   0 ) }, 
+    { punkt( 559, 251 ), punkt (   0,   0 ) }, { punkt( 318,   5 ), punkt (   0,   0 ) }, 
+    { punkt( 335,  20 ), punkt (   0,   0 ) }, { punkt( 435,  63 ), punkt (   4,   0 ) }, 
+    { punkt( 435,  86 ), punkt (   0,   0 ) }, { punkt( 507,  63 ), punkt (   0,   0 ) }, 
+    { punkt( 507,  86 ), punkt (   0,   0 ) }, { punkt( 421, 491 ), punkt (  15,  10 ) }, 
+    { punkt( 452, 491 ), punkt (   0,   0 ) }, { punkt( 487, 479 ), punkt (   0,   0 ) }, 
+    { punkt( 486, 494 ), punkt (   0,   0 ) }, { punkt( 525, 496 ), punkt (   0,   0 ) }, 
+    { punkt( 519, 479 ), punkt (   0,   0 ) }, { punkt( 440, 448 ), punkt (  28,  28 ) }, 
+    { punkt( 300,   0 ), punkt (   0,   0 ) }, { punkt( 300,   0 ), punkt (   0,   0 ) }, 
+    { punkt( 300,   0 ), punkt (   0,   0 ) }, { punkt( 300,   0 ), punkt (   0,   0 ) }
+  };
+  double katy[PUNKTOW] = 
+  {
+    0.00, -180.67, -179.20, -178.67, 0.00, 
+    0.00, 0.00, 0.00, 0.00, 0.00, 
+    0.00, 0.00, 0.00, 0.00, 4.01, 
+    -172.33, 0.00, -6.01, -194.83, 0.00, 
+    35.22, 0.00, 0.00, 0.00, 0.00, 
+    0.00, 0.00, 0.00, 0.00, 0.00, 
+    0.00, 0.00, 0.00, 0.00, 0.00, 
+    55.00, 0.00, 0.00, 0.00, 0.00
+  };
+
   int toElipsa[PUNKTOW] = {
     0, 1, 1, 1, 1, 0, 0, 0, 0, 0,
     0, 0, 0, 0, 1, 1, 0, 1, 1, 0,
@@ -87,15 +122,15 @@ void wypelnionyOkrag(int x, int y, int r, unsigned int kolor) {
     0, 0, 0, 0, 0, 1, 0, 0, 0, 0
   };
 
-  punkt biegunowe[PUNKTOW];
-  
+//  punkt biegunowe[PUNKTOW];
+/*  
   double katy[PUNKTOW] = {
     0, 169, 55+180, 171,    0,           0, 0,             0,          0, 0,
     0,   0,  0,       0, 31.5, 180+31.5+10, 0, 180+41.5+5+90, 41.5+90+15, 0,
     0, 0, 0, 0, 0,  0, 0, 0, 0, 0,
     0, 0, 0, 0, 0, 55, 0, 0, 0, 0
   };
-
+*/
   const punkt pz = punkt(0,0);
 
   punkt promienie[PUNKTOW] = {
@@ -402,7 +437,7 @@ int main(int argc, char **argv){
   P.tekst2(15, 2, "%d", &myszx);
   P.tekst2(85, 2, "%d", &myszy);
 
-  ustalLudka();
+//  ustalLudka();
   rysujLudka();
 
   ////////////////////////////////////////////
@@ -585,7 +620,42 @@ int main(int argc, char **argv){
 	// usleep(10000); // 40 ms => 25 razy na sekunde; 10ms => 100 x na sekunde 
   }
   SDL_FreeSurface(tmpSurface);
-	
+
+//  punkt punkty[PUNKTOW][2];
+  printf ("  punkt punkty[PUNKTOW][2] = \n");
+  printf ("  {\n    ");
+  for(int i=0;i<PUNKTOW;i++) {
+    printf("{ punkt( %3d, %3d ), punkt ( %3d, %3d ) }", 
+           punkty[i][0].x, punkty[i][0].y, punkty[i][1].x, punkty[i][1].y); 
+    if (i < PUNKTOW - 1) printf (", ");
+    if ( ((i % 2) == 1) && (i < PUNKTOW - 1)  ) printf("\n    ");
+  }
+  printf ("\n  };\n");
+
+  printf ("  double katy[PUNKTOW] = \n");
+  printf ("  {\n    ");
+  for(int i=0;i<PUNKTOW;i++) {
+    printf("%3.2f", katy[i]);
+    if (i < PUNKTOW - 1) printf (", ");
+    if ( ((i % 5) == 4) && (i < PUNKTOW - 1)  ) printf("\n    ");
+  }
+  printf ("\n  };\n");
+/*
+  double katy[PUNKTOW] = {
+    0, 169, 55+180, 171,    0,           0, 0,             0,          0, 0,
+    0,   0,  0,       0, 31.5, 180+31.5+10, 0, 180+41.5+5+90, 41.5+90+15, 0,
+    0, 0, 0, 0, 0,  0, 0, 0, 0, 0,
+    0, 0, 0, 0, 0, 55, 0, 0, 0, 0
+  };
+
+  const punkt pz = punkt(0,0);
+
+  punkt promienie[PUNKTOW] = {
+    pz, punkt(30-3,92+3), punkt(28,90+4), punkt(30,99), punkt(29,42),   
+    ...
+  };
+  */
+
   ///////////////////////////////////////
   // animacja: 
   ///////////////////////////////////////
