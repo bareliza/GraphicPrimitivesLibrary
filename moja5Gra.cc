@@ -490,6 +490,7 @@ int main(int argc, char **argv){
   P.otworzCzcionke("TerminusTTF-4.46.0.ttf", 0, 0, 1, 32);
 
   int miarkaAktywna = 0;
+  int edycjaPromienia = 0;
   punkt miarkaStart, delta;
   punkt miarkaStart0, delta0, deltaA;
 
@@ -503,6 +504,7 @@ int main(int argc, char **argv){
   	if(K.event.type == SDL_MOUSEBUTTONDOWN) {
   		if ( miarkaAktywna ) {
   			miarkaAktywna = 0;
+			edycjaPromienia = 0;
 			trybEdycji = 0;
 			rysujLudka();
 
@@ -517,7 +519,9 @@ int main(int argc, char **argv){
 			SDL_BlitSurface(tmpSurface, &from, P.screen, &to);
 
   		} else {
-  			miarkaAktywna= 1;
+  			miarkaAktywna = 1;
+ 			if(((SDL_MouseButtonEvent *)(&(K.event)))->button == SDL_BUTTON_LEFT)
+ 				edycjaPromienia = 1;
   		}
   		
   		if(miarkaAktywna){
@@ -544,6 +548,7 @@ int main(int argc, char **argv){
 			deltaA = mysz0 - miarkaStart;
   			P.tekst2(155, 2, "%d", &(delta.x) );
   			P.tekst2(225, 2, "%d", &(delta.y) );
+  			P.tekst2(15, 42, "%d", &(edycjaPromienia) );
   			P.pisak(0);
 // #include "SDL.h"
 // int SDL_BlitSurface(SDL_Surface *src, SDL_Rect *srcrect, SDL_Surface *dst, SDL_Rect *dstrect);
