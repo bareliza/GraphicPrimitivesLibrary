@@ -78,8 +78,44 @@ void wypelnionyOkrag(int x, int y, int r, unsigned int kolor) {
 	P.rysujPunkt4(x, y, kolor, r);
 }
 
+/* skradajacy sie
+  punkt punkty[PUNKTOW][2] = 
+  {
+    { punkt( 411, 370 ), punkt (  27,   0 ) }, { punkt( 414, 365 ), punkt (  27,  95 ) }, 
+    { punkt( 435, 460 ), punkt (  28,  94 ) }, { punkt( 494, 443 ), punkt (  30,  99 ) }, 
+    { punkt( 496, 444 ), punkt (  29,  42 ) }, { punkt( 496, 274 ), punkt (  50,  46 ) }, 
+    { punkt( 476, 355 ), punkt (   0,   0 ) }, { punkt( 451, 258 ), punkt (  56,   0 ) }, 
+    { punkt( 493, 257 ), punkt (   0,   0 ) }, { punkt( 489, 128 ), punkt (   0,   0 ) }, 
+    { punkt( 445, 134 ), punkt (   0,   0 ) }, { punkt( 450, 139 ), punkt (  46,  50 ) }, 
+    { punkt( 495, 259 ), punkt (  31,  26 ) }, { punkt( 471,  66 ), punkt (  37,   0 ) }, 
+    { punkt( 387, 188 ), punkt (  28,  65 ) }, { punkt( 395, 176 ), punkt (  25,  60 ) }, 
+    { punkt( 550, 180 ), punkt (  30,  28 ) }, { punkt( 552, 185 ), punkt (  28,  75 ) }, 
+    { punkt( 551, 181 ), punkt (  27,  80 ) }, { punkt( 291, 222 ), punkt (   8,   0 ) }, 
+    { punkt( 311, 228 ), punkt (   0,   0 ) }, { punkt( 333, 212 ), punkt (   0,   0 ) }, 
+    { punkt( 565, 199 ), punkt (   0,   0 ) }, { punkt( 318,   5 ), punkt (   0,   0 ) }, 
+    { punkt( 335,  20 ), punkt (   0,   0 ) }, { punkt( 435,  63 ), punkt (   4,   0 ) }, 
+    { punkt( 435,  86 ), punkt (   0,   0 ) }, { punkt( 507,  63 ), punkt (   0,   0 ) }, 
+    { punkt( 507,  86 ), punkt (   0,   0 ) }, { punkt( 414, 488 ), punkt (  15,  10 ) }, 
+    { punkt( 438, 480 ), punkt (   0,   0 ) }, { punkt( 487, 479 ), punkt (   0,   0 ) }, 
+    { punkt( 486, 494 ), punkt (   0,   0 ) }, { punkt( 525, 496 ), punkt (   0,   0 ) }, 
+    { punkt( 519, 479 ), punkt (   0,   0 ) }, { punkt( 437, 465 ), punkt (  28,  28 ) }, 
+    { punkt( 300,   0 ), punkt (   0,   0 ) }, { punkt( 300,   0 ), punkt (   0,   0 ) }, 
+    { punkt( 300,   0 ), punkt (   0,   0 ) }, { punkt( 300,   0 ), punkt (   0,   0 ) }
+  };
+  double katy[PUNKTOW] = 
+  {
+    0.00, -163.03, -193.16, -200.56, -38.85, 
+    0.00, 0.00, 0.00, 0.00, 0.00, 
+    0.00, 0.00, 0.00, 0.00, 72.39, 
+    -154.16, 0.00, -42.09, -200.22, 0.00, 
+    35.22, 0.00, 0.00, 0.00, 0.00, 
+    0.00, 0.00, 0.00, 0.00, 0.00, 
+    0.00, 0.00, 0.00, 0.00, 0.00, 
+    55.00, 0.00, 0.00, 0.00, 0.00
+  };*/
 #define PUNKTOW (40)
 //  punkt punkty[PUNKTOW][2];
+  // na bacznosc / wyjsciowa
   punkt punkty[PUNKTOW][2] = 
   {
     { punkt( 440, 367 ), punkt (  27,   0 ) }, { punkt( 443, 365 ), punkt (  27,  95 ) }, 
@@ -614,10 +650,15 @@ int main(int argc, char **argv){
 	}
 	if( miarkaAktywna && (nrPunktu != -1) && (edycjaElipsy == 1) ) {
 		trybEdycji = 1;
-		pee = mysz0 - punkty[nrPunktu][0];
+                 if( edycjaPromienia ) {
+                 	pee = mysz0 - punkty[nrPunktu][0];
+                 	promienie[nrPunktu].y = sqrt( pee.x*pee.x + pee.y*pee.y );
+                 } else {
+			pee = mysz0 - punkty[nrPunktu][0];
 #define RAD2DEG(a) ( (a) * 180.0 / M_PI)
-		katy[nrPunktu] = RAD2DEG(atan2(pee.y, pee.x) - M_PI / 2);
-		rysujLudka();
+			katy[nrPunktu] = RAD2DEG(atan2(pee.y, pee.x) - M_PI / 2);
+		}
+                 rysujLudka();	
 	}
 	
 	
