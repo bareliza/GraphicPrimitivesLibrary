@@ -800,7 +800,8 @@ int main(int argc, char **argv){
     else delta += ddelta;
     wypelnionyOkrag(reka2, receRozm.y, 0xff00);
     wypelnionaElipsa(ramie2, ramie2rozm, 0,180,41.5+90+15, RAMIE2KOLOR);
-    wypelnionaElipsa(strzalkowa2, strzalkowa2rozm, 0,180,alfaStrz2, STRZALKOWA2KOLOR );
+//    wypelnionaElipsa(strzalkowa2, strzalkowa2rozm, 0,180,alfaStrz2, STRZALKOWA2KOLOR );
+    wypelnionaElipsa(strzalkowa2, promienie[17], 0,180,alfaStrz2, STRZALKOWA2KOLOR );
 
 #define deg2rad(alfa) (M_PI*(alfa)/180)
     dlon2A = strzalkowa2 + 
@@ -838,7 +839,8 @@ int main(int argc, char **argv){
     else delta += ddelta;
     wypelnionyOkrag(reka2, receRozm.y, 0xff00);
     wypelnionaElipsa(ramie2, ramie2rozm, 0,180,41.5+90+15, RAMIE2KOLOR );
-    wypelnionaElipsa(strzalkowa2, strzalkowa2rozm, 0,180,alfaStrz2, STRZALKOWA2KOLOR );
+//    wypelnionaElipsa(strzalkowa2, strzalkowa2rozm, 0,180,alfaStrz2, STRZALKOWA2KOLOR );
+    wypelnionaElipsa(strzalkowa2, promienie[17], 0,180,alfaStrz2, STRZALKOWA2KOLOR );
 
     dlon2A = strzalkowa2 + 
 		punkt( ((double)strzalkowa2rozm.y) * cos(deg2rad(90.0+alfaStrz2)), 

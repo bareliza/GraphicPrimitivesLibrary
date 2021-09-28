@@ -1,0 +1,7 @@
+1. Postać w obiekcie
+2. funkcja obiektowa 
+	postac morfuj(int faz, int nrFazy, postac p1, postac p2, int plynnie=0) { ... }
+   zwracająca postac w fazie ruchu nrFazy pomiedzy p1 a p2, 
+   zakladajac łączną ilosc faz "faz".
+3. "morfuj" rozpędza się i zwalnia na początku i końcu jak ©™płynna-ręka, plynnaReka, plynna reka, płynna ręka.
+   (O ile flaga plynnie)
