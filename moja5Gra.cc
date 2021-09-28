@@ -1,4 +1,5 @@
 #define _ALE_ZLY_STYL_BIBLIOTEK_
+//#define _SLABE_SZYBSZE_ELIPSY_
 #include "grafika1.cc"
 
 #include <unistd.h>
@@ -78,6 +79,7 @@ void wypelnionyOkrag(int x, int y, int r, unsigned int kolor) {
 	P.rysujPunkt4(x, y, kolor, r);
 }
 
+#define PUNKTOW (40)
 /* skradajacy sie
   punkt punkty[PUNKTOW][2] = 
   {
@@ -113,6 +115,48 @@ void wypelnionyOkrag(int x, int y, int r, unsigned int kolor) {
     0.00, 0.00, 0.00, 0.00, 0.00, 
     55.00, 0.00, 0.00, 0.00, 0.00
   };*/
+
+/* "skuteczny bramkarz". */ 
+  // Przyjemnie by bylo rozne takie fazy ruchu miec "enkapsu@lowane" w obiekcie / obiektach
+#define PUNKTOW (40)
+  punkt punkty[PUNKTOW][2] = 
+  {
+    { punkt( 442, 365 ), punkt (  27,   0 ) }, { punkt( 443, 365 ), punkt (  27,  95 ) }, 
+    { punkt( 377, 417 ), punkt (  28,  94 ) }, { punkt( 555, 417 ), punkt (  30,  99 ) }, 
+    { punkt( 548, 410 ), punkt (  29,  42 ) }, { punkt( 502, 302 ), punkt (  50,  46 ) }, 
+    { punkt( 505, 360 ), punkt (   0,   0 ) }, { punkt( 451, 258 ), punkt (  56,   0 ) }, 
+    { punkt( 493, 257 ), punkt (   0,   0 ) }, { punkt( 495, 129 ), punkt (   0,   0 ) }, 
+    { punkt( 445, 134 ), punkt (   0,   0 ) }, { punkt( 450, 139 ), punkt (  46,  50 ) }, 
+    { punkt( 495, 259 ), punkt (  31,  26 ) }, { punkt( 471,  66 ), punkt (  37,   0 ) }, 
+    { punkt( 384, 197 ), punkt (  28,  65 ) }, { punkt( 395, 176 ), punkt (  25,  60 ) }, 
+    { punkt( 550, 180 ), punkt (  30,  28 ) }, { punkt( 552, 187 ), punkt (  28,  75 ) }, 
+    { punkt( 553, 189 ), punkt (  27,  80 ) }, { punkt( 346, 266 ), punkt (   8,   0 ) }, 
+    { punkt( 360, 256 ), punkt (   0,   0 ) }, { punkt( 381, 255 ), punkt (   0,   0 ) }, 
+    { punkt( 559, 251 ), punkt (   0,   0 ) }, { punkt( 318,   5 ), punkt (   0,   0 ) }, 
+    { punkt( 335,  20 ), punkt (   0,   0 ) }, { punkt( 435,  63 ), punkt (   4,   0 ) }, 
+    { punkt( 435,  86 ), punkt (   0,   0 ) }, { punkt( 507,  63 ), punkt (   0,   0 ) }, 
+    { punkt( 507,  86 ), punkt (   0,   0 ) }, { punkt( 344, 425 ), punkt (  15,  10 ) }, 
+    { punkt( 361, 446 ), punkt (   0,   0 ) }, { punkt( 552, 442 ), punkt (   0,   0 ) }, 
+    { punkt( 560, 447 ), punkt (   0,   0 ) }, { punkt( 583, 441 ), punkt (   0,   0 ) }, 
+    { punkt( 580, 433 ), punkt (   0,   0 ) }, { punkt( 374, 418 ), punkt (  28,  28 ) }, 
+    { punkt( 300,   0 ), punkt (   0,   0 ) }, { punkt( 300,   0 ), punkt (   0,   0 ) }, 
+    { punkt( 300,   0 ), punkt (   0,   0 ) }, { punkt( 300,   0 ), punkt (   0,   0 ) }
+  };
+  double katy[PUNKTOW] = 
+  {
+    0.00, -180.67, -119.16, -225.00, -34.99, 
+    0.00, 0.00, 0.00, 0.00, 0.00, 
+    0.00, 0.00, 0.00, 0.00, 4.01, 
+    -172.33, 0.00, -6.01, -194.83, 0.00, 
+    35.22, 0.00, 0.00, 0.00, 0.00, 
+    0.00, 0.00, 0.00, 0.00, 0.00, 
+    0.00, 0.00, 0.00, 0.00, 0.00, 
+    -40.24, 0.00, 0.00, 0.00, 0.00
+  };/* */
+
+
+/*
+
 #define PUNKTOW (40)
 //  punkt punkty[PUNKTOW][2];
   // na bacznosc / wyjsciowa
@@ -150,13 +194,7 @@ void wypelnionyOkrag(int x, int y, int r, unsigned int kolor) {
     0.00, 0.00, 0.00, 0.00, 0.00, 
     55.00, 0.00, 0.00, 0.00, 0.00
   };
-
-  int toElipsa[PUNKTOW] = {
-    0, 1, 1, 1, 1, 0, 0, 0, 0, 0,
-    0, 0, 0, 0, 1, 1, 0, 1, 1, 0,
-    0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
-    0, 0, 0, 0, 0, 1, 0, 0, 0, 0
-  };
+*/
 
 //  punkt biegunowe[PUNKTOW];
 /*  
@@ -169,6 +207,7 @@ void wypelnionyOkrag(int x, int y, int r, unsigned int kolor) {
 */
   const punkt pz = punkt(0,0);
 
+/* NIE-Przestarzale: promienie sa teraz w punkty[i][1] czy to prawda, chyba nie... */
   punkt promienie[PUNKTOW] = {
     pz, punkt(30-3,92+3), punkt(28,90+4), punkt(30,99), punkt(29,42),   
     pz, pz,               pz,             pz,           pz,
@@ -178,6 +217,14 @@ void wypelnionyOkrag(int x, int y, int r, unsigned int kolor) {
     
     pz, pz, pz, pz, pz, pz, pz, pz, pz, pz,
     pz, pz, pz, pz, pz, punkt(28,28), pz, pz, pz, pz
+  };
+/* */
+
+  int toElipsa[PUNKTOW] = {
+    0, 1, 1, 1, 1, 0, 0, 0, 0, 0,
+    0, 0, 0, 0, 1, 1, 0, 1, 1, 0,
+    0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+    0, 0, 0, 0, 0, 1, 0, 0, 0, 0
   };
 
   punkt& kolano1 = punkty[0][0];
@@ -556,7 +603,9 @@ int main(int argc, char **argv){
 
   		} else {
   			miarkaAktywna = 1;
- 			if(((SDL_MouseButtonEvent *)(&(K.event)))->button == SDL_BUTTON_LEFT)
+ 			//if(((SDL_MouseButtonEvent *)(&(K.event)))->button == SDL_BUTTON_LEFT)
+ 			// obecnie jest to wersja dla leworecznych ;)
+ 			if(((SDL_MouseButtonEvent *)(&(K.event)))->button == SDL_BUTTON_RIGHT)
  				edycjaPromienia = 1;
   		}
   		
@@ -653,6 +702,17 @@ int main(int argc, char **argv){
                  if( edycjaPromienia ) {
                  	pee = mysz0 - punkty[nrPunktu][0];
                  	promienie[nrPunktu].y = sqrt( pee.x*pee.x + pee.y*pee.y );
+                         // katy[nrPunktu] = 0;
+                         //
+                         //
+                         //  90 ----*
+                         //         |
+                         //         |
+                         //         |
+                         //         |
+                         //
+                         //         0
+                         
                  } else {
 			pee = mysz0 - punkty[nrPunktu][0];
 #define RAD2DEG(a) ( (a) * 180.0 / M_PI)
@@ -710,7 +770,7 @@ int main(int argc, char **argv){
 #define ANIM_STEP (1.0-delta)
 #define ddelta (.3/5)
 // animacji kat bazowy
-#define AN_KAT_B (0)
+#define AN_KAT_B (-katy[17])
 // animacji zakres 
 #define AN_ZAKR (5)
 #define ROZM_ANIM (strzalkowa2rozm.y + 39)
