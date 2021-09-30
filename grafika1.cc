@@ -1376,8 +1376,8 @@ public:
 		    a += CZYNNIK*EL3_STEP/d, adeg += CZYNNIK*EL3_STEP_DEG/d)
 		    {
 
-#define RAD2DEG(a) (180*a/M_PI)
-#define RAD2DEGi(a) ((int)RAD2DEG(a))
+#define RAD2DEG(a)  ( ( (double) (a) ) * 180.0 / M_PI )
+#define RAD2DEGi(a) ( (int) RAD2DEG(a) )
 //		    	printf(
 //			    "QC = %01d, adeg = %02d, a>deg = %02.2f, d = %d, d0 = %d, dspin = %d \n", 
 //			    quarterCounter, adeg, RAD2DEG(a), d, d0, dspin);

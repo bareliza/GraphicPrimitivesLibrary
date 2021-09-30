@@ -715,7 +715,6 @@ int main(int argc, char **argv){
                          
                  } else {
 			pee = mysz0 - punkty[nrPunktu][0];
-#define RAD2DEG(a) ( (a) * 180.0 / M_PI)
 			katy[nrPunktu] = RAD2DEG(atan2(pee.y, pee.x) - M_PI / 2);
 		}
                  rysujLudka();	
