@@ -47,6 +47,14 @@ void liniaDo(punkt p) {
 
 int trybEdycji = 0;
 
+// Patrz też definicja z drugiej linii tego pliku
+#define KROK_WYPELNIONEJ_ELIPSY (12)
+// To dziala inaczej:
+//    - bo zapewne wypelniajace elipsy rosna nie w szerz a 
+//      wzdluz, czyli w kierunku dalszego wierzcholka
+#define PROMIEN_ZERO_WYP_EL (0)
+#define NIE_WYPELNIAJ_ELIPS (1)
+
 void wypelnionaElipsa(int x, int y, int rx, int ry, double a0, double a1, double a2, unsigned int kolor) {
 	int pen1;
 	pen1 = P.pioro;	
@@ -55,16 +63,22 @@ void wypelnionaElipsa(int x, int y, int rx, int ry, double a0, double a1, double
 		P.pisak(1);
 		P.elipsa3(x,y,rx-4,ry-3,a0,a1,a2,kolor);
 	} else {
-		P.pisak(8);
-		for(int i=ry-3;i>0;i-=6) {
+		P.pisak( KROK_WYPELNIONEJ_ELIPSY + 2 );
+#ifdef NIE_WYPELNIAJ_ELIPS
+			P.elipsa3(x,y,rx-4,ry-3,a0,a1,a2,kolor);	
+#else
+		for(int i=ry-3;i>PROMIEN_ZERO_WYP_EL;i-=KROK_WYPELNIONEJ_ELIPSY) {
 			P.elipsa3(x,y,rx-4,i,a0,a1,a2,kolor);	
 		}
+#endif
 	}
 	P.pisak(pen1);
 }
+
 void wypelnionaElipsa(punkt p, int rx, int ry, double a0, double a1, double a2, unsigned int kolor) {
 	wypelnionaElipsa(p.x, p.y, rx, ry, a0, a1, a2, kolor);
 }
+
 void wypelnionaElipsa(punkt p, punkt r, double a0, double a1, double a2, unsigned int kolor) {
 	wypelnionaElipsa(p.x, p.y, r.x, r.y, a0, a1, a2, kolor);
 }

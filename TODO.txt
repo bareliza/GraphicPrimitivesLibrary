@@ -5,3 +5,22 @@
    zakladajac łączną ilosc faz "faz".
 3. "morfuj" rozpędza się i zwalnia na początku i końcu jak ©™płynna-ręka, plynnaReka, plynna reka, płynna ręka.
    (O ile flaga plynnie)
+
+******************* Poniższe najwcześniej w przyszłym roku na urlopie w lato lub później **********************
+   
+4. KIEDYŚ TAM [maży mi się] przy kolejnym przepisaniu grafika1.cc (do javy może) przepisać to tak, żeby:
+	4,1. wypełniona elipsa i półelipsa była wypełniana [poziomymi] liniami a nie elipsami
+	4.2. można było włączyć / wyłączyć wygładzanie brzegów odcinka
+	4.2. odcinek o zadanej grubości był idealnym prostokątem o idealnie wygładzonych czterech krawędziach
+	4.3. współrzędne początku i końca odcinka [i współrzędne innych figur] dobrze by było aby były
+	     z dokładnością do 8 bitów po przecinku 
+	     (ale nie ma dziś języka programowania wspierającego stałoprzecinkowość,
+	     chyba, że napiszę odpowiednią klasę [wyjątek: Ada])
+	     i żeby te procedury rysujące odcinek z 4.2. wyraźnie obsługiwały założenia z 4.3.
+	4.3.1. W pierwszej kolejności po odcinku: wypełnione [jak i nie wypełnione] okręgi 
+	       zarówno środek, jak i promień też maży mi się aby wyraźnie obsługiwały założenia 4.3.
+
+5. Komentarz do punktu 4.3.
+   Można by pójść w stronę parametrów zmiennoprzecinkowych 
+   w którymś momencie [być może i być może jak najpóźniej] wewnętrznie przekształcanych na liczby
+   stałoprzecinkowe, być może w wymienionej postaci 24bity(,)8bitów
