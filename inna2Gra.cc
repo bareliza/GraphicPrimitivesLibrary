@@ -53,12 +53,16 @@ void obliczWspolczynniki(void) {
 double f(double x) {
 	printf("x = %3.3f f(x) = %3.3f", x, a*x*x + b*x);  
 
-	return a*x*x + b*x;
+	return a*x*x + b*x + 0.5;
 }
 
 double BPdoAP(double x)
 {
-	return x*(AP-BP)/X1+BP;
+	return x*(AP-BP)/X1 + BP + 0.5;
+}
+
+double rozciagnij(double j, double BAP) {
+return ((double)(BY-1.0))*(j+BAP/2)/BAP + 0.5; 
 }
 
 void perspektywa(unsigned int *bm, int bx, int by, double xe, double ye) {
@@ -67,7 +71,30 @@ void perspektywa(unsigned int *bm, int bx, int by, double xe, double ye) {
     BAP = BPdoAP(i);
     fodi = f(i);
     for(j = -BAP/2; j < BAP/2; ++j)
-      P.rysujPunkt(xe + i, ye + j, bm[((int)((BY-1)*(j+BAP/2)/BAP))*by + ((int)fodi)]);
+      P.rysujPunkt(xe + i, ye + j, bm[((int)(rozciagnij(j,BAP)))*by + ((int)fodi)]);
+  }
+}
+
+SDL_Color tloCzcionki = { 0xff, 0xff, 0xff, 0};
+
+#define ZOOM (5)
+#define ZOOM_X (58)
+#define ZOOM_Y (28)
+
+void zoom(void) {
+  P.otworzCzcionke("TerminusTTF-4.46.0.ttf", 0,0,0,16);
+  P.forecol = &tloCzcionki;
+  while(1) {
+    K.odswiez();
+    P.prostokat(10,10,30,30,0xffffff);
+    P.tekst2(10,10,"%d",&K.mysz.x);
+
+    for(int i=0; i<ZOOM_X; ++i)
+      for(int j=0; j<ZOOM_Y; ++j)
+         P.prostokat(100 + i*ZOOM, 250 + j*ZOOM, ZOOM-1, ZOOM-1, P.KolorPunktu(K.mysz.x+i, K.mysz.y+j)); 
+    P.odswiez();
+    //K.sprawdzIWyjdzGdyKlawisz();
+    K.wyjdzGdyKlawisz(SDLK_ESCAPE);
   }
 }
 
@@ -89,8 +116,9 @@ int main(int argc, char** argv) {
   for(double i = 0; i < X1; ++i)
     P.rysujPunkt( RX/2 - BX/2 + f(i), 10, 0xff00);
     
-  perspektywa(bmapa, BX, BY, 50.0, 250.0);
+  perspektywa(bmapa, BX, BY, 20.0, 200.0);
   
   P.odswiez();
-  K.czekajNaKlawisz();
+//  K.czekajNaKlawisz();
+  zoom();
 }
