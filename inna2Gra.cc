@@ -44,10 +44,21 @@ void rysuj(unsigned int *bm, int bx, int by, int xe, int ye) {
 
 double X1, XB, AP, BP;
 
+// Wyjsciowy uklad rownan:
+//
+// /  f'(0) / f'(X1) = BP / AP (lub odwrotnie, nie pamietam)
+// |
+// <  f(0) = 0 => c = 0
+// |
+// \  f(X1) = XB
+//
+// oraz  f(x) w postaci, f(x) = a*x*x + b*x + c
+//
+
 double a, b;
 void obliczWspolczynniki(void) {
-	a = XB / ( X1*X1*( 1 + 2*AP / ( BP * ( 1 - AP / BP ) ) ) );
-	b = 2 * a * X1 * AP / ( BP*( 1 - AP / BP ) );
+	a = XB / ( X1*X1*( 1 + 2*AP / ( BP*( 1 - AP / BP ) ) ) );
+	b = 2*a*X1*AP / ( BP*( 1 - AP / BP ) );
 }
 
 double f(double x) {
@@ -62,7 +73,8 @@ double BPdoAP(double x)
 }
 
 double rozciagnij(double j, double BAP) {
-return ((double)(BY-1.0))*(j+BAP/2)/BAP + 0.5; 
+  return ((double)(BY-1.0))*(j+BAP/2)/BAP + 0.5; 
+//    return ((double)(BY    ))*(j+BAP/2)/BAP + 0.5; 
 }
 
 void perspektywa(unsigned int *bm, int bx, int by, double xe, double ye) {
@@ -71,7 +83,8 @@ void perspektywa(unsigned int *bm, int bx, int by, double xe, double ye) {
     BAP = BPdoAP(i);
     fodi = f(i);
     for(j = -BAP/2; j < BAP/2; ++j)
-      P.rysujPunkt(xe + i, ye + j, bm[((int)(rozciagnij(j,BAP)))*by + ((int)fodi)]);
+          P.rysujPunkt(xe + i, ye + j, bm[((int)(rozciagnij(j,BAP)))*by         + ((int)fodi)]);
+//        P.rysujPunkt(xe + i, ye + j, bm[((int)(rozciagnij(j,BAP)))*((by - 1)) + ((int)fodi)]);
   }
 }
 
