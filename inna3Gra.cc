@@ -69,7 +69,7 @@ double f(double x) {
 
 double BPdoAP(double x)
 {
-	return x*(AP-BP)/X1 + BP + 0.5;
+	return x*(AP-BP)/(X1 - 1) + BP + 0.5;
 }
 
 double rozciagnij(double j, double BAP) {
@@ -79,13 +79,25 @@ double rozciagnij(double j, double BAP) {
 
 void perspektywa(unsigned int *bm, int bx, int by, double xe, double ye) {
   double i, j, BAP, fodi;
+  int yj, yj1, yj2;
+  
   for(i = 0; i < X1; ++i) {
     BAP = BPdoAP(i);
     fodi = f(i);
     for(j = -BAP/2; j < BAP/2; ++j) {
-          P.rysujPunkt(xe + i, ye + j, bm[((int)(rozciagnij(j,BAP)))*by         + ((int)fodi)]);
-          P.rysujPunkt(RX/2 - BX/2 + ((int)fodi), 10 + ((int)(rozciagnij(j,BAP))), 0xffff);
-    }
+	 yj = (int)(rozciagnij(j,BAP) * 65536.0);
+	 yj1 = (int)(rozciagnij(j+1.0,BAP) * 65536.0);
+	 yj2 = (yj + yj1) >> 1;
+	 if( i == X1 - 1 ) printf("yj >> 16 : %06d, %06d yj1 >> 16 : %06d, %06d, BAP : %06.3f\n", yj >> 16, 65536 - (yj & 65535), yj1 >> 16, yj1 & 65535, BAP);
+	 P.rysujPunkt(xe + i, ye + j, bm[(yj2  >> 16)*by        + ((int)fodi)]);
+	 /*
+	 if ( ( 65536 - (yj & 65535) ) > ( (yj1 & 65535) ) ) {
+	   P.rysujPunkt(xe + i, ye + j, bm[(yj  >> 16)*by        + ((int)fodi)]);
+	 } else {
+	   P.rysujPunkt(xe + i, ye + j, bm[(yj1 >> 16)*by        + ((int)fodi)]);
+	 }
+	 */
+    }	 
 //        P.rysujPunkt(xe + i, ye + j, bm[((int)(rozciagnij(j,BAP)))*((by - 1)) + ((int)fodi)]);
   }
 }

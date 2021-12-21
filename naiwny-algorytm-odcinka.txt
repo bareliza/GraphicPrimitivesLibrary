@@ -1,0 +1,19 @@
+Naiwny algorytm rysowania odcinka:
+
+Dla zwrócenia uwagi:
+
+delta-x > delta-y
+
+1. idź zmienną x od x0 do x1, albo od zero do delta-x
+   2. dla każdego takiego x narysuj punkt o takich współrzędnych:
+      3. rysujPunkt(x, y + delta-y*x/delta-x)
+      
+TO DO:
+
+[ ]   zaprogramuj i sam zobacz, dlaczego jest naiwny.
+
+alternatywnie:
+
+"zwinąć" bitmapę bazową (tę kwadratową powiększoną) tylko w poziomie zgodnie z perspektywą
+i zobaczyć, czemu te czerwone punkty nie idą do cholery po "zgrabnych" prostych.
+(patrz inna4Gra.cc, wykonywalny inna4Gra)

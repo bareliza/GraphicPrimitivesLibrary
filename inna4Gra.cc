@@ -2,8 +2,8 @@
 
 #include "grafika1.cc"
 
-#define RX (400)
-#define RY (400)
+#define RX (1000)
+#define RY (600)
 
 Projektor P(RX,RY);
 Klawiatura K;
@@ -39,7 +39,7 @@ void rysuj(unsigned int *bm, int bx, int by, int xe, int ye) {
   int i, j;
   for(i = 0; i < bx; ++i)
     for(j = 0; j < by; ++j)
-      P.rysujPunkt(xe + i, ye + j, bm[j * by + i]); 
+      P.prostokat(xe + 4*i, ye + 4*j, 3, 3, bm[j * by + i]); 
 }
 
 double X1, XB, AP, BP;
@@ -77,14 +77,33 @@ double rozciagnij(double j, double BAP) {
 //    return ((double)(BY    ))*(j+BAP/2)/BAP + 0.5; 
 }
 
+unsigned rgbKrok(int i)
+{
+  unsigned zielenPlus;
+  
+  zielenPlus = 0x0;
+  if ( i < 0 ) {
+    i = -i;
+    zielenPlus = 0x7f00;
+  }
+  if ( i == 1 ) return 0xff0000 + zielenPlus;
+  if ( i == 2 ) return 0xff00;
+  if ( i == 0 ) return 0xffff;
+
+  return 0xffff00;
+}
+
 void perspektywa(unsigned int *bm, int bx, int by, double xe, double ye) {
   double i, j, BAP, fodi;
+  unsigned rgbKrok1;
   for(i = 0; i < X1; ++i) {
     BAP = BPdoAP(i);
     fodi = f(i);
     for(j = -BAP/2; j < BAP/2; ++j) {
           P.rysujPunkt(xe + i, ye + j, bm[((int)(rozciagnij(j,BAP)))*by         + ((int)fodi)]);
-          P.rysujPunkt(RX/2 - BX/2 + ((int)fodi), 10 + ((int)(rozciagnij(j,BAP))), 0xffff);
+          rgbKrok1 = rgbKrok( ((int)j) % 3 );
+	  // ten if nizej to bad coding
+          if ( rgbKrok1 == 0xff0000 || rgbKrok1 == 0xff7f00 ) P.prostokat(RX/2 - BX/2 + ((int)4.0*fodi)-1, 10 + ((int)(4.0*rozciagnij(j,BAP)))-1, 3, 3, rgbKrok1 );
     }
 //        P.rysujPunkt(xe + i, ye + j, bm[((int)(rozciagnij(j,BAP)))*((by - 1)) + ((int)fodi)]);
   }
@@ -93,8 +112,8 @@ void perspektywa(unsigned int *bm, int bx, int by, double xe, double ye) {
 SDL_Color tloCzcionki = { 0xff, 0xff, 0xff, 0};
 
 #define ZOOM (5)
-#define ZOOM_X (58)
-#define ZOOM_Y (28)
+#define ZOOM_X (67)
+#define ZOOM_Y (56)
 
 void zoom(void) {
   P.otworzCzcionke("TerminusTTF-4.46.0.ttf", 0,0,0,16);
