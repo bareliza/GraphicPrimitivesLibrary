@@ -17,3 +17,8 @@ alternatywnie:
 "zwinąć" bitmapę bazową (tę kwadratową powiększoną) tylko w poziomie zgodnie z perspektywą
 i zobaczyć, czemu te czerwone punkty nie idą do cholery po "zgrabnych" prostych.
 (patrz inna4Gra.cc, wykonywalny inna4Gra)
+
+Im dalej w las, tym więcej drzew, nie tak łatwo, cyk i światło.
+
+Zrobiły się nie ładne proste, ale prawie okręgi / krzywe jak elipsy, eliptyczne?
+(patrz inna5Gra.cc wykonywalny analogicznie jw.).
