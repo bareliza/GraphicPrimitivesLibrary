@@ -14,11 +14,22 @@ TO DO:
 
 alternatywnie:
 
+1.
+
 "zwinąć" bitmapę bazową (tę kwadratową powiększoną) tylko w poziomie zgodnie z perspektywą
 i zobaczyć, czemu te czerwone punkty nie idą do cholery po "zgrabnych" prostych.
 (patrz inna4Gra.cc, wykonywalny inna4Gra)
+
+2.
 
 Im dalej w las, tym więcej drzew, nie tak łatwo, cyk i światło.
 
 Zrobiły się nie ładne proste, ale prawie okręgi / krzywe jak elipsy, eliptyczne?
 (patrz inna5Gra.cc wykonywalny analogicznie jw.).
+
+3.
+
+Na razie "naiwne" rozwiązanie, uśredniając 4 kolejne wartości krzywej, tyle
+co w tym konkretnym przypadku wynosi okres tych schodków.
+(patrz inna6Gra.cc wykonywalny analogicznie jw.).
+
