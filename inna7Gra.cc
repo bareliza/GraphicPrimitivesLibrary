@@ -122,7 +122,7 @@ void perspektywa(unsigned int *bm, int bx, int by, double xe, double ye) {
     fodi = f(i); // skrocenie perspektywiczne
     for(j = -BAP/2; j < BAP/2; ++j) {
           rozc[(int)(MBPAP+j)][((int)i)&3] = ((int)(rozciagnij(j,BAP)));
-          if ( i < 8 || j < -BAP/2 + 8 || j > BAP/2 - 8 ) rozc1 = ((int)(rozciagnij(j,BAP)));
+          if (1 || i < 8 || j < -BAP/2 + 8 || j > BAP/2 - 8 ) rozc1 = ((int)(rozciagnij(j,BAP)));
           else 
               rozc1 = (rozc[(int)(MBPAP+j)][0]+
                        rozc[(int)(MBPAP+j)][1]+

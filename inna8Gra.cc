@@ -111,19 +111,27 @@ unsigned rgbKrok(int i)
 #define ZOOM_Y (56)
 
 void perspektywa(unsigned int *bm, int bx, int by, double xe, double ye) {
-  double i, j, BAP, fodi, rozc1;
+  double i1, i, j, BAP, BAPi, fodi1, fodi, rozc1;
   unsigned rgbKrok1;
   double rozc[2*(int)(BP>AP?BP:AP)][8];
   int MBPAP;
   MBPAP = (int)(BP>AP?BP:AP);
   
-  for(i = 0; i < X1; ++i) {
-    BAP = BPdoAP(i);
-    fodi = f(i); // skrocenie perspektywiczne
-    for(j = -BAP/2; j < BAP/2; ++j) {
-          rozc[(int)(MBPAP+j)][((int)i)&3] = ((int)(rozciagnij(j,BAP)));
-          if ( i < 8 || j < -BAP/2 + 8 || j > BAP/2 - 8 ) rozc1 = ((int)(rozciagnij(j,BAP)));
+  for(i1 = 2; i1 < X1 + 2; ++i1) {
+    BAP = BPdoAP(i1);
+    fodi1 = f(i1); // skrocenie perspektywiczne
+    i = i1 - 2;
+    BAPi = BPdoAP(i);
+    if ( i > X1 - 3 ) BAP = BAPi;
+    fodi = f(i);
+    for(j = -BAPi/2; j < BAPi/2; ++j) {
+          rozc[(int)(MBPAP+j)][((int)i1)&3] = ((int)(rozciagnij(j,BAP)));
+          if ( i < 3 || i > X1 - 3 || j < -BAPi/2 + 3 || j > BAPi/2 - 3 ) rozc1 = ((int)(rozciagnij(j,BAPi)));
           else 
+              // A ja bym chcial, zeby dla i = n to byla srednia 
+              // nie z: i-3 i-2 i-1 i
+              // ale z: i-2 i-1 i   i+1
+              // lub z! i-1 i   i+1 i+2
               rozc1 = (rozc[(int)(MBPAP+j)][0]+
                        rozc[(int)(MBPAP+j)][1]+
                        rozc[(int)(MBPAP+j)][2]+
