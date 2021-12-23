@@ -31,5 +31,14 @@ Zrobiły się nie ładne proste, ale prawie okręgi / krzywe jak elipsy, eliptyc
 
 Na razie "naiwne" rozwiązanie, uśredniając 4 kolejne wartości krzywej, tyle
 co w tym konkretnym przypadku wynosi okres tych schodków.
-(patrz inna6Gra.cc wykonywalny analogicznie jw.).
+(porównaj inna7Gra.cc i inna8Gra.cc wykonywalne analogicznie jw.).
 
+4. 
+
+jak wyżej, ale uśredniając 8 kolejnych wartości, cofnięte o jeden:
+   f1[i+3] = ( f[i+0] + ... + f[i+7] ) / 8.0 ; i=0..X1-8
+i kosmetycznie i subiektywnie ograniczając wartości brzegowe.
+(porównaj inna7Gra.cc i inna9Gra.cc wykonywalne analogicznie jw.).
+
+Dużo więcej z aproksymacji przez średnią wartości nie wycisnę.
+   
