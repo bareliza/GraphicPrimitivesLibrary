@@ -18,6 +18,18 @@ void przepiszDoMacierzy(macierz *m, double (*a)[n][n]) {
 			m->a[i][j] = (*a)[i-1][j-1];
 }
 
+void przepiszDoMacierzy1(macierz *m, double (*a)[n+1][n+1]) {
+	int i,j;
+
+	for ( i = 1; i <= n; ++i )
+		for ( j = 1; j <= n; ++j )
+			m->a[i][j] = (*a)[i][j];
+}
+
+void przepiszZMacierzyDoMacierzy(macierz *m1, macierz *m2) {
+	przepiszDoMacierzy1(m2, &(m1->a));
+}
+
 void wypiszMacierz(macierz *m) {
 	int i,j;
 
@@ -66,6 +78,102 @@ void pomnozMacierzPrzezWektor(macierz *m, double w1[n], double w[n])
 	}
 }
 
+void rozwiazUkladRownan(macierz *m, double w[n], double wyj[n]) {
+	macierz m1, m2, m3;
+	
+	policzWyznacznik(m);
+	
+	// Brzydki kod, ladniej byloby tablice macierzy: macierz m1[3] i petla.
+	// Ta wersja jednak tez dobrze dziala, przynajmniej dla n = 3.
+	przepiszZMacierzyDoMacierzy(m, &m1);
+	zamienKolumne(&m1, w, 1);
+	policzWyznacznik(&m1);
+	przepiszZMacierzyDoMacierzy(m, &m2);
+	zamienKolumne(&m2, w, 2);
+	policzWyznacznik(&m2);
+	przepiszZMacierzyDoMacierzy(m, &m3);
+	zamienKolumne(&m3, w, 3);
+	policzWyznacznik(&m3);
+
+	if( m->wyznacznik == 0 ) printf("Brak rozwiazan ukladu rownan\n");
+	else {
+		wyj[0] = m1.wyznacznik / m->wyznacznik;
+		wyj[1] = m2.wyznacznik / m->wyznacznik;
+		wyj[2] = m3.wyznacznik / m->wyznacznik; 
+	}
+}
+
+// P[unktow]A[proksymacji]
+#define PkAp (100)
+
+double xDoP(double x, int p) {
+	double pom;
+	if ( p == 0 ) return 1;
+	if ( p == 1 ) return x;
+	if ( p == 2 ) return x*x;
+	if ( p == 3 ) return x*x*x;
+	if ( p == 4 ) return xDoP(xDoP(x,2),2); // x*x*x*x;
+	if ( p >  4 ) return x*xDoP(x,p-1);
+	if ( p <  0 ) return 1 / xDoP(x,-p);
+	return 1;
+}
+
+double suma(double x[PkAp], int p, int ile) {
+	int i;
+	double odp;
+	
+	odp = 0;
+	for( i = 0; i < ile ; ++i ) odp += xDoP(x[i], p);
+	
+	return odp; 
+}
+
+double suma2(double y[PkAp], double x[PkAp], int p, int ile) {
+	int i;
+	double odp;
+	
+	odp = 0;
+	for( i = 0; i < ile ; ++i ) odp += y[i] * xDoP(x[i], p);
+	
+	return odp;
+}
+
+void aproksymacjaWielomianemStopniaDwa(double x[PkAp], double y[PkAp], double odp[n]) {
+	macierz m;
+	double w[n];
+	
+	// https://pl.wikipedia.org/wiki/Aproksymacja_wielomianowa
+	//
+	// ze wzoru [4] :
+	//
+	// n = PkAp - 1
+	// m = 2
+	//
+	// a0 * (n+1)             + a1 * suma(x0..xn)      + a2 * suma(x0^2..xn^2) = suma(y0..yn)
+	// a0 * suma(x0..xn)      + a1 * suma(x0^2..xn^2)  + a2 * suma(x0^3..xn^3) = suma(y0*x0..yn*xn)
+	// a0 * suma(x0^2..xn^2)  + a1 * suma(x0^3..xn^3)  + a2 * suma(x0^4..xn^4) = suma(y0*x0^2..yn*xn^2)
+	//
+	// odp[i] = a[i], i = 0..2
+
+	m.a[1][1] = PkAp;
+	m.a[1][2] = suma(x,1,PkAp);
+	m.a[1][3] = suma(x,2,PkAp);
+
+	m.a[2][1] = m.a[1][2]; // suma(x,1,PkAp);
+	m.a[2][2] = m.a[1][3]; // suma(x,2,PkAp);
+	m.a[2][3] = suma(x,3,PkAp);
+
+	m.a[3][1] = m.a[2][2]; // suma(x,2,PkAp);
+	m.a[3][2] = m.a[2][3]; // suma(x,3,PkAp);
+	m.a[3][3] = suma(x,4,PkAp);
+	
+	w[0] = suma2(y, x, 0, PkAp);
+	w[1] = suma2(y, x, 1, PkAp);
+	w[2] = suma2(y, x, 2, PkAp);
+
+	rozwiazUkladRownan(&m, w, odp);
+}
+
 double a[3][3] = {
 	{2,3,4},
 	{4,5,7},
@@ -95,6 +203,8 @@ double wektor1[n] = { 1, 3, 0 };
 double wektor2[n];
 double wektor3[n];
 
+double wektor4[n];
+double wektor5[n];
 
 int main(int argc, char **argv) {
 	macierz A,B,C,D,E,D1,D2,D3;
@@ -192,7 +302,21 @@ int main(int argc, char **argv) {
 
 	wypiszWektor(wektor3);
 
-	printf("\n\n CBDO. Nie uwzgledniono sytuacji, gdy |D| = 0.");
+	printf("\n\n    CBDO. Nie uwzgledniono sytuacji, gdy |D| == 0.\n\n\n");
+	
+	rozwiazUkladRownan(&D, wektor1, wektor4);
+	
+	printf("To samo rozwiazanie z jednym wywolaniem procedury:\n\n");
+	
+	wypiszWektor(wektor4);	
+	
+	pomnozMacierzPrzezWektor(&D, wektor4, wektor5);
+	
+	printf("\n\nSprawdzenie 2: Po pomnozeniu D przez powyzszy wektor otrzymano wektor: \n\n");
+
+	wypiszWektor(wektor5);
+	
+	printf("\n\n    CBDO 2. Tu juz badam, czy |D| == 0.\n\n\n");
 }
 
 
