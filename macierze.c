@@ -107,7 +107,7 @@ void rozwiazUkladRownan(macierz *m, double w[n], double wyj[n]) {
 #define PkAp (100)
 
 double xDoP(double x, int p) {
-	double pom;
+//	double pom;
 	if ( p == 0 ) return 1;
 	if ( p == 1 ) return x;
 	if ( p == 2 ) return x*x;
