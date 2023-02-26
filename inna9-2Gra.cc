@@ -18,20 +18,19 @@ void czysc(unsigned int *bm, int bx, int by, unsigned int k) {
   for(int i = 0; i < bx*by; ++i) bm[i] = k;
 }
 
-#define RAMKA_X (0)
-#define RAMKA_Y (3)
+#define RAMKA (8)
 void paski(unsigned int *bm, int bx, int by, int szer2doM1) {
   int i, j;
-  for(i = RAMKA_X; i < bx - RAMKA_X; ++i)
-    for(j = RAMKA_Y; j < by - RAMKA_Y; ++j)
+  for(i = RAMKA; i < bx - RAMKA; ++i)
+    for(j = RAMKA; j < by - RAMKA; ++j)
        bm[j*by + i] = ( (i & szer2doM1) == 0 ) ? 0 : 0xffffff;
 
 }
 
 void paskiPoziome(unsigned int *bm, int bx, int by, int POZIOME_CO, int szerokosc) {
   int i, j;
-  for(i = RAMKA_X; i < bx - RAMKA_X; ++i)
-    for(j = RAMKA_Y; j < by - RAMKA_Y; ++j)
+  for(i = RAMKA; i < bx - RAMKA; ++i)
+    for(j = RAMKA; j < by - RAMKA; ++j)
        if((j % POZIOME_CO) < szerokosc) bm[j*by + i] = 0xff;
 
 }
@@ -70,11 +69,11 @@ double f(double x) {
 
 double BPdoAP(double x)
 {
-	return x*(AP-BP)/(X1-1) + BP + 0.5;
+	return x*(AP-BP)/(X1-1.0) + BP + 0.5;
 }
 
 double rozciagnij(double j, double BAP) {
-  return ((double)(BY-1.0))*(j+BAP/2)/BAP + 0.5; 
+  return ((double)(BY-1.0))*(j+BAP/2.0)/BAP + 0.5; 
 //    return ((double)(BY    ))*(j+BAP/2)/BAP + 0.5; 
 }
 
@@ -112,7 +111,7 @@ unsigned rgbKrok(int i)
 #define ZOOM_Y (56)
 
 void perspektywa(unsigned int *bm, int bx, int by, double xe, double ye) {
-  double i1, i, j, BAP, BAPi, fodi1, fodi, rozc1;
+  double i1, i, j, BAP, BAPi, fodi1, fodi, rozc1, rozc2;
   unsigned rgbKrok1;
   double rozc[2*(int)(BP>AP?BP:AP)][8];
   int MBPAP;
@@ -127,6 +126,7 @@ void perspektywa(unsigned int *bm, int bx, int by, double xe, double ye) {
     fodi = f(i);
     for(j = -BAPi/2; j < BAPi/2; ++j) {
           rozc[(int)(MBPAP+j)][((int)i1)&7] = ((int)(rozciagnij(j,BAP)));
+          rozc2 = ((int)(rozciagnij(j,BAP)));
           if ( i < 8 || i > X1 - 3 || j < -BAPi/2 + 6 || j > BAPi/2 - 6 ) rozc1 = ((int)(rozciagnij(j,BAPi)));
           else 
               // A ja bym chcial, zeby dla i = n to byla srednia 
@@ -147,9 +147,12 @@ void perspektywa(unsigned int *bm, int bx, int by, double xe, double ye) {
                        ) / 8.0; /* */ 
           P.rysujPunkt(xe + i, ye + j, bm[((int)(rozc1))*by         + ((int)fodi)]);
           rgbKrok1 = rgbKrok( ((int)j) % 3 );
-	  if ( ((int)j) == 1 ) {
+//	  if ( ((int)j) == 1 ) {
+	  if ( ((int)j) == 10 ) {
                   rgbKrok1 = 0xffff00;
                   printf( "i == %3.1f, rozciagnij(j,BAP) == %3.3f\n", i, rozc1);//rozciagnij(j,BAP) );
+                  P.prostokat(RX/2 - BX/2 + ((int)ZOOM*i/*fodi*/)-1, 10 + ((int)(ZOOM*rozc2))-1, ZOOM, /*1*/ZOOM, 0xffff );
+
 	  }
 	  // ten if nizej to bad coding
           if ( rgbKrok1 == 0xff0000 || rgbKrok1 == 0xff7f00 || rgbKrok1 == 0xffff00 || rgbKrok1 == 0xff00 )
